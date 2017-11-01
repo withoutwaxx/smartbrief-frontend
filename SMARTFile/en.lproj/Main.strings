@@ -1,0 +1,33 @@
+
+/* Class = "UILabel"; text = "Please enter details below to login"; ObjectID = "3wR-Is-M9H"; */
+"3wR-Is-M9H.text" = "Please enter details below to login";
+
+/* Class = "UITextField"; text = "password"; ObjectID = "Bgi-Ul-kQD"; */
+"Bgi-Ul-kQD.text" = "password";
+
+/* Class = "UITextField"; text = "john@smart.com"; ObjectID = "D5A-tt-EwU"; */
+"D5A-tt-EwU.text" = "john@smart.com";
+
+/* Class = "UILabel"; text = "Your Account"; ObjectID = "HdF-YK-ElE"; */
+"HdF-YK-ElE.text" = "Your Account";
+
+/* Class = "UIButton"; normalTitle = "LOGOUT"; ObjectID = "MoG-hy-Ioy"; */
+"MoG-hy-Ioy.normalTitle" = "LOGOUT";
+
+/* Class = "UIButton"; normalTitle = "LOGIN"; ObjectID = "Obr-qN-lke"; */
+"Obr-qN-lke.normalTitle" = "LOGIN";
+
+/* Class = "UILabel"; text = "Your Projects"; ObjectID = "Op3-I2-eko"; */
+"Op3-I2-eko.text" = "Your Projects";
+
+/* Class = "UIButton"; normalTitle = "NEW PROJECT"; ObjectID = "Q1Q-FR-Cz0"; */
+"Q1Q-FR-Cz0.normalTitle" = "NEW PROJECT";
+
+/* Class = "UIButton"; normalTitle = "CHANGE PASSWORD"; ObjectID = "T9x-R7-Sky"; */
+"T9x-R7-Sky.normalTitle" = "CHANGE PASSWORD";
+
+/* Class = "UILabel"; text = "Username"; ObjectID = "XPa-SG-faM"; */
+"XPa-SG-faM.text" = "Username";
+
+/* Class = "UILabel"; text = "Password"; ObjectID = "ZsA-c7-4jL"; */
+"ZsA-c7-4jL.text" = "Password";

@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  SMARTFile
+
+  Created by Tom Rogers on 26/10/2017.
+  Copyright © 2017 Smartphone Media Group Ltd. All rights reserved.
+*/
+
+
+"ALERT_PASSWORD_SHORT" = "Your password should be at least 8 characters long";
+"ALERT_INVALID_EMAIL" = "Please check your email address";
+"ALERT_EMPTY_PASSWORD" = "Enter a password to continue";
+"ALERT_EMPTY_EMAIL" = "Enter an email address to continue";
+
