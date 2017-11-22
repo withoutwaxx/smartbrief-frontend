@@ -31,36 +31,38 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             if let password = passwordText.text, !password.isEmpty {
                 let (valid, msg) = StringManager.checkEmailPassword(email: email, password: password)
                 if(valid) {
+                    self.loginText.text = "Logging in.."
                     loginText.layer.isHidden = false
                     RequestDelegate.signIn(email: email, password: password, completionHandler: { (success, message) in
                         if(success) {
                             self.loginText.text = "Getting projects.."
+                            DataManager.deleteAllRecords()
                             RequestDelegate.getProjects(completionHandler: { (success, message) in
                                 if(success) {
                                     self.performSegue(withIdentifier: "showProjects", sender: self)
                                     
                                 } else {
                                     self.loginText.layer.isHidden = true
-                                    AlertUserManager.displayInfoToUser(title: "Oops", message: message, currentViewController: self)
+                                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
                                 }
                             })
                                 
                         } else {
                             self.loginText.layer.isHidden = true
-                            AlertUserManager.displayInfoToUser(title: "Oops", message: message, currentViewController: self)
+                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
                         }
                     })
                 } else {
                     
-                    AlertUserManager.displayInfoToUser(title: "Oops", message: msg, currentViewController: self)
+                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: msg, currentViewController: self)
 
                 }
             
             } else {
-                AlertUserManager.displayInfoToUser(title: "Oops", message: NSLocalizedString("ALERT_EMPTY_PASSWORD", comment: ""), currentViewController: self)
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_EMPTY_PASSWORD", comment: ""), currentViewController: self)
             }
         } else {
-            AlertUserManager.displayInfoToUser(title: "Oops", message: NSLocalizedString("ALERT_EMPTY_EMAIL", comment: ""), currentViewController: self)
+            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_EMPTY_EMAIL", comment: ""), currentViewController: self)
         }
     }
     

@@ -5,4 +5,6 @@ use_frameworks!
 target 'SMARTFile' do
     pod 'Alamofire'
     pod 'SwiftyJSON'
+    pod 'AWSS3'
+    pod 'AWSCognito'
 end

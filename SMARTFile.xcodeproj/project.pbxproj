@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E2010E871FC47BE0009CDA44 /* URLExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2010E861FC47BE0009CDA44 /* URLExt.swift */; };
+		E2276E0D1FACADA200654D7F /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2276E0C1FACADA200654D7F /* Circle.swift */; };
 		E238ABA01FAA01B400B0C8F4 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E238AB9F1FAA01B400B0C8F4 /* DataManager.swift */; };
 		E253A5801FA203A200D5D424 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E253A57F1FA203A200D5D424 /* SecurityManager.swift */; };
 		E253A5C21FA210EF00D5D424 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E253A5C11FA210EF00D5D424 /* Localizable.strings */; };
 		E253A5C41FA22C9A00D5D424 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E253A5C31FA22C9A00D5D424 /* User.swift */; };
 		E253A5C81FA23FAD00D5D424 /* cert.cer in Resources */ = {isa = PBXBuildFile; fileRef = E253A5C51FA23D3600D5D424 /* cert.cer */; };
-		E2B832241FA9EEC100640AB7 /* APIEndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832231FA9EEC100640AB7 /* APIEndPoints.swift */; };
+		E2869D8B1FC0839600754906 /* AWSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2869D8A1FC0839600754906 /* AWSManager.swift */; };
+		E2B832241FA9EEC100640AB7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832231FA9EEC100640AB7 /* Constants.swift */; };
 		E2B832271FA9EEE600640AB7 /* ExecutionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832251FA9EEE600640AB7 /* ExecutionManager.swift */; };
 		E2B832281FA9EEE600640AB7 /* RequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832261FA9EEE600640AB7 /* RequestDelegate.swift */; };
 		E2B8322C1FA9EEFA00640AB7 /* AlertUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832291FA9EEFA00640AB7 /* AlertUserManager.swift */; };
 		E2B8322D1FA9EEFA00640AB7 /* StringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B8322A1FA9EEFA00640AB7 /* StringManager.swift */; };
 		E2B8322E1FA9EEFA00640AB7 /* UuidGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B8322B1FA9EEFA00640AB7 /* UuidGenerator.swift */; };
-		E2B832321FA9EF0D00640AB7 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832301FA9EF0D00640AB7 /* TableViewCell.swift */; };
+		E2CC6A9C1FB489BC0069C65F /* VideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CC6A9B1FB489BC0069C65F /* VideosViewController.swift */; };
+		E2CC6A9E1FB4937E0069C65F /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CC6A9D1FB4937E0069C65F /* VideoCell.swift */; };
 		E2D538CF1FA0B03B00DC9B28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538CE1FA0B03B00DC9B28 /* AppDelegate.swift */; };
 		E2D538D11FA0B03B00DC9B28 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538D01FA0B03B00DC9B28 /* LoginViewController.swift */; };
 		E2D538D41FA0B03B00DC9B28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2D538D21FA0B03B00DC9B28 /* Main.storyboard */; };
@@ -29,6 +33,8 @@
 		E2D538F21FA0B03B00DC9B28 /* SMARTFileUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538F11FA0B03B00DC9B28 /* SMARTFileUITests.swift */; };
 		E2D539001FA0CC3F00DC9B28 /* ProjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538FF1FA0CC3F00DC9B28 /* ProjectsViewController.swift */; };
 		E2D539021FA0D0B500DC9B28 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */; };
+		E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */; };
+		E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */; };
 		FB82FBF94AC48D551DD75F1B /* Pods_SMARTFile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E243CD350DF10656EA0D27 /* Pods_SMARTFile.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,18 +60,22 @@
 		77AB68F24E35D362AC075BA6 /* Pods_SMARTFileUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SMARTFileUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		78B6AE2DD57F517A28A4BB9E /* Pods-SMARTFile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SMARTFile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SMARTFile/Pods-SMARTFile.debug.xcconfig"; sourceTree = "<group>"; };
 		B34EE83D42B1AC6FA4D0422F /* Pods_SMARTFileTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SMARTFileTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2010E861FC47BE0009CDA44 /* URLExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLExt.swift; sourceTree = "<group>"; };
+		E2276E0C1FACADA200654D7F /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 		E238AB9F1FAA01B400B0C8F4 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		E253A57F1FA203A200D5D424 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		E253A5C11FA210EF00D5D424 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ../Localizable.strings; sourceTree = "<group>"; };
 		E253A5C31FA22C9A00D5D424 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E253A5C51FA23D3600D5D424 /* cert.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = cert.cer; sourceTree = "<group>"; };
-		E2B832231FA9EEC100640AB7 /* APIEndPoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIEndPoints.swift; sourceTree = "<group>"; };
+		E2869D8A1FC0839600754906 /* AWSManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSManager.swift; sourceTree = "<group>"; };
+		E2B832231FA9EEC100640AB7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E2B832251FA9EEE600640AB7 /* ExecutionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionManager.swift; sourceTree = "<group>"; };
 		E2B832261FA9EEE600640AB7 /* RequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDelegate.swift; sourceTree = "<group>"; };
 		E2B832291FA9EEFA00640AB7 /* AlertUserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertUserManager.swift; sourceTree = "<group>"; };
 		E2B8322A1FA9EEFA00640AB7 /* StringManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringManager.swift; sourceTree = "<group>"; };
 		E2B8322B1FA9EEFA00640AB7 /* UuidGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UuidGenerator.swift; sourceTree = "<group>"; };
-		E2B832301FA9EF0D00640AB7 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		E2CC6A9B1FB489BC0069C65F /* VideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideosViewController.swift; sourceTree = "<group>"; };
+		E2CC6A9D1FB4937E0069C65F /* VideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		E2D538CB1FA0B03B00DC9B28 /* SMARTFile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SMARTFile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2D538CE1FA0B03B00DC9B28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E2D538D01FA0B03B00DC9B28 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +92,8 @@
 		E2D538F31FA0B03B00DC9B28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E2D538FF1FA0CC3F00DC9B28 /* ProjectsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectsViewController.swift; sourceTree = "<group>"; };
 		E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Delete.swift; sourceTree = "<group>"; };
+		E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProjectCell.swift; path = ../ProjectCell.swift; sourceTree = "<group>"; };
 		F1718C77673394DEC439891A /* Pods-SMARTFile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SMARTFile.release.xcconfig"; path = "Pods/Target Support Files/Pods-SMARTFile/Pods-SMARTFile.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +161,7 @@
 				E2B8322B1FA9EEFA00640AB7 /* UuidGenerator.swift */,
 				E253A5C31FA22C9A00D5D424 /* User.swift */,
 				E238AB9F1FAA01B400B0C8F4 /* DataManager.swift */,
+				E2869D8A1FC0839600754906 /* AWSManager.swift */,
 			);
 			name = utilities;
 			sourceTree = "<group>";
@@ -156,8 +169,11 @@
 		E253A5BE1FA2064300D5D424 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				E2CC6A9B1FB489BC0069C65F /* VideosViewController.swift */,
+				E2010E861FC47BE0009CDA44 /* URLExt.swift */,
+				E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */,
+				E2CC6A9D1FB4937E0069C65F /* VideoCell.swift */,
 				E2D538FF1FA0CC3F00DC9B28 /* ProjectsViewController.swift */,
-				E2B832301FA9EF0D00640AB7 /* TableViewCell.swift */,
 				E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */,
 				E2D538D01FA0B03B00DC9B28 /* LoginViewController.swift */,
 			);
@@ -192,7 +208,9 @@
 				E253A5C11FA210EF00D5D424 /* Localizable.strings */,
 				E2D538CE1FA0B03B00DC9B28 /* AppDelegate.swift */,
 				E2D538D21FA0B03B00DC9B28 /* Main.storyboard */,
-				E2B832231FA9EEC100640AB7 /* APIEndPoints.swift */,
+				E2276E0C1FACADA200654D7F /* Circle.swift */,
+				E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */,
+				E2B832231FA9EEC100640AB7 /* Constants.swift */,
 				E253A5BE1FA2064300D5D424 /* views */,
 				E253A5BD1FA2062700D5D424 /* utilities */,
 				E253A57E1FA2038A00D5D424 /* requests */,
@@ -415,17 +433,23 @@
 				E2D539001FA0CC3F00DC9B28 /* ProjectsViewController.swift in Sources */,
 				E238ABA01FAA01B400B0C8F4 /* DataManager.swift in Sources */,
 				E2D538D11FA0B03B00DC9B28 /* LoginViewController.swift in Sources */,
-				E2B832321FA9EF0D00640AB7 /* TableViewCell.swift in Sources */,
+				E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */,
 				E2B8322C1FA9EEFA00640AB7 /* AlertUserManager.swift in Sources */,
 				E2B832271FA9EEE600640AB7 /* ExecutionManager.swift in Sources */,
-				E2B832241FA9EEC100640AB7 /* APIEndPoints.swift in Sources */,
+				E2B832241FA9EEC100640AB7 /* Constants.swift in Sources */,
 				E253A5C41FA22C9A00D5D424 /* User.swift in Sources */,
 				E2D538CF1FA0B03B00DC9B28 /* AppDelegate.swift in Sources */,
 				E2D539021FA0D0B500DC9B28 /* SettingsViewController.swift in Sources */,
+				E2276E0D1FACADA200654D7F /* Circle.swift in Sources */,
 				E2D538D71FA0B03B00DC9B28 /* SMARTFile.xcdatamodeld in Sources */,
+				E2CC6A9E1FB4937E0069C65F /* VideoCell.swift in Sources */,
 				E2B8322D1FA9EEFA00640AB7 /* StringManager.swift in Sources */,
 				E253A5801FA203A200D5D424 /* SecurityManager.swift in Sources */,
 				E2B8322E1FA9EEFA00640AB7 /* UuidGenerator.swift in Sources */,
+				E2CC6A9C1FB489BC0069C65F /* VideosViewController.swift in Sources */,
+				E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */,
+				E2010E871FC47BE0009CDA44 /* URLExt.swift in Sources */,
+				E2869D8B1FC0839600754906 /* AWSManager.swift in Sources */,
 				E2B832281FA9EEE600640AB7 /* RequestDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

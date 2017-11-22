@@ -9,14 +9,18 @@
 import Foundation
 
 
-class APIEndPoints {
+class Constants {
 
     private static let baseURL = "https://www.smartfile-portal.com/v1"
     
     static let signUpURL = "\(baseURL)/signup"
     static let signInURL = "\(baseURL)/signin"
     static let getProjects = "\(baseURL)/projects"
-
+    static let newProject = "\(baseURL)/projects/new"
+    static let getVideos = "\(baseURL)/videos"
+    static let deleteProject = "\(baseURL)/projects/delete"
+    static let updateProject = "\(baseURL)/projects/update"
+    
     
 
 }

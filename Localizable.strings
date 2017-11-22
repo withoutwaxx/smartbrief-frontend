@@ -11,4 +11,14 @@
 "ALERT_INVALID_EMAIL" = "Please check your email address";
 "ALERT_EMPTY_PASSWORD" = "Enter a password to continue";
 "ALERT_EMPTY_EMAIL" = "Enter an email address to continue";
-
+"ALERT_NEW_PROJECT_TITLE" = "New Project";
+"ALERT_NEW_PROJECT" = "Please enter the new project title below";
+"ALERT_TITLE_OOPS" = "Oops";
+"ALERT_TITLE_WARNING" = "Warning";
+"ALERT_PROJECT_NAME_SHORT" = "Please enter a project title with a max of 140 characters";
+"ALERT_PROJECT_DELETE" = "Are you sure you want to delete this entire project? All included video files will also be deleted";
+"UI_READY" = "Ready";
+"ALERT_VIDEOS_COUNT" = "A project needs at least one video to be marked ready";
+"ALERT_PROJECT_READY" = "Are you sure you want to mark this project as ready? You will not be able to add/remove any further videos from the project. This action cannot be undone.";
+"ALERT_PROJECT_DELETE_ACTION" = "Delete Project";
+"ALERT_PROJECT_READY_ACTION" = "Mark as Ready";

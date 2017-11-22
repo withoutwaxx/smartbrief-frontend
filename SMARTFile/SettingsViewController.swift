@@ -21,6 +21,15 @@ class SettingsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    @IBAction func logoutPressed(_ sender: Any) {
+        User.token = ""
+        performSegue(withIdentifier: "showLogin", sender: self)
+        
+    }
+    
+    
+    
 
     /*
     // MARK: - Navigation

@@ -106,19 +106,19 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/ProjectsViewController.swift"
-            timestampString = "531231862.966706"
+            timestampString = "532357697.894614"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
-            landmarkName = "tableView(_:numberOfRowsInSection:)"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/ProjectsViewController.swift"
@@ -129,7 +129,7 @@
             endingLineNumber = "6">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "SMARTFile.ProjectsViewController.__deallocating_deinit"
@@ -144,7 +144,7 @@
                   offsetFromSymbolStart = "12">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "SMARTFile.ProjectsViewController.init (nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; SMARTFile.ProjectsViewController"
@@ -159,7 +159,7 @@
                   offsetFromSymbolStart = "60">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "SMARTFile.ProjectsViewController.__allocating_init (nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; SMARTFile.ProjectsViewController"
@@ -174,7 +174,7 @@
                   offsetFromSymbolStart = "32">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "SMARTFile.ProjectsViewController.__allocating_init (coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;SMARTFile.ProjectsViewController&gt;"
@@ -189,7 +189,7 @@
                   offsetFromSymbolStart = "12">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "SMARTFile.ProjectsViewController.init (coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;SMARTFile.ProjectsViewController&gt;"
@@ -204,6 +204,38 @@
                   offsetFromSymbolStart = "20">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/LoginViewController.swift"
+            timestampString = "532396018.011948"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "loginPressed(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "532961405.847543"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "uploadVideo(url:completion:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

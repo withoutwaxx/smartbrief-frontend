@@ -11,7 +11,7 @@ import Foundation
 
 class StringManager {
     
-    class func checkEmailPassword (email:String, password:String) -> (Bool, String) {
+    static func checkEmailPassword (email:String, password:String) -> (Bool, String) {
         
         if validateEmail(email: email) {
             if password.characters.count < 8 {
@@ -27,19 +27,42 @@ class StringManager {
     
     
     
-    class func validateEmail (email:String) -> Bool {
+    static func validateEmail (email:String) -> Bool {
         let regex: String = "([^\\s])+@([^\\s])+\\.([^\\s])+"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: email)
         
     }
     
     
-    class func dateToString (date:Date) -> String {
+    static func dateToString (date:Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .none
         return formatter.string(from: date)
         
+    }
+    
+    
+    static func removeSpace(str:String) -> String {
+        return str.replacingOccurrences(of: " ", with: "%")
+    }
+    
+    
+    static func getDate(date:Date?) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        if(date != nil) {
+            return dateFormatter.string(from:(date)!)
+        }
+        return ""
+    }
+    
+    
+    static func getTime(seconds:Int) -> String {
+        if(seconds > 59) {
+            return "\(seconds/60)m \(seconds%60)s"
+        }
+        return "\(seconds)s"
     }
     
 }

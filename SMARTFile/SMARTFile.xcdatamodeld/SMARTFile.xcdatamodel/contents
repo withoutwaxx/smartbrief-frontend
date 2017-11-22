@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G1036" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Project" representedClassName="Project" syncable="YES" codeGenerationType="class">
         <attribute name="date_created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="project_id" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,7 +8,17 @@
         <attribute name="received_state" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="video_count" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
+    <entity name="Video" representedClassName="Video" syncable="YES" codeGenerationType="class">
+        <attribute name="date_uploaded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="project_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="video_desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="video_id" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Project" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="Video" positionX="-63" positionY="27" width="128" height="150"/>
     </elements>
 </model>
