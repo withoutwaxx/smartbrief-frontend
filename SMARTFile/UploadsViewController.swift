@@ -16,7 +16,7 @@ import AVKit
 import AssetsPickerViewController
 
 
-class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate {
     
     @IBOutlet weak var noVideosLabel: UILabel!
     var videos:[NSManagedObject] = []
@@ -38,7 +38,104 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var readyCircle: Circle!
     
     
+    @IBAction func newVideo(_ sender: Any) {
+        
+        let status = PHPhotoLibrary.authorizationStatus()
+        
+        if status == .notDetermined  {
+            PHPhotoLibrary.requestAuthorization({status in
+                
+            })
+        }
+        
+        
+        let pickerConfig = AssetsPickerConfig()
+        
+        let options = PHFetchOptions()
+        options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue )
+        
+        pickerConfig.assetFetchOptions = [
+            .smartAlbum: options,
+            .album: options
+        ]
+        
+        let picker = AssetsPickerViewController(pickerConfig: pickerConfig)
+        picker.pickerDelegate = self
+        present(picker, animated: true, completion: nil)
+        
 
+    }
+    
+    
+    func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
+       
+        //        UIView.animate(withDuration: 0.4, delay: 0.1, options: .allowAnimatedContent, animations: {
+        //            self.uploadContainerHeight.constant += 40
+        //            self.uploadContainer.superview?.layoutIfNeeded()
+        //        }, completion: nil)
+        //
+
+        
+        
+        self.completionHandler = { (task, error) -> Void in
+            DispatchQueue.main.async(execute: {
+                print("upload complete")
+            })
+        }
+        
+        
+        
+        print("assets size", assets.count)
+    }
+    
+    
+    
+    internal func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+       
+        
+        let fetchOptions: PHFetchOptions = PHFetchOptions()
+        
+        
+        let assets = PHAsset.fetchAssets(with: .video, options: nil)
+        
+        let asset = assets.object(at: 0)
+    
+        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
+        let docDataPath = documentsDirectory.appendingPathComponent("newvideo.MOV") as String
+  
+        let manager = PHImageManager.default()
+        manager.requestAVAsset(forVideo: asset, options: nil, resultHandler: { (avasset, audio, info) in
+            if let avassetURL = avasset as? AVURLAsset {
+                print("asset", avassetURL.url as URL)
+                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
+                    return
+                }
+                
+                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
+                print(docDataPath)
+                AWSManager.uploadVideo(url:URL(fileURLWithPath: docDataPath), completion: self.completionHandler!)
+                
+                
+            }
+        })
+            
+        self.dismiss(animated:true, completion: nil)
+   
+        print("url \(info[UIImagePickerControllerReferenceURL] ?? "")")
+        print("url \(info[UIImagePickerControllerMediaURL] ?? "")")
+
+        
+        //let videoURL = info[UIImagePickerControllerReferenceURL] as? URL
+        
+        
+    }
+    
+    
+    
+    
+    
     
     
     @IBAction func readyPressed(_ sender: Any) {

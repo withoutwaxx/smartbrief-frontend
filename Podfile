@@ -6,5 +6,7 @@ target 'SMARTFile' do
     pod 'Alamofire'
     pod 'SwiftyJSON'
     pod 'AWSS3'
-    pod 'AWSCognito'
+    pod 'AWSCognito' 
+    pod 'AssetsPickerViewController', :git => 'https://github.com/DragonCherry/AssetsPickerViewController', :branch => 'swift3'
+
 end
