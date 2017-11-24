@@ -551,7 +551,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="D1s-cL-V7X" kind="presentation" modalTransitionStyle="coverVertical" id="Oh4-nM-wh7"/>
+                                    <segue destination="D1s-cL-V7X" kind="presentation" identifier="showManager" modalTransitionStyle="coverVertical" id="Oh4-nM-wh7"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" allowsSelection="NO" rowHeight="120" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="TxW-9c-dHQ">
@@ -1222,8 +1222,8 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Oq-GL-esD">
                                 <rect key="frame" x="0.0" y="93.666666666666686" width="414" height="103"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Videos" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.25" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dXs-QU-8dl">
-                                        <rect key="frame" x="10" y="18" width="394" height="47"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Project Videos" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.25" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dXs-QU-8dl">
+                                        <rect key="frame" x="20" y="14" width="394" height="47"/>
                                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
                                         <color key="textColor" red="0.61336632010000003" green="0.61336632010000003" blue="0.61336632010000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -1431,8 +1431,8 @@
                             <mask key="constraints">
                                 <exclude reference="4Qh-2Q-Spm"/>
                                 <exclude reference="z6L-XH-uax"/>
-                                <exclude reference="gPN-wf-h31"/>
                                 <exclude reference="MTw-qF-35s"/>
+                                <exclude reference="gPN-wf-h31"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -1441,23 +1441,19 @@
                                 <exclude reference="h6N-2X-4zA"/>
                                 <exclude reference="iRn-ka-6mq"/>
                                 <include reference="z6L-XH-uax"/>
-                                <include reference="gPN-wf-h31"/>
                                 <exclude reference="MTw-qF-35s"/>
+                                <include reference="gPN-wf-h31"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="deleteProject" destination="iOA-DR-5rh" id="0fi-mP-z8S"/>
-                        <outlet property="deleteProjectLabel" destination="NyO-hy-FKv" id="VtE-ko-xPN"/>
                         <outlet property="noVideosLabel" destination="Ex3-28-jVQ" id="GtH-2K-IJ0"/>
-                        <outlet property="projectTitle" destination="dXs-QU-8dl" id="Vcy-Nn-9w9"/>
-                        <outlet property="readyCircle" destination="YXW-or-q0O" id="Gb4-gj-08a"/>
-                        <outlet property="readyLabel" destination="L0G-eW-azt" id="EEY-3m-0rB"/>
-                        <outlet property="receivedCircle" destination="oK7-qF-zaz" id="aTd-Iv-dSf"/>
-                        <outlet property="receivedLabel" destination="7ce-WU-46h" id="RLT-K7-xnC"/>
+                        <outlet property="selectProjectsLabel" destination="NyO-hy-FKv" id="CN8-tp-yNr"/>
+                        <outlet property="selectVideos" destination="iOA-DR-5rh" id="0Zx-us-s8p"/>
                         <outlet property="uploadContainer" destination="xRz-rf-Kdf" id="V7b-3s-egJ"/>
                         <outlet property="uploadContainerHeight" destination="KmW-r2-IQO" id="Z9d-ZT-8qa"/>
                         <outlet property="uploadingLabel" destination="d29-up-AqR" id="0OW-gD-GiN"/>
+                        <outlet property="videosSummary" destination="dXs-QU-8dl" id="K2e-F4-H71"/>
                         <outlet property="videosTable" destination="DdH-HH-UqR" id="9pH-gW-vlJ"/>
                     </connections>
                 </viewController>

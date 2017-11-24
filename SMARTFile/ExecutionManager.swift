@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import JWTDecode
 
 
 class RequestExecutionManager {
@@ -42,6 +43,13 @@ class RequestExecutionManager {
                         let json = JSON(value)
                         if(json["outcome"].boolValue) {
                             User.token = json["token"].stringValue
+                            do {
+                                let jwt = try decode(jwt: User.token)
+                                User.id = jwt.body["id"] as! String
+                            } catch {
+                                print(error.localizedDescription)
+                                
+                            }
                             completionHandler(true, "")
                         } else {
                             completionHandler(false, json["message"].stringValue)

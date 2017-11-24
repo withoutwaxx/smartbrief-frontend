@@ -18,6 +18,7 @@ PODS:
     - TinyLog
     - UIViewKVO
   - FadeView (1.0.2)
+  - JWTDecode (2.1.1)
   - OptionalTypes (1.0.4)
   - PureLayout (3.0.2)
   - SwiftARGB (0.9.3)
@@ -30,6 +31,7 @@ DEPENDENCIES:
   - AssetsPickerViewController (from `https://github.com/DragonCherry/AssetsPickerViewController`, branch `swift3`)
   - AWSCognito
   - AWSS3
+  - JWTDecode (~> 2.1)
   - SwiftyJSON
 
 EXTERNAL SOURCES:
@@ -50,6 +52,7 @@ SPEC CHECKSUMS:
   AWSS3: 44c99957a049703e06b474f4b1898da215f2d922
   Dimmer: d69bad35b7e4545c3d36b64737b2623b59fac55c
   FadeView: 7d4cdefa83ac9c17782613e9068c9fac0457285e
+  JWTDecode: 83e8b381aafe27158d9f692cbdca2b12d61d460c
   OptionalTypes: 2c7ee4d718fec7933fb9d55793eced4789cc6089
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SwiftARGB: 37a0aeaed8e99ed691e7e574af1ae3f85c731286
@@ -57,6 +60,6 @@ SPEC CHECKSUMS:
   TinyLog: 6c3ecbc348d10dc242ebb506f684fc9ae6aff533
   UIViewKVO: 091f9e020d69e73c4bf5e5ef61cde7bff1c24bbf
 
-PODFILE CHECKSUM: 6dee20d2ecb359e34c009333b326c075db733c7d
+PODFILE CHECKSUM: 82e7b7fafe84a33e8014ab47d3c9ee6c5177f41f
 
 COCOAPODS: 1.3.1

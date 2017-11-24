@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-
 class RequestDelegate {
     
 
@@ -19,6 +18,7 @@ class RequestDelegate {
             
             if(success) {
                 completionHandler(true, "")
+            
             } else {
                 completionHandler(false, message)
 

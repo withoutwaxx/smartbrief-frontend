@@ -18,93 +18,38 @@ import AssetsPickerViewController
 
 class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate {
     
-    @IBOutlet weak var noVideosLabel: UILabel!
-    var videos:[NSManagedObject] = []
+    var videosQueue:[NSManagedObject] = []
     var currentProject:NSManagedObject?
-    let imagePicker = UIImagePickerController()
     var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
-
-
+    
+    @IBOutlet weak var noVideosLabel: UILabel!
     @IBOutlet weak var uploadContainer: UIView!
     @IBOutlet weak var uploadContainerHeight: NSLayoutConstraint!
     @IBOutlet weak var uploadingLabel: UILabel!
-    @IBOutlet weak var projectTitle: UILabel!
     @IBOutlet weak var videosTable: UITableView!
-    @IBOutlet weak var deleteProject: UIView!
-    @IBOutlet weak var deleteProjectLabel: UILabel!
-    @IBOutlet weak var receivedLabel: UILabel!
-    @IBOutlet weak var receivedCircle: Circle!
-    @IBOutlet weak var readyLabel: UIButton!
-    @IBOutlet weak var readyCircle: Circle!
-    
-    
-    @IBAction func newVideo(_ sender: Any) {
-        
-        let status = PHPhotoLibrary.authorizationStatus()
-        
-        if status == .notDetermined  {
-            PHPhotoLibrary.requestAuthorization({status in
-                
-            })
-        }
-        
-        
-        let pickerConfig = AssetsPickerConfig()
-        
-        let options = PHFetchOptions()
-        options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue )
-        
-        pickerConfig.assetFetchOptions = [
-            .smartAlbum: options,
-            .album: options
-        ]
-        
-        let picker = AssetsPickerViewController(pickerConfig: pickerConfig)
-        picker.pickerDelegate = self
-        present(picker, animated: true, completion: nil)
-        
+    @IBOutlet weak var selectVideos: UIView!
+    @IBOutlet weak var selectProjectsLabel: UILabel!
+    @IBOutlet weak var videosSummary: UILabel!
 
-    }
     
+    
+
     
     func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
        
-        //        UIView.animate(withDuration: 0.4, delay: 0.1, options: .allowAnimatedContent, animations: {
-        //            self.uploadContainerHeight.constant += 40
-        //            self.uploadContainer.superview?.layoutIfNeeded()
-        //        }, completion: nil)
-        //
-
-        
-        
         self.completionHandler = { (task, error) -> Void in
             DispatchQueue.main.async(execute: {
                 print("upload complete")
             })
         }
-        
-        
-        
-        print("assets size", assets.count)
-    }
     
-    
-    
-    internal func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
-       
-        
-        let fetchOptions: PHFetchOptions = PHFetchOptions()
-        
-        
-        let assets = PHAsset.fetchAssets(with: .video, options: nil)
         
         let asset = assets.object(at: 0)
-    
+        
         let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         let documentsDirectory: AnyObject = docPaths[0] as AnyObject
         let docDataPath = documentsDirectory.appendingPathComponent("newvideo.MOV") as String
-  
+        
         let manager = PHImageManager.default()
         manager.requestAVAsset(forVideo: asset, options: nil, resultHandler: { (avasset, audio, info) in
             if let avassetURL = avasset as? AVURLAsset {
@@ -120,26 +65,26 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                 
             }
         })
-            
+        
         self.dismiss(animated:true, completion: nil)
-   
+        
         print("url \(info[UIImagePickerControllerReferenceURL] ?? "")")
         print("url \(info[UIImagePickerControllerMediaURL] ?? "")")
-
+        
         
         //let videoURL = info[UIImagePickerControllerReferenceURL] as? URL
         
         
+        
+        
+        
+     
     }
     
     
     
-    
-    
-    
-    
     @IBAction func readyPressed(_ sender: Any) {
-        if(videos.count < 1) {
+        if(videosQueue.count < 1) {
             AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEOS_COUNT", comment: ""), currentViewController: self)
             
         } else {
@@ -173,65 +118,51 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func setupViews() {
-        projectTitle.text = currentProject?.value(forKeyPath: "project_name") as? String
-        let deleteProjectTouch = UITapGestureRecognizer(target: self, action:  #selector (self.deleteProjectAction (_:)))
-        self.deleteProject.addGestureRecognizer(deleteProjectTouch)
-        deleteProjectLabel.adjustsFontSizeToFitWidth = true
-        receivedLabel.adjustsFontSizeToFitWidth = true
-        readyLabel.titleLabel?.adjustsFontSizeToFitWidth = true
-        projectTitle.adjustsFontSizeToFitWidth = true
-        if(currentProject?.value(forKeyPath: "received_state") as? Bool)! {
-            receivedCircle.fillColor = UIColor.green
-            
-        } else {
-            receivedCircle.fillColor = UIColor.red
-            
-        }
-        
-        if(currentProject?.value(forKeyPath: "ready_state") as? Bool)! {
-            readyCircle.fillColor = UIColor.green
-            readyLabel.isUserInteractionEnabled = false
-            readyLabel.titleLabel?.textColor = UIColor.darkGray
-            readyLabel.setTitle(NSLocalizedString("UI_READY", comment: ""), for: UIControlState.normal)
-            deleteProject.isHidden = true
-            
-            
-        } else {
-            readyCircle.fillColor = UIColor.red
-            
-        }
+        videosSummary.text = " \(videosQueue.count) videos in upload queue"
+        let selectVideosTouch = UITapGestureRecognizer(target: self, action:  #selector (self.deleteProjectAction (_:)))
+        self.selectVideos.addGestureRecognizer(selectVideosTouch)
+        selectProjectsLabel.adjustsFontSizeToFitWidth = true
+        videosSummary.adjustsFontSizeToFitWidth = true
         
     }
     
     
-    func deleteProjectAction(_ sender:UITapGestureRecognizer){
-        AlertUserManager.warnUser(action: NSLocalizedString("ALERT_PROJECT_DELETE_ACTION", comment: ""), message: NSLocalizedString("ALERT_PROJECT_DELETE", comment: ""), currentViewController: self, completionHandler:
-            {(success) in
-                if(success){
-                    RequestDelegate.deleteProject(projectId: self.currentProject?.value(forKey: "project_id" ) as! String, completionHandler: {
-                        (success, message) in
-                        if(success) {
-                           self.performSegue(withIdentifier: "deletedProject", sender: self)
-                            
-                        } else {
-                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
-                        }
-                        
-                    })
-          
-                }
-        })
+    func addVideosAction(_ sender:UITapGestureRecognizer){
+        let status = PHPhotoLibrary.authorizationStatus()
+        
+        if status == .notDetermined  {
+            PHPhotoLibrary.requestAuthorization({status in
+                
+            })
+        }
+        
+        let pickerConfig = AssetsPickerConfig()
+        
+        let options = PHFetchOptions()
+        options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue )
+        
+        pickerConfig.assetFetchOptions = [
+            .smartAlbum: options,
+            .album: options
+        ]
+        
+        let picker = AssetsPickerViewController(pickerConfig: pickerConfig)
+        picker.pickerDelegate = self
+        present(picker, animated: true, completion: nil)
         
     }
+    
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return videos.count
+        return videosQueue.count
     }
     
     
@@ -240,12 +171,12 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                    cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
             
-            let video = videos[indexPath.row]
+            let video = videosQueue[indexPath.row]
             let cell =
                 tableView.dequeueReusableCell(withIdentifier: "videoCell",
                                               for: indexPath) as! VideoCell
             
-            if(((video.value(forKeyPath: "video_desc") as? String)?.characters.count)! > 0){
+            if(((video.value(forKeyPath: "video_desc") as? String)?.count)! > 0){
                 cell.desc.text = video.value(forKeyPath: "video_desc") as? String
                 cell.desc.textColor = UIColor.white
 
@@ -277,22 +208,19 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         let managedContext =
             appDelegate.persistentContainer.viewContext
         
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Video")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "VideoUpload")
         
-        let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
-        fetchRequest.predicate = predicate
-        
-        let sort = NSSortDescriptor(key: "date_uploaded", ascending: false)
+        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         
         
         do {
-            videos = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            videosQueue = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
         
-        if(videos.count > 0) {
+        if(videosQueue.count > 0) {
             return true
         }
         

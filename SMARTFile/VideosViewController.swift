@@ -212,8 +212,16 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             videosTable.isHidden = true
             noVideosLabel.isHidden = false
         }
+
+    }
     
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if(segue.identifier == "showManager"){
+            let uploadVC = segue.destination as! UploadsViewController
+            uploadVC.currentProject = currentProject
+            
+        }
     }
 
 }

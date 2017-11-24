@@ -19,14 +19,19 @@
     </entity>
     <entity name="VideoUpload" representedClassName="VideoUpload" syncable="YES" codeGenerationType="class">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="p_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="uploaded" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="t_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="u_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uploaded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="v_id" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
         <element name="Project" positionX="-63" positionY="-18" width="128" height="135"/>
         <element name="Video" positionX="-63" positionY="27" width="128" height="150"/>
-        <element name="VideoUpload" positionX="-63" positionY="54" width="128" height="120"/>
+        <element name="VideoUpload" positionX="-63" positionY="54" width="128" height="195"/>
     </elements>
 </model>
