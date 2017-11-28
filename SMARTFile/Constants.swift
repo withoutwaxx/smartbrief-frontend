@@ -21,6 +21,8 @@ class Constants {
     static let deleteProject = "\(baseURL)/projects/delete"
     static let updateProject = "\(baseURL)/projects/update"
     
+    static let s3BaseURL = "https://s3.eu-west-2.amazonaws.com/finalsmartfilebucket/"
+    
     
 
 }

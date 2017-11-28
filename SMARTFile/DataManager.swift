@@ -150,7 +150,7 @@ class DataManager {
     
     
     
-    static func saveVideoUploads(uploads:[PHAsset]) {
+    static func saveUploadRequests(uploads:[UploadRequest], completionHandler: @escaping (_ success: Bool) -> ()){
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -163,43 +163,28 @@ class DataManager {
         
         for upload in uploads {
             
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Video")
-            
-            let predicate = NSPredicate(format: "video_id == %@", oneVideo["video_id"].stringValue)
-            fetchRequest.predicate = predicate
-            
-            do {
-                let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-                if records.count == 0 {
-                    let newVideo = NSEntityDescription.insertNewObject(forEntityName: "Video", into: managedContext) as NSManagedObject
-                    
-                    newVideo.setValue(oneVideo["video_id"].stringValue, forKeyPath: "video_id")
-                    newVideo.setValue(oneVideo["project_id"].stringValue, forKeyPath: "project_id")
-                    newVideo.setValue(getDate(stringDate: oneVideo["date_uploaded"].stringValue), forKeyPath: "date_uploaded")
-                    newVideo.setValue(oneVideo["video_desc"].stringValue, forKeyPath: "video_desc")
-                    newVideo.setValue(oneVideo["size"].intValue, forKeyPath: "size")
-                    newVideo.setValue(oneVideo["length"].intValue, forKeyPath: "length")
-                    newVideo.setValue(oneVideo["url"].stringValue, forKeyPath: "url")
-                } else {
-                    let existingVideo = records[0]
-                    existingVideo.setValue(oneVideo["video_id"].stringValue, forKeyPath: "video_id")
-                    existingVideo.setValue(oneVideo["project_id"].stringValue, forKeyPath: "project_id")
-                    existingVideo.setValue(getDate(stringDate: oneVideo["date_uploaded"].stringValue), forKeyPath: "date_uploaded")
-                    existingVideo.setValue(oneVideo["video_desc"].stringValue, forKeyPath: "video_desc")
-                    existingVideo.setValue(oneVideo["size"].intValue, forKeyPath: "size")
-                    existingVideo.setValue(oneVideo["length"].intValue, forKeyPath: "length")
-                    existingVideo.setValue(oneVideo["url"].stringValue, forKeyPath: "url")
-                }
+
+            let newUpload = NSEntityDescription.insertNewObject(forEntityName: "VideoUpload", into: managedContext) as NSManagedObject
                 
-            } catch {
-                print(error)
-            }
+            newUpload.setValue( upload.localId , forKeyPath: "local_id")
+            newUpload.setValue( upload.videoId , forKeyPath: "video_id")
+            newUpload.setValue( upload.projectId , forKeyPath: "project_id")
+            newUpload.setValue( upload.taskId , forKeyPath: "task_id")
+            newUpload.setValue( upload.userId , forKeyPath: "user_id")
+            newUpload.setValue( upload.desc , forKeyPath: "desc")
+            newUpload.setValue( upload.url , forKeyPath: "url")
+            newUpload.setValue( upload.length , forKeyPath: "length")
+            newUpload.setValue( upload.size , forKeyPath: "size")
+            newUpload.setValue( upload.uploaded , forKeyPath: "uploaded")
+            newUpload.setValue( upload.sent , forKeyPath: "sent")
             
         }
         
         do {
             try managedContext.save()
+            completionHandler(true)
         } catch let error as NSError {
+            completionHandler(false)
             print("Could not save. \(error), \(error.userInfo)")
         }
         

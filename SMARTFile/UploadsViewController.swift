@@ -26,11 +26,10 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var uploadContainer: UIView!
     @IBOutlet weak var uploadContainerHeight: NSLayoutConstraint!
     @IBOutlet weak var uploadingLabel: UILabel!
-    @IBOutlet weak var videosTable: UITableView!
     @IBOutlet weak var selectVideos: UIView!
     @IBOutlet weak var selectProjectsLabel: UILabel!
     @IBOutlet weak var videosSummary: UILabel!
-
+    @IBOutlet weak var uploadsTable: UITableView!
     
     
 
@@ -42,42 +41,20 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                 print("upload complete")
             })
         }
-    
         
-        let asset = assets.object(at: 0)
-        
-        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
-        let docDataPath = documentsDirectory.appendingPathComponent("newvideo.MOV") as String
-        
-        let manager = PHImageManager.default()
-        manager.requestAVAsset(forVideo: asset, options: nil, resultHandler: { (avasset, audio, info) in
-            if let avassetURL = avasset as? AVURLAsset {
-                print("asset", avassetURL.url as URL)
-                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
-                    return
+        let videoProcesser = VideoProcessor()
+        videoProcesser.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success) in
+            
+            if(success) {
+                if(self.loadData()) {
+                    self.uploadsTable.reloadData()
                 }
                 
-                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
-                print(docDataPath)
-                AWSManager.uploadVideo(url:URL(fileURLWithPath: docDataPath), completion: self.completionHandler!)
-                
-                
+            } else {
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_UNABLE", comment: "") , currentViewController: self.parent!)
             }
+            
         })
-        
-        self.dismiss(animated:true, completion: nil)
-        
-        print("url \(info[UIImagePickerControllerReferenceURL] ?? "")")
-        print("url \(info[UIImagePickerControllerMediaURL] ?? "")")
-        
-        
-        //let videoURL = info[UIImagePickerControllerReferenceURL] as? URL
-        
-        
-        
-        
-        
      
     }
     
@@ -109,8 +86,8 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        videosTable.delegate = self
-        videosTable.dataSource = self
+        uploadsTable.delegate = self
+        uploadsTable.dataSource = self
   
         setupViews()
         
@@ -119,7 +96,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func setupViews() {
         videosSummary.text = " \(videosQueue.count) videos in upload queue"
-        let selectVideosTouch = UITapGestureRecognizer(target: self, action:  #selector (self.deleteProjectAction (_:)))
+        let selectVideosTouch = UITapGestureRecognizer(target: self, action:  #selector (self.addVideosAction(_:)))
         self.selectVideos.addGestureRecognizer(selectVideosTouch)
         selectProjectsLabel.adjustsFontSizeToFitWidth = true
         videosSummary.adjustsFontSizeToFitWidth = true
@@ -173,30 +150,27 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             
             let video = videosQueue[indexPath.row]
             let cell =
-                tableView.dequeueReusableCell(withIdentifier: "videoCell",
-                                              for: indexPath) as! VideoCell
+                tableView.dequeueReusableCell(withIdentifier: "uploadCell",
+                                              for: indexPath) as! UploadCell
             
-            if(((video.value(forKeyPath: "video_desc") as? String)?.count)! > 0){
-                cell.desc.text = video.value(forKeyPath: "video_desc") as? String
-                cell.desc.textColor = UIColor.white
+            if(((video.value(forKeyPath: "desc") as? String)?.count)! > 0){
+                cell.descLabel.text = video.value(forKeyPath: "video_desc") as? String
+                cell.descLabel.textColor = UIColor.white
 
             } else {
-                cell.desc.text = "No description"
-                cell.desc.textColor = UIColor.gray
+                cell.descLabel.text = "No description"
+                cell.descLabel.textColor = UIColor.gray
             }
             
-            cell.size.text = String(describing: video.value(forKeyPath: "size") ?? "") + " Mb"
-            cell.uploaded.text = "Uploaded \(StringManager.getDate(date: (video.value(forKeyPath: "date_uploaded") as? Date)))"
-            cell.length.text = StringManager.getTime(seconds: video.value(forKeyPath: "length") as! Int)
-            
-            if(currentProject?.value(forKeyPath: "ready_state") as? Bool)! {
-                cell.deleteVideo.isHidden = true
-                
-            }
+            cell.sizeLabel.text = String(describing: video.value(forKeyPath: "size") ?? "") + " Mb"
+            cell.dateLabel.text = "Added \(StringManager.getDate(date: (video.value(forKeyPath: "uploaded") as? Date)))"
+            cell.lengthLabel.text = StringManager.getTime(seconds: video.value(forKeyPath: "length") as! Int)
             
             return cell
     }
     
+    @IBAction func deleteRequestPressed(_ sender: Any) {
+    }
     
     
     func loadData() -> Bool {
@@ -234,7 +208,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewWillAppear(animated)
         
         if(!loadData()) {
-            videosTable.isHidden = true
+            uploadsTable.isHidden = true
             noVideosLabel.isHidden = false
         }
     

@@ -53,7 +53,26 @@ class AWSManager {
         
         
         
-        
+        //
+        //        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        //        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
+        //        let docDataPath = documentsDirectory.appendingPathComponent("newvideo.MOV") as String
+        //
+        //        let manager = PHImageManager.default()
+        //        manager.requestAVAsset(forVideo: asset, options: nil, resultHandler: { (avasset, audio, info) in
+        //            if let avassetURL = avasset as? AVURLAsset {
+        //                print("asset", avassetURL.url as URL)
+        //                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
+        //                    return
+        //                }
+        //
+        //                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
+        //                print(docDataPath)
+        //                AWSManager.uploadVideo(url:URL(fileURLWithPath: docDataPath), completion: self.completionHandler!)
+        //
+        //
+        //            }
+        //        })
         
         
         

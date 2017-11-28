@@ -32,7 +32,7 @@ class AddButton: UIButton {
         
         //        let path = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: halfWidth*2, height: halfHeight*2)), byRoundingCorners:.allCorners, cornerRadii: CGSize(width:1, height:1))
         //
-        UIColor.red.setStroke()
+        
         //        path.lineWidth = Constants.plusLineWidth
         //path.stroke(with: .normal, alpha: 0.7)
         
@@ -43,6 +43,7 @@ class AddButton: UIButton {
         
         //create the path
         let plusPath = UIBezierPath()
+        UIColor.orange.setStroke()
         
         //set the path's line width to the height of the stroke
         plusPath.lineWidth = Constants.plusLineWidth/2

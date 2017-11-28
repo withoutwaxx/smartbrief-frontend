@@ -12,8 +12,40 @@ import Photos
 class VideoProcessor {
     
     
-    func processNewVideos(assets:[PHAsset], completionHandler: @escaping (_ success: Bool) -> ()){
-        DataManager.s
+    func processNewVideos(assets:[PHAsset], pProjectId:String, completionHandler: @escaping (_ success: Bool) -> ()) {
+        
+        var requests:[UploadRequest] = []
+        
+        for asset in assets {
+            
+            let videoId = UuidGenerator.newUuid()
+            let projectId = pProjectId
+            let taskId = ""
+            let userId = User.id
+            let localId = asset.localIdentifier
+            let desc = ""
+            let url = "\(Constants.s3BaseURL)\(videoId)"
+            let length:Int = Int(asset.duration)
+            let size = getVideoSize(asset: asset)
+            let uploaded = Date()
+            let sent = false
+            let active = false
+            
+            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, uploaded: uploaded, sent: sent, active: active)
+            requests.append(request)
+            
+        }
+        
+        DataManager.saveUploadRequests(uploads: requests, completionHandler: {
+            (success) in
+            if(success) {
+                completionHandler(success)
+            
+            } else {
+                completionHandler(false)
+            
+            }
+        })
         
     }
     

@@ -1120,9 +1120,6 @@
                                         <exclude reference="L2E-XP-bIB"/>
                                     </mask>
                                 </variation>
-                                <connections>
-                                    <action selector="newVideo:" destination="D1s-cL-V7X" eventType="touchUpInside" id="Kmb-jH-H6C"/>
-                                </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" allowsSelection="NO" rowHeight="120" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DdH-HH-UqR">
                                 <rect key="frame" x="0.0" y="197" width="414" height="384"/>
@@ -1131,7 +1128,7 @@
                                 <inset key="separatorInset" minX="18" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="videoCell" rowHeight="140" id="2ku-pL-hrX" customClass="VideoCell" customModule="SMARTFile" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="uploadCell" rowHeight="140" id="2ku-pL-hrX" customClass="UploadCell" customModule="SMARTFile" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="140"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2ku-pL-hrX" id="Xq1-Zm-0Vf">
@@ -1175,6 +1172,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                     <connections>
+                                                        <action selector="deleteRequestPressed:" destination="D1s-cL-V7X" eventType="touchUpInside" id="etS-52-Fqv"/>
                                                         <action selector="deleteVideoPressed:" destination="2ku-pL-hrX" eventType="touchUpInside" id="2v9-c8-W3v"/>
                                                     </connections>
                                                 </button>
@@ -1204,11 +1202,11 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.16781933069999999" green="0.16781933069999999" blue="0.16781933069999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
-                                            <outlet property="deleteVideo" destination="zPy-Dd-oIj" id="Vu7-h1-Nae"/>
-                                            <outlet property="desc" destination="rED-8Y-bcg" id="K6L-zt-5A4"/>
-                                            <outlet property="length" destination="T53-ci-hL6" id="DP4-ab-0TF"/>
-                                            <outlet property="size" destination="our-J6-cja" id="C3v-LR-0Ft"/>
-                                            <outlet property="uploaded" destination="OS6-SI-fia" id="uc7-RI-HAU"/>
+                                            <outlet property="dateLabel" destination="OS6-SI-fia" id="Fm1-Ac-Pfp"/>
+                                            <outlet property="deleteButton" destination="zPy-Dd-oIj" id="k6d-QV-Xhw"/>
+                                            <outlet property="descLabel" destination="rED-8Y-bcg" id="bnd-Tz-GGG"/>
+                                            <outlet property="lengthLabel" destination="T53-ci-hL6" id="xe1-eM-pi3"/>
+                                            <outlet property="sizeLabel" destination="our-J6-cja" id="v11-A9-YEG"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1453,8 +1451,8 @@
                         <outlet property="uploadContainer" destination="xRz-rf-Kdf" id="V7b-3s-egJ"/>
                         <outlet property="uploadContainerHeight" destination="KmW-r2-IQO" id="Z9d-ZT-8qa"/>
                         <outlet property="uploadingLabel" destination="d29-up-AqR" id="0OW-gD-GiN"/>
+                        <outlet property="uploadsTable" destination="DdH-HH-UqR" id="J1V-vm-VGX"/>
                         <outlet property="videosSummary" destination="dXs-QU-8dl" id="K2e-F4-H71"/>
-                        <outlet property="videosTable" destination="DdH-HH-UqR" id="9pH-gW-vlJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="akP-CY-EQg" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -22,3 +22,4 @@
 "ALERT_PROJECT_READY" = "Are you sure you want to mark this project as ready? You will not be able to add/remove any further videos from the project. This action cannot be undone.";
 "ALERT_PROJECT_DELETE_ACTION" = "Delete Project";
 "ALERT_PROJECT_READY_ACTION" = "Mark as Ready";
+"ALERT_VIDEO_UNABLE" = "Unable to process and upload selected video(s)";
