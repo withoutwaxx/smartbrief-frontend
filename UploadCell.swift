@@ -8,14 +8,30 @@
 
 import UIKit
 
+
+protocol CellDelegate: class {
+    func didTapCell(index: IndexPath)
+}
+
+
 class UploadCell: UITableViewCell {
     
-    @IBOutlet weak var descLabel: UILabel!
+    var delegateCell:CellDelegate?
+    var indexPath:IndexPath?
     
+    @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var lengthLabel: UILabel!
     @IBOutlet weak var sizeLabel: UILabel!
     @IBOutlet weak var deleteButton: DeleteButton!
+    
+    
+
+    @IBAction func deletePressed(_ sender: Any) {
+        delegateCell?.didTapCell(index: indexPath!)
+        
+    }
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

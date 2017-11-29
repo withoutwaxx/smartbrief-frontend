@@ -23,3 +23,4 @@
 "ALERT_PROJECT_DELETE_ACTION" = "Delete Project";
 "ALERT_PROJECT_READY_ACTION" = "Mark as Ready";
 "ALERT_VIDEO_UNABLE" = "Unable to process and upload selected video(s)";
+"ALERT_DUPLICATE_UPLOAD" = "You cannot upload a particular video to the same project more than once";

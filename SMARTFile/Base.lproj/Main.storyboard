@@ -1172,8 +1172,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                     <connections>
-                                                        <action selector="deleteRequestPressed:" destination="D1s-cL-V7X" eventType="touchUpInside" id="etS-52-Fqv"/>
-                                                        <action selector="deleteVideoPressed:" destination="2ku-pL-hrX" eventType="touchUpInside" id="2v9-c8-W3v"/>
+                                                        <action selector="deletePressed:" destination="2ku-pL-hrX" eventType="touchUpInside" id="Zwt-Qd-w2t"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -1307,8 +1306,8 @@
                                         <rect key="frame" x="285" y="-1" width="120.33333333333331" height="25"/>
                                         <subviews>
                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Videos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.20000000298023224" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NyO-hy-FKv">
-                                                <rect key="frame" x="56.333333333333314" y="0.0" width="64" height="16.333333333333332"/>
-                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="12"/>
+                                                <rect key="frame" x="46.999999999999993" y="0.0" width="73.333333333333314" height="16.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                                                 <color key="textColor" red="0.99622660880000002" green="0.44834579159999999" blue="0.241902378" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -1331,7 +1330,7 @@
                                             <constraint firstItem="Yjg-mf-8mb" firstAttribute="centerY" secondItem="iOA-DR-5rh" secondAttribute="centerY" id="NSw-lf-KIc"/>
                                             <constraint firstItem="NyO-hy-FKv" firstAttribute="centerY" secondItem="iOA-DR-5rh" secondAttribute="centerY" id="UWf-VD-b70"/>
                                             <constraint firstItem="NyO-hy-FKv" firstAttribute="height" secondItem="iOA-DR-5rh" secondAttribute="height" id="bB5-4h-rTV"/>
-                                            <constraint firstItem="Yjg-mf-8mb" firstAttribute="height" secondItem="iOA-DR-5rh" secondAttribute="height" multiplier="0.8" id="ho5-aE-VWb"/>
+                                            <constraint firstItem="Yjg-mf-8mb" firstAttribute="height" secondItem="iOA-DR-5rh" secondAttribute="height" id="ho5-aE-VWb"/>
                                             <constraint firstItem="NyO-hy-FKv" firstAttribute="leading" secondItem="Yjg-mf-8mb" secondAttribute="trailing" constant="2" id="nYQ-Sc-h38"/>
                                         </constraints>
                                     </view>
@@ -1368,6 +1367,9 @@
                                     <constraint firstAttribute="width" secondItem="MGb-8I-vsD" secondAttribute="height" multiplier="1:1" id="zLj-SP-CAF"/>
                                 </constraints>
                                 <state key="normal" image="backIcon"/>
+                                <connections>
+                                    <action selector="backButtonPressed:" destination="D1s-cL-V7X" eventType="touchUpInside" id="9WR-uD-KQW"/>
+                                </connections>
                             </button>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xRz-rf-Kdf">
                                 <rect key="frame" x="0.0" y="663" width="414" height="0.0"/>
@@ -1453,6 +1455,7 @@
                         <outlet property="uploadingLabel" destination="d29-up-AqR" id="0OW-gD-GiN"/>
                         <outlet property="uploadsTable" destination="DdH-HH-UqR" id="J1V-vm-VGX"/>
                         <outlet property="videosSummary" destination="dXs-QU-8dl" id="K2e-F4-H71"/>
+                        <segue destination="v73-6c-1zp" kind="presentation" identifier="returnToVideos" id="8di-cx-nsU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="akP-CY-EQg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1467,6 +1470,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Eu5-TM-F2H"/>
+        <segue reference="8di-cx-nsU"/>
         <segue reference="0qj-Th-acr"/>
     </inferredMetricsTieBreakers>
 </document>

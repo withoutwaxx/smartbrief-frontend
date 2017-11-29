@@ -150,7 +150,10 @@ class DataManager {
     
     
     
-    static func saveUploadRequests(uploads:[UploadRequest], completionHandler: @escaping (_ success: Bool) -> ()){
+    static func saveUploadRequests(uploads:[UploadRequest], completionHandler: @escaping (_ success: Bool, _ duplicate:Bool) -> ()){
+        
+        var duplicateFound = false
+        var records:[NSManagedObject] = []
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -163,28 +166,50 @@ class DataManager {
         
         for upload in uploads {
             
-
-            let newUpload = NSEntityDescription.insertNewObject(forEntityName: "VideoUpload", into: managedContext) as NSManagedObject
-                
-            newUpload.setValue( upload.localId , forKeyPath: "local_id")
-            newUpload.setValue( upload.videoId , forKeyPath: "video_id")
-            newUpload.setValue( upload.projectId , forKeyPath: "project_id")
-            newUpload.setValue( upload.taskId , forKeyPath: "task_id")
-            newUpload.setValue( upload.userId , forKeyPath: "user_id")
-            newUpload.setValue( upload.desc , forKeyPath: "desc")
-            newUpload.setValue( upload.url , forKeyPath: "url")
-            newUpload.setValue( upload.length , forKeyPath: "length")
-            newUpload.setValue( upload.size , forKeyPath: "size")
-            newUpload.setValue( upload.uploaded , forKeyPath: "uploaded")
-            newUpload.setValue( upload.sent , forKeyPath: "sent")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
             
+            let localIdPredicate = NSPredicate(format: "local_id = %@", upload.localId)
+            let projectIdPredicate = NSPredicate(format: "project_id = %@", upload.projectId)
+            
+            let andPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [localIdPredicate, projectIdPredicate])
+            
+            fetchRequest.predicate = andPredicate
+            
+            do {
+                records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            } catch let error as NSError {
+                completionHandler(false, duplicateFound)
+                print("Could not save. \(error), \(error.userInfo)")
+            }
+            if records.count > 0 {
+                duplicateFound = true
+            
+            } else {
+                let newUpload = NSEntityDescription.insertNewObject(forEntityName: "UploadRequestObj", into: managedContext) as NSManagedObject
+                
+                newUpload.setValue( upload.localId , forKeyPath: "local_id")
+                newUpload.setValue( upload.videoId , forKeyPath: "video_id")
+                newUpload.setValue( upload.projectId , forKeyPath: "project_id")
+                newUpload.setValue( upload.taskId , forKeyPath: "task_id")
+                newUpload.setValue( upload.userId , forKeyPath: "user_id")
+                newUpload.setValue( upload.desc , forKeyPath: "desc")
+                newUpload.setValue( upload.url , forKeyPath: "url")
+                newUpload.setValue( upload.length , forKeyPath: "length")
+                newUpload.setValue( upload.size , forKeyPath: "size")
+                newUpload.setValue( upload.uploaded , forKeyPath: "uploaded")
+                newUpload.setValue( upload.uploadedState , forKeyPath: "uploaded_state")
+                newUpload.setValue( upload.updatedState , forKeyPath: "updated_state")
+                newUpload.setValue( upload.activeState, forKey: "active_state")
+                
+            }
+    
         }
         
         do {
             try managedContext.save()
-            completionHandler(true)
+            completionHandler(true, duplicateFound)
         } catch let error as NSError {
-            completionHandler(false)
+            completionHandler(false, duplicateFound)
             print("Could not save. \(error), \(error.userInfo)")
         }
         
@@ -216,6 +241,48 @@ class DataManager {
     }
     
     
+    static func deleteUploadRequest (videoId:String, completionHandler: @escaping (_ success: Bool) -> ()){
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
+        
+        let predicate = NSPredicate(format: "video_id == %@", videoId)
+        fetchRequest.predicate = predicate
+        
+        do {
+            let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            if records.count > 0 {
+                for record in records {
+                    managedContext.delete(record)
+                }
+                
+            }
+            
+        } catch {
+            print(error)
+        }
+
+    
+        do {
+            try managedContext.save()
+            completionHandler(true)
+        
+        } catch let error as NSError {
+            completionHandler(false)
+            print("Could not save. \(error), \(error.userInfo)")
+        
+        }
+        
+    }
+    
+    
     static func deleteProjectRecords() {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         let context = delegate.persistentContainer.viewContext
@@ -228,6 +295,70 @@ class DataManager {
             try context.save()
         } catch {
             print ("There was an error")
+        }
+        
+    }
+    
+    
+    static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor]) -> [NSManagedObject] {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return []
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
+        
+        if(sort.count > 0) {
+            fetchRequest.sortDescriptors = sort
+            
+        }
+        
+        if(predicates.count > 0) {
+            fetchRequest.predicate = predicates[0]
+            
+        }
+        
+        do {
+            let requestQueue = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            return requestQueue
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+            return []
+        }
+        
+    }
+    
+    
+    
+    static func getVideos (predicates:[NSPredicate], sort:[NSSortDescriptor]) -> [NSManagedObject] {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return []
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Video")
+        
+        if(predicates.count > 0) {
+            fetchRequest.predicate = predicates[0]
+        
+        }
+        
+        if(sort.count > 0) {
+            fetchRequest.sortDescriptors = sort
+        
+        }
+        
+        do {
+            let videos = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            return videos
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+            return []
         }
         
     }

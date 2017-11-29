@@ -16,8 +16,7 @@ import AWSS3
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         let credentialProvider = AWSCognitoCredentialsProvider (
             regionType: .EUWest2,
@@ -26,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let configuration = AWSServiceConfiguration(region: .EUWest2, credentialsProvider: credentialProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
-        
+                
         return true
     }
     

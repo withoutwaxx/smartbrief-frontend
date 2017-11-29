@@ -16,9 +16,9 @@ import AVKit
 import AssetsPickerViewController
 
 
-class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate {
     
-    var videosQueue:[NSManagedObject] = []
+    var requestQueue:[NSManagedObject] = []
     var currentProject:NSManagedObject?
     var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
     
@@ -34,34 +34,9 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
 
     
-    func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
-       
-        self.completionHandler = { (task, error) -> Void in
-            DispatchQueue.main.async(execute: {
-                print("upload complete")
-            })
-        }
-        
-        let videoProcesser = VideoProcessor()
-        videoProcesser.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success) in
-            
-            if(success) {
-                if(self.loadData()) {
-                    self.uploadsTable.reloadData()
-                }
-                
-            } else {
-                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_UNABLE", comment: "") , currentViewController: self.parent!)
-            }
-            
-        })
-     
-    }
-    
-    
     
     @IBAction func readyPressed(_ sender: Any) {
-        if(videosQueue.count < 1) {
+        if(requestQueue.count < 1) {
             AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEOS_COUNT", comment: ""), currentViewController: self)
             
         } else {
@@ -88,6 +63,11 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewDidLoad()
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
+        loadData()
+        if(requestQueue.count == 0) {
+            uploadsTable.isHidden = true
+            noVideosLabel.isHidden = false
+        }
   
         setupViews()
         
@@ -95,13 +75,65 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func setupViews() {
-        videosSummary.text = " \(videosQueue.count) videos in upload queue"
+        videosSummary.text = " \(requestQueue.count) videos in upload queue"
         let selectVideosTouch = UITapGestureRecognizer(target: self, action:  #selector (self.addVideosAction(_:)))
         self.selectVideos.addGestureRecognizer(selectVideosTouch)
         selectProjectsLabel.adjustsFontSizeToFitWidth = true
         videosSummary.adjustsFontSizeToFitWidth = true
         
     }
+    
+    
+    func updateView() {
+        self.loadData()
+        self.uploadsTable.reloadData()
+        videosSummary.text = " \(requestQueue.count) videos in upload queue"
+        if(requestQueue.count > 0) {
+            uploadsTable.isHidden = false
+            noVideosLabel.isHidden = true
+            
+        } else {
+            uploadsTable.isHidden = true
+            noVideosLabel.isHidden = false
+            
+        }
+        
+    }
+
+    
+    
+    @IBAction func backButtonPressed(_ sender: Any) {
+        self.performSegue(withIdentifier: "returnToVideos", sender: self)
+    
+    }
+    
+    
+    
+    func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
+        
+        self.completionHandler = { (task, error) -> Void in
+            DispatchQueue.main.async(execute: {
+                print("upload complete")
+            })
+        }
+        
+        let videoProcesser = VideoProcessor()
+        videoProcesser.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success, duplicate) in
+            
+            if(success) {
+                self.updateView()
+                if (duplicate) {
+                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DUPLICATE_UPLOAD", comment: ""), currentViewController: self)
+                }
+                
+            } else {
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_UNABLE", comment: "") , currentViewController: self.parent!)
+            }
+            
+        })
+        
+    }
+    
     
     
     func addVideosAction(_ sender:UITapGestureRecognizer){
@@ -139,7 +171,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return videosQueue.count
+        return requestQueue.count
     }
     
     
@@ -148,13 +180,16 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                    cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
             
-            let video = videosQueue[indexPath.row]
+            let request = requestQueue[indexPath.row]
             let cell =
                 tableView.dequeueReusableCell(withIdentifier: "uploadCell",
                                               for: indexPath) as! UploadCell
             
-            if(((video.value(forKeyPath: "desc") as? String)?.count)! > 0){
-                cell.descLabel.text = video.value(forKeyPath: "video_desc") as? String
+            cell.indexPath = indexPath
+            cell.delegateCell = self
+            
+            if(((request.value(forKeyPath: "desc") as? String)?.count)! > 0){
+                cell.descLabel.text = request.value(forKeyPath: "video_desc") as? String
                 cell.descLabel.textColor = UIColor.white
 
             } else {
@@ -162,57 +197,47 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                 cell.descLabel.textColor = UIColor.gray
             }
             
-            cell.sizeLabel.text = String(describing: video.value(forKeyPath: "size") ?? "") + " Mb"
-            cell.dateLabel.text = "Added \(StringManager.getDate(date: (video.value(forKeyPath: "uploaded") as? Date)))"
-            cell.lengthLabel.text = StringManager.getTime(seconds: video.value(forKeyPath: "length") as! Int)
+            cell.sizeLabel.text = String(describing: request.value(forKeyPath: "size") ?? "") + " Mb"
+            cell.dateLabel.text = "Added \(StringManager.getDate(date: (request.value(forKeyPath: "uploaded") as? Date)))"
+            cell.lengthLabel.text = StringManager.getTime(seconds: request.value(forKeyPath: "length") as! Int)
+            
+            if(request.value(forKey: "active_state") as? Bool == true) {
+                cell.deleteButton.isHidden = true
+                
+            } else {
+                cell.deleteButton.isHidden = false
+                
+            }
             
             return cell
     }
+ 
     
-    @IBAction func deleteRequestPressed(_ sender: Any) {
+    func didTapCell(index: IndexPath) {
+        DataManager.deleteUploadRequest(videoId: requestQueue[index.row].value(forKey: ("video_id")) as! String, completionHandler: {
+            (success) in
+                self.updateView()
+            
+        })
+        
     }
     
     
-    func loadData() -> Bool {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return false
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "VideoUpload")
-        
+    func loadData() {
         let sort = NSSortDescriptor(key: "uploaded", ascending: false)
-        fetchRequest.sortDescriptors = [sort]
-        
-        
-        do {
-            videosQueue = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        
-        if(videosQueue.count > 0) {
-            return true
-        }
-        
-        return false
+        requestQueue = DataManager.getUploadRequests(predicates: [], sort: [sort])
 
     }
     
     
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if(!loadData()) {
-            uploadsTable.isHidden = true
-            noVideosLabel.isHidden = false
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if(segue.identifier == "returnToVideos"){
+            let videoVC = segue.destination as! VideosViewController
+            videoVC.currentProject = currentProject
+            
         }
-    
-    
     }
+    
+
 
 }

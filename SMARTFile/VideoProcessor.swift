@@ -12,7 +12,7 @@ import Photos
 class VideoProcessor {
     
     
-    func processNewVideos(assets:[PHAsset], pProjectId:String, completionHandler: @escaping (_ success: Bool) -> ()) {
+    func processNewVideos(assets:[PHAsset], pProjectId:String, completionHandler: @escaping (_ success: Bool, _ duplicate:Bool) -> ()) {
         
         var requests:[UploadRequest] = []
         
@@ -28,21 +28,22 @@ class VideoProcessor {
             let length:Int = Int(asset.duration)
             let size = getVideoSize(asset: asset)
             let uploaded = Date()
-            let sent = false
-            let active = false
+            let uploadedState = false
+            let activeState = false
+            let updatedState = false
             
-            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, uploaded: uploaded, sent: sent, active: active)
+            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, uploaded: uploaded, uploadedState: uploadedState, activeState: activeState, updatedState: updatedState)
             requests.append(request)
             
         }
         
         DataManager.saveUploadRequests(uploads: requests, completionHandler: {
-            (success) in
+            (success, duplicate) in
             if(success) {
-                completionHandler(success)
+                completionHandler(success, duplicate)
             
             } else {
-                completionHandler(false)
+                completionHandler(false, duplicate)
             
             }
         })

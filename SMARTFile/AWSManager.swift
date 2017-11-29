@@ -10,11 +10,49 @@ import Foundation
 import AWSS3
 
 
-class AWSManager {
+final class AWSManager {
+    
+    static let awsManager = AWSManager()
+    
+    var transferUtility = AWSS3TransferUtility.default()
+    var requests:[NSManagedObject] = []
     
     
     
-    static func uploadVideo(url:URL, completion:@escaping AWSS3TransferUtilityUploadCompletionHandlerBlock) {
+    func updateRequestList () {
+        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
+        requests = DataManager.getUploadRequests(predicates: [], sort: [sort])
+        
+    }
+    
+    
+    func checkForUploadedNotUpdated () {
+        var idsToRemove:[String] = []
+        for request in requests {
+            if(request.value(forKey: "uploaded_state") as! Bool) {
+                if(request.value(forKey: "updated_state") as! Bool) {
+                    
+                    
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    func initiateUploads () {
+        updateRequestList()
+        checkForUploadedNotUpdated()
+        if(requests.count > 0) {
+            for
+            
+        }
+        
+    }
+    
+    
+    func uploadVideo(url:URL, completion:@escaping AWSS3TransferUtilityUploadCompletionHandlerBlock) {
         
         let expression:AWSS3TransferUtilityUploadExpression = AWSS3TransferUtilityUploadExpression()
 
@@ -32,7 +70,7 @@ class AWSManager {
         
         print("uploading mate")
         let fileURL = url
-        let  transferUtility = AWSS3TransferUtility.default()
+        
         transferUtility.uploadFile(fileURL,
                                    bucket: "finalsmartfilebucket",
                                    key: UuidGenerator.newUuid(),

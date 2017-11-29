@@ -14,9 +14,9 @@ class UploadRequest {
     var videoId, userId, projectId, taskId, localId, desc, url:String
     var length, size:Int
     var uploaded:Date
-    var sent, active:Bool
+    var uploadedState, activeState, updatedState:Bool
     
-    init (videoId:String, userId:String, projectId:String, taskId:String, localId:String, desc:String, url:String, length:Int, size:Int, uploaded:Date, sent:Bool, active:Bool) {
+    init (videoId:String, userId:String, projectId:String, taskId:String, localId:String, desc:String, url:String, length:Int, size:Int, uploaded:Date, uploadedState:Bool, activeState:Bool, updatedState:Bool) {
         
         self.videoId = videoId
         self.userId = userId
@@ -28,8 +28,9 @@ class UploadRequest {
         self.length = length
         self.size = size
         self.uploaded = uploaded
-        self.sent = sent
-        self.active = active
+        self.uploadedState = uploadedState
+        self.activeState = activeState
+        self.updatedState = updatedState
         
     }
     

@@ -148,7 +148,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                 tableView.dequeueReusableCell(withIdentifier: "videoCell",
                                               for: indexPath) as! VideoCell
             
-            if(((video.value(forKeyPath: "video_desc") as? String)?.characters.count)! > 0){
+            if(((video.value(forKeyPath: "video_desc") as? String)?.characters.count )! > 0){
                 cell.desc.text = video.value(forKeyPath: "video_desc") as? String
                 cell.desc.textColor = UIColor.white
 
@@ -171,36 +171,13 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     
     
-    func loadData() -> Bool {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return false
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Video")
+    func loadData() {
         
         let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
-        fetchRequest.predicate = predicate
-        
         let sort = NSSortDescriptor(key: "date_uploaded", ascending: false)
-        fetchRequest.sortDescriptors = [sort]
-        
-        
-        do {
-            videos = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        
-        if(videos.count > 0) {
-            return true
-        }
-        
-        return false
 
+        videos = DataManager.getVideos(predicates: [predicate], sort: [sort])
+        
     }
     
     
@@ -208,9 +185,11 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if(!loadData()) {
+        loadData()
+        if(videos.count == 0) {
             videosTable.isHidden = true
             noVideosLabel.isHidden = false
+        
         }
 
     }
