@@ -86,7 +86,7 @@ class RequestDelegate {
     
     
     static func getVideos( projectId:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
-        RequestExecutionManager.getVideos(endpoint: buildURL(projectId: projectId), completionHandler: {
+        RequestExecutionManager.getVideos(endpoint: StringManager.buildGetVideosURL(projectId: projectId), completionHandler: {
             (success, message, videos) in
             
             if(success) {
@@ -106,7 +106,7 @@ class RequestDelegate {
     
     
     static func updateProject( project:NSManagedObject, readyValue:Int, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
-        let url = "\(Constants.updateProject)?".appending(buildUpdateURL(project: project, readyValue: readyValue))
+        let url = "\(Constants.updateProject)?".appending(StringManager.buildUpdateProjectURL(project: project, readyValue: readyValue))
         RequestExecutionManager.projectRequest(endpoint: url, completionHandler: {
             (success, message, projects, count) in
             if(success) {
@@ -123,23 +123,29 @@ class RequestDelegate {
     
     
     
-    static func buildUpdateURL (project:NSManagedObject, readyValue:Int) -> String {
+    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
         
-        let pTitle = project.value(forKeyPath: "project_name") as! String
-        let rdState = readyValue
-        let rcState = project.value(forKeyPath: "received_state") as! Int
-        let pId = project.value(forKeyPath: "project_id") as! String
+        var index = 0
         
-        let url = "pId=\(pId)&rdS=\(rdState)&rcS=\(rcState)&pName=\(pTitle)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = "\(Constants.newVideo)?".appending(StringManager.buildNewVideoURL(request: requests[index]))
         
-        return url!
+        RequestExecutionManager.newVideo(endpoint: url, completionHandler: {
+            (success, message) in
+            if(success) {
+                DataManager.saveProjects(projects: projects, count: count)
+                completionHandler(true, "")
+                
+            } else {
+                completionHandler(false, message)
+                
+            }
+        })
+        
     }
     
     
     
-    static func buildURL (projectId:String) -> String {
-        return "\(Constants.getVideos)?pid=\(projectId)&"
-    }
+    
     
     
 

@@ -10,13 +10,23 @@ import Foundation
 import AWSS3
 
 
+protocol UploadDelegate: class {
+    func updateToUploads()
+    
+}
+
+
 final class AWSManager {
     
     static let awsManager = AWSManager()
+    weak var delegate:UploadDelegate?
+
     
     var transferUtility = AWSS3TransferUtility.default()
     var requests:[NSManagedObject] = []
     
+    
+    private init() {}
     
     
     func updateRequestList () {
@@ -26,26 +36,69 @@ final class AWSManager {
     }
     
     
-    func checkForUploadedNotUpdated () {
+    func checkForUploadedAndUpdated () {
         var idsToRemove:[String] = []
         for request in requests {
             if(request.value(forKey: "uploaded_state") as! Bool) {
                 if(request.value(forKey: "updated_state") as! Bool) {
+                    idsToRemove.append(request.value(forKey: "video_id") as! String)
                     
-                    
+                }
+            
             }
+        
+        }
+        if(!idsToRemove.isEmpty) {
+            DataManager.deleteMultiple(videoIds: idsToRemove, field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: {
+                (success) in
+                if(self.delegate != nil) {
+                    self.delegate?.updateToUploads()
+                    
+                }
+                
+            })
+            
+        }
+    
+    }
+    
+    
+    
+    func checkForUploadedNotUpdated () {
+        var requestsToSend:[NSManagedObject] = []
+        for request in requests {
+            if(request.value(forKey: "uploaded_state") as! Bool == true) {
+                if(request.value(forKey: "updated_state") as! Bool == false) {
+                    requestsToSend.append(request)
+                    
+                }
+                
+            }
+            
+        }
+        
+        if(!requestsToSend.isEmpty) {
+            RequestDelegate.newVideos(requests: requestsToSend, completionHandler: {
+                (success) in
+                if(self.delegate != nil) {
+                    self.delegate?.updateToUploads()
+                    
+                }
+                
+            })
             
         }
         
     }
     
     
-    
-    func initiateUploads () {
+    func refreshUploads () {
         updateRequestList()
+        checkForUploadedAndUpdated()
         checkForUploadedNotUpdated()
+        
         if(requests.count > 0) {
-            for
+            
             
         }
         
@@ -87,6 +140,7 @@ final class AWSManager {
                                     }
                                     return nil;
         }
+    }
         
         
         
@@ -146,7 +200,6 @@ final class AWSManager {
 //            return nil
 //        })
         
-    }
     
     
 }

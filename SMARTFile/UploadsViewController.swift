@@ -16,7 +16,7 @@ import AVKit
 import AssetsPickerViewController
 
 
-class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate, UploadDelegate {
     
     var requestQueue:[NSManagedObject] = []
     var currentProject:NSManagedObject?
@@ -36,7 +36,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     @IBAction func readyPressed(_ sender: Any) {
-        if(requestQueue.count < 1) {
+        if(requestQueue.isEmpty) {
             AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEOS_COUNT", comment: ""), currentViewController: self)
             
         } else {
@@ -61,10 +61,11 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AWSManager.awsManager.delegate = self
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
         loadData()
-        if(requestQueue.count == 0) {
+        if(requestQueue.isEmpty) {
             uploadsTable.isHidden = true
             noVideosLabel.isHidden = false
         }
@@ -88,7 +89,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         self.loadData()
         self.uploadsTable.reloadData()
         videosSummary.text = " \(requestQueue.count) videos in upload queue"
-        if(requestQueue.count > 0) {
+        if(!requestQueue.isEmpty) {
             uploadsTable.isHidden = false
             noVideosLabel.isHidden = true
             
@@ -105,6 +106,12 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBAction func backButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: "returnToVideos", sender: self)
     
+    }
+    
+    
+    func updateToUploads() {
+        updateView()
+        
     }
     
     
@@ -198,7 +205,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             cell.sizeLabel.text = String(describing: request.value(forKeyPath: "size") ?? "") + " Mb"
-            cell.dateLabel.text = "Added \(StringManager.getDate(date: (request.value(forKeyPath: "uploaded") as? Date)))"
+            cell.dateLabel.text = "Added \(StringManager.getDate(date: (request.value(forKeyPath: "added") as? Date)))"
             cell.lengthLabel.text = StringManager.getTime(seconds: request.value(forKeyPath: "length") as! Int)
             
             if(request.value(forKey: "active_state") as? Bool == true) {
@@ -214,7 +221,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
  
     
     func didTapCell(index: IndexPath) {
-        DataManager.deleteUploadRequest(videoId: requestQueue[index.row].value(forKey: ("video_id")) as! String, completionHandler: {
+        DataManager.deleteMultiple(videoIds: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_VIDEO, completionHandler:  {
             (success) in
                 self.updateView()
             

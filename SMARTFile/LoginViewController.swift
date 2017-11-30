@@ -39,7 +39,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                             DataManager.deleteAllRecords()
                             RequestDelegate.getProjects(completionHandler: { (success, message) in
                                 if(success) {
-                                    AWSManager.awsManager.initiateUploads()
+                                    //
                                     self.performSegue(withIdentifier: "showProjects", sender: self)
                                     
                                 } else {

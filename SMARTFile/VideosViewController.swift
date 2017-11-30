@@ -16,7 +16,7 @@ import AVKit
 import AssetsPickerViewController
 
 
-class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UploadDelegate {
     
     @IBOutlet weak var noVideosLabel: UILabel!
     var videos:[NSManagedObject] = []
@@ -67,10 +67,33 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        AWSManager.awsManager.delegate = self
         videosTable.delegate = self
         videosTable.dataSource = self
   
         setupViews()
+        
+    }
+    
+    
+    func updateToUploads() {
+        refreshView()
+        
+    }
+    
+    
+    func refreshView() {
+        loadData()
+        videosTable.reloadData()
+        if(videos.isEmpty) {
+            videosTable.isHidden = true
+            noVideosLabel.isHidden = false
+            
+        } else {
+            videosTable.isHidden = false
+            noVideosLabel.isHidden = true
+            
+        }
         
     }
     
@@ -83,7 +106,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         receivedLabel.adjustsFontSizeToFitWidth = true
         readyLabel.titleLabel?.adjustsFontSizeToFitWidth = true
         projectTitle.adjustsFontSizeToFitWidth = true
-        if(currentProject?.value(forKeyPath: "received_state") as? Bool)! {
+        if(currentProject?.value(forKeyPath: "received_state") as? Bool == true) {
             receivedCircle.fillColor = UIColor.green
             
         } else {
@@ -91,7 +114,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             
         }
         
-        if(currentProject?.value(forKeyPath: "ready_state") as? Bool)! {
+        if(currentProject?.value(forKeyPath: "ready_state") as? Bool == true) {
             readyCircle.fillColor = UIColor.green
             readyLabel.isUserInteractionEnabled = false
             readyLabel.titleLabel?.textColor = UIColor.darkGray
@@ -161,7 +184,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             cell.uploaded.text = "Uploaded \(StringManager.getDate(date: (video.value(forKeyPath: "date_uploaded") as? Date)))"
             cell.length.text = StringManager.getTime(seconds: video.value(forKeyPath: "length") as! Int)
             
-            if(currentProject?.value(forKeyPath: "ready_state") as? Bool)! {
+            if(currentProject?.value(forKeyPath: "ready_state") as? Bool == true) {
                 cell.deleteVideo.isHidden = true
                 
             }
@@ -186,7 +209,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewWillAppear(animated)
         
         loadData()
-        if(videos.count == 0) {
+        if(videos.isEmpty) {
             videosTable.isHidden = true
             noVideosLabel.isHidden = false
         

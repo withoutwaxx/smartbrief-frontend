@@ -36,7 +36,7 @@ class DataManager {
     
     static func saveProjects(projects:[JSON], count:[JSON]) {
         
-        deleteProjectRecords()
+        deleteAllOfType(type: "Project")
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -93,7 +93,7 @@ class DataManager {
     
     static func saveVideos(videos:[JSON]) {
         
-        deleteVideoRecords()
+        deleteAllOfType(type: "Video")
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -196,7 +196,7 @@ class DataManager {
                 newUpload.setValue( upload.url , forKeyPath: "url")
                 newUpload.setValue( upload.length , forKeyPath: "length")
                 newUpload.setValue( upload.size , forKeyPath: "size")
-                newUpload.setValue( upload.uploaded , forKeyPath: "uploaded")
+                newUpload.setValue( upload.added , forKeyPath: "added")
                 newUpload.setValue( upload.uploadedState , forKeyPath: "uploaded_state")
                 newUpload.setValue( upload.updatedState , forKeyPath: "updated_state")
                 newUpload.setValue( upload.activeState, forKey: "active_state")
@@ -218,18 +218,18 @@ class DataManager {
     
     
     static func deleteAllRecords() {
-        deleteVideoRecords()
-        deleteProjectRecords()
+        deleteAllOfType(type: "Video")
+        deleteAllOfType(type: "Project")
         
     }
 
     
     
-    static func deleteVideoRecords() {
+    static func deleteAllOfType(type:String) {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         let context = delegate.persistentContainer.viewContext
         
-        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Video")
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: type)
         let request = NSBatchDeleteRequest(fetchRequest: fetch)
         
         do {
@@ -241,7 +241,7 @@ class DataManager {
     }
     
     
-    static func deleteUploadRequest (videoId:String, completionHandler: @escaping (_ success: Bool) -> ()){
+    static func deleteMultiple (videoIds:[String], field:String, entity:String, completionHandler: @escaping (_ success: Bool) -> ()){
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -251,16 +251,17 @@ class DataManager {
         let managedContext =
             appDelegate.persistentContainer.viewContext
         
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
-        
-        let predicate = NSPredicate(format: "video_id == %@", videoId)
-        fetchRequest.predicate = predicate
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
         
         do {
             let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
             if records.count > 0 {
                 for record in records {
-                    managedContext.delete(record)
+                    if(videoIds.contains(record.value(forKey: field) as! String) ) {
+                        managedContext.delete(record)
+                        
+                    }
+                    
                 }
                 
             }
@@ -282,22 +283,6 @@ class DataManager {
         
     }
     
-    
-    static func deleteProjectRecords() {
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let context = delegate.persistentContainer.viewContext
-        
-        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Project")
-        let request = NSBatchDeleteRequest(fetchRequest: fetch)
-        
-        do {
-            try context.execute(request)
-            try context.save()
-        } catch {
-            print ("There was an error")
-        }
-        
-    }
     
     
     static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor]) -> [NSManagedObject] {

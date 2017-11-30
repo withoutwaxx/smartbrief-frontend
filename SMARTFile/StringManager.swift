@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 
 class StringManager {
@@ -63,6 +64,42 @@ class StringManager {
             return "\(seconds/60)m \(seconds%60)s"
         }
         return "\(seconds)s"
+    }
+    
+    
+    static func buildUpdateProjectURL (project:NSManagedObject, readyValue:Int) -> String {
+        
+        let pTitle = project.value(forKeyPath: "project_name") as! String
+        let rdState = readyValue
+        let rcState = project.value(forKeyPath: "received_state") as! Int
+        let pId = project.value(forKeyPath: "project_id") as! String
+        
+        let url = "pId=\(pId)&rdS=\(rdState)&rcS=\(rcState)&pName=\(pTitle)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        
+        return url!
+    }
+    
+    
+    static func buildNewVideoURL (request:NSManagedObject) -> String {
+        
+        let pVideoId = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
+        let projectId = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
+        let desc = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
+        let size = request.value(forKeyPath: Constants.FIELD_VIDEO_SIZE) as! String
+        let length = request.value(forKeyPath: Constants.FIELD_VIDEO_LENGTH) as! String
+        let url = request.value(forKeyPath: Constants.FIELD_VIDEO_URL) as! String
+
+
+        
+        let fullUrl = "pVId=\(pVideoId)&pPId=\(projectId)&pDesc=\(desc)&pSize=\(size)&pLength=\(length)&pUrl=\(url)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        
+        return fullUrl!
+    }
+    
+    
+    
+    static func buildGetVideosURL (projectId:String) -> String {
+        return "\(Constants.getVideos)?pid=\(projectId)&"
     }
     
 }

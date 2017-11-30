@@ -27,10 +27,13 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
                         RequestDelegate.newProject(projectTitle: title, completionHandler: {
                         (success, message) in
                             if(success) {
-                                if(self.loadData()) {
+                                self.loadData()
+                                if(!self.projects.isEmpty) {
                                     self.projectsTable.isHidden = false
                                     self.noProjectsLabel.isHidden = true
+                                
                                 }
+                                
                                 self.projectsTable.reloadData()
                             } else {
                                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
@@ -92,12 +95,12 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
                 tableView.dequeueReusableCell(withIdentifier: "projectCell",
                                               for: indexPath) as! ProjectCell
             
-            if(project.value(forKeyPath: "ready_state") as! Bool){
+            if(project.value(forKeyPath: "ready_state") as! Bool == true){
                 cell.readyValue.fillColor = UIColor.green
             } else {
                 cell.readyValue.fillColor = UIColor.red
             }
-            if(project.value(forKeyPath: "received_state") as! Bool){
+            if(project.value(forKeyPath: "received_state") as! Bool == true){
                 cell.receivedValue.fillColor = UIColor.green
             } else {
                 cell.receivedValue.fillColor = UIColor.red
@@ -129,10 +132,10 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     
-    func loadData() -> Bool {
+    func loadData() {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
-                return false
+                return
         }
         
         let managedContext =
@@ -151,22 +154,22 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
             print("Could not fetch. \(error), \(error.userInfo)")
         }
         
-        if(projects.count > 0) {
-            
-            return true
-        }
-        
-        return false
     }
     
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if(!loadData()) {
+        loadData()
+        if(projects.isEmpty) {
             projectsTable.isHidden = true
             noProjectsLabel.isHidden = false
+        } else {
+            projectsTable.isHidden = false
+            noProjectsLabel.isHidden = true
+            
         }
+        
     }
     
     
