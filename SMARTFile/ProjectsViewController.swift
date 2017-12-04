@@ -9,7 +9,8 @@
 import UIKit
 import CoreData
 
-class ProjectsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ProjectsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UploadDelegate {
+    
     
     var projects:[NSManagedObject] = []
     var selectedProject:NSManagedObject?
@@ -23,7 +24,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         AlertUserManager.getInfoFromUser(title: NSLocalizedString("ALERT_NEW_PROJECT_TITLE", comment: ""), message: NSLocalizedString("ALERT_NEW_PROJECT", comment: ""), currentViewController: self, completionHandler:
             {(success, title) in
                 if(success){
-                    if(title.characters.count > 0 && title.characters.count < 140) {
+                    if(title.count > 0 && title.count < 140) {
                         RequestDelegate.newProject(projectTitle: title, completionHandler: {
                         (success, message) in
                             if(success) {
@@ -48,10 +49,27 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
             })
     }
     
+    
+    
+    func updateToUploads() {
+        RequestDelegate.getProjects { (success, message) in
+            if(success) {
+                self.loadData()
+                self.projectsTable.reloadData()
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         projectsTable.delegate = self
         projectsTable.dataSource = self
+        AWSManager.awsManager.delegate = self
 
         
     }
@@ -124,7 +142,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             
             cell.videoCount.text = String(describing: project.value(forKeyPath: "video_count") ?? "") + " Videos"
-            cell.created.text = "Created \(StringManager.getDate(date: (project.value(forKeyPath: "date_created") as? Date)))"
+            cell.created.text = "Created \(StringManager.dateToStringDate(date: (project.value(forKeyPath: "date_created") as? Date)))"
             
 
             return cell
@@ -133,26 +151,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     func loadData() {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest =
-            NSFetchRequest<NSManagedObject>(entityName: "Project")
-        
-        let sort = NSSortDescriptor(key: "date_created", ascending: false)
-        fetchRequest.sortDescriptors = [sort]
-        
-        do {
-            projects = try managedContext.fetch(fetchRequest)
-
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
+       projects = DataManager.getProjects()
         
     }
     

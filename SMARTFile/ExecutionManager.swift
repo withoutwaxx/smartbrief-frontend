@@ -166,4 +166,51 @@ class RequestExecutionManager {
             }
         }
     }
+    
+    
+    
+    static func newVideo(endpoint:String, completionHandler: @escaping (_ success: Bool) -> ()) {
+        
+        let headers: HTTPHeaders = [
+            "Authorization" : "Bearer " + User.token
+            
+        ]
+        
+        self.requestSecurityManager.request(endpoint, method: .post, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200..<300)
+            .validate(contentType: ["application/json"])
+            .responseJSON { response in
+                
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        if(json["outcome"].boolValue) {
+                            if(json["exist"].boolValue) {
+                                let videos  = json["payload"].array
+                                completionHandler(true)
+                            } else {
+                                completionHandler(true)
+                            }
+                            
+                        } else {
+                            completionHandler(false)
+                        }
+                    }
+                    break
+                    
+                case .failure(let error):
+                    if(response.response?.statusCode == 401) {
+                        if let value = response.data {
+                            let json = JSON(value)
+                            completionHandler(false)
+                        }
+                    } else {
+                        completionHandler(false)
+                    }
+                    
+                    print(error)
+                    break
+                }
+        }
+    }
 }

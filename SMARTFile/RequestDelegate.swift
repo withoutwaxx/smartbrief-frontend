@@ -11,6 +11,7 @@ import CoreData
 
 class RequestDelegate {
     
+    
 
     static func signIn(email:String, password: String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
         RequestExecutionManager.postCredentials(endpoint: Constants.signInURL, email:email, password:password, completionHandler: {
@@ -53,12 +54,9 @@ class RequestDelegate {
         RequestExecutionManager.projectRequest(endpoint: url, completionHandler: {
             (success, message, projects, count) in
             if(success) {
-                if(projects.count > 0) {
-                    DataManager.saveProjects(projects: projects, count: count)
-                    
-                }
-                
+                DataManager.saveProjects(projects: projects, count: count)
                 completionHandler(true, "")
+            
             } else {
                 completionHandler(false, message)
                 
@@ -90,12 +88,9 @@ class RequestDelegate {
             (success, message, videos) in
             
             if(success) {
-                if(videos.count > 0) {
-                    DataManager.saveVideos(videos: videos)
-                    
-                }
-                
+                DataManager.saveVideos(videos: videos)
                 completionHandler(true, "")
+                
             } else {
                 completionHandler(false, message)
                 
@@ -123,24 +118,46 @@ class RequestDelegate {
     
     
     
-    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
-        
-        var index = 0
+    
+    static func executeNewVideo (requests:[NSManagedObject], index:Int, completionHandler: @escaping (_ success: Bool) -> ()){
         
         let url = "\(Constants.newVideo)?".appending(StringManager.buildNewVideoURL(request: requests[index]))
         
         RequestExecutionManager.newVideo(endpoint: url, completionHandler: {
-            (success, message) in
+            (success) in
             if(success) {
-                DataManager.saveProjects(projects: projects, count: count)
-                completionHandler(true, "")
+                DataManager.convertRequestToVideo(request: requests[index])
+                
+            }
+            
+            let newIndex = index + 1
+            if(newIndex < requests.count) {
+                executeNewVideo(requests: requests, index: newIndex, completionHandler: { (success) in
+                    if(success){
+                        completionHandler(true)
+                    }
+                    
+                })
                 
             } else {
-                completionHandler(false, message)
+                completionHandler(true)
                 
             }
         })
         
+    }
+    
+    
+    
+    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool) -> ()){
+        
+        executeNewVideo(requests: requests, index: 0, completionHandler: { (
+            success) in
+            completionHandler(true)
+        
+            
+        })
+
     }
     
     

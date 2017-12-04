@@ -205,7 +205,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             cell.sizeLabel.text = String(describing: request.value(forKeyPath: "size") ?? "") + " Mb"
-            cell.dateLabel.text = "Added \(StringManager.getDate(date: (request.value(forKeyPath: "added") as? Date)))"
+            cell.dateLabel.text = "Added \(StringManager.dateToStringDate(date: (request.value(forKeyPath: "added") as? Date)))"
             cell.lengthLabel.text = StringManager.getTime(seconds: request.value(forKeyPath: "length") as! Int)
             
             if(request.value(forKey: "active_state") as? Bool == true) {
@@ -221,7 +221,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
  
     
     func didTapCell(index: IndexPath) {
-        DataManager.deleteMultiple(videoIds: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_VIDEO, completionHandler:  {
+        DataManager.deleteMultiple(ids: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler:  {
             (success) in
                 self.updateView()
             
@@ -231,8 +231,11 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func loadData() {
-        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
-        requestQueue = DataManager.getUploadRequests(predicates: [], sort: [sort])
+        let sort = NSSortDescriptor(key: "added", ascending: false)
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "uploaded_state = %@", false as CVarArg))
+        
+        requestQueue = DataManager.getUploadRequests(predicates: predicates, sort: [sort])
 
     }
     

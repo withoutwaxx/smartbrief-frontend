@@ -36,42 +36,12 @@ final class AWSManager {
     }
     
     
-    func checkForUploadedAndUpdated () {
-        var idsToRemove:[String] = []
-        for request in requests {
-            if(request.value(forKey: "uploaded_state") as! Bool) {
-                if(request.value(forKey: "updated_state") as! Bool) {
-                    idsToRemove.append(request.value(forKey: "video_id") as! String)
-                    
-                }
-            
-            }
-        
-        }
-        if(!idsToRemove.isEmpty) {
-            DataManager.deleteMultiple(videoIds: idsToRemove, field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: {
-                (success) in
-                if(self.delegate != nil) {
-                    self.delegate?.updateToUploads()
-                    
-                }
-                
-            })
-            
-        }
-    
-    }
-    
-    
     
     func checkForUploadedNotUpdated () {
         var requestsToSend:[NSManagedObject] = []
         for request in requests {
             if(request.value(forKey: "uploaded_state") as! Bool == true) {
-                if(request.value(forKey: "updated_state") as! Bool == false) {
-                    requestsToSend.append(request)
-                    
-                }
+                requestsToSend.append(request)
                 
             }
             
@@ -80,11 +50,12 @@ final class AWSManager {
         if(!requestsToSend.isEmpty) {
             RequestDelegate.newVideos(requests: requestsToSend, completionHandler: {
                 (success) in
-                if(self.delegate != nil) {
-                    self.delegate?.updateToUploads()
-                    
+                if(success) {
+                    if(self.delegate != nil) {
+                        self.delegate?.updateToUploads()
+                        
+                    }
                 }
-                
             })
             
         }
@@ -92,16 +63,50 @@ final class AWSManager {
     }
     
     
-    func refreshUploads () {
-        updateRequestList()
-        checkForUploadedAndUpdated()
-        checkForUploadedNotUpdated()
-        
-        if(requests.count > 0) {
-            
+    
+    func checkForActive () {
+        var activeRequests:[NSManagedObject] = []
+        for request in requests {
+            if(request.value(forKey: "active_state") as! Bool == true) {
+                activeRequests.append(request)
+                
+            }
             
         }
         
+        if(!activeRequests.isEmpty) {
+            return true
+            
+        } else {
+           return false
+            
+        }
+        
+    }
+    
+    
+    
+    func checkForActive() {
+        
+        
+    }
+    
+    
+    
+    func refreshUploads () {
+        updateRequestList()
+        checkForUploadedNotUpdated()
+        if(checkForActive()) {
+            
+            
+        } else {
+            if(requests.count > 0) {
+                
+                
+            }
+            
+        }
+       
     }
     
     

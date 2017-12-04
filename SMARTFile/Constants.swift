@@ -34,6 +34,7 @@ class Constants {
     static let FIELD_VIDEO_SIZE = "size"
     static let FIELD_VIDEO_LENGTH = "length"
     static let FIELD_VIDEO_URL = "url"
+    static let FIELD_VIDEO_ADDED = "added"
 
 
 

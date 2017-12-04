@@ -35,12 +35,14 @@ class StringManager {
     }
     
     
-    static func dateToString (date:Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
+    static func stringDateToDate (stringDate:String) -> Date {
         
+        let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
+        let shortDate = stringDate.substring(to: index)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = dateFormatter.date(from: shortDate)!
+        return date
     }
     
     
@@ -49,7 +51,7 @@ class StringManager {
     }
     
     
-    static func getDate(date:Date?) -> String {
+    static func dateToStringDate(date:Date?) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yyyy"
         if(date != nil) {

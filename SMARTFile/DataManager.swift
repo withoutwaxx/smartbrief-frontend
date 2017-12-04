@@ -15,15 +15,6 @@ import Photos
 
 class DataManager {
     
-    static func getDate (stringDate:String) -> Date {
-        
-        let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
-        let shortDate = stringDate.substring(to: index)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let date = dateFormatter.date(from: shortDate)!
-        return date
-    }
     
     static func getCount (id:String, count:[JSON]) -> Int {
         for project in count {
@@ -61,7 +52,7 @@ class DataManager {
                     
                     newProject.setValue(oneProject["project_id"].stringValue, forKeyPath: "project_id")
                     newProject.setValue(oneProject["project_name"].stringValue, forKeyPath: "project_name")
-                    newProject.setValue(getDate(stringDate: oneProject["date_created"].stringValue), forKeyPath: "date_created")
+                    newProject.setValue(StringManager.stringDateToDate(stringDate: oneProject["date_created"].stringValue), forKeyPath: "date_created")
                     newProject.setValue(oneProject["received_state"].boolValue, forKeyPath: "received_state")
                     newProject.setValue(oneProject["ready_state"].boolValue, forKeyPath: "ready_state")
                     newProject.setValue(getCount(id: oneProject["project_id"].stringValue, count: count), forKeyPath: "video_count")
@@ -69,7 +60,7 @@ class DataManager {
                     let existingProject = records[0]
                     existingProject.setValue(oneProject["project_id"].stringValue, forKeyPath: "project_id")
                     existingProject.setValue(oneProject["project_name"].stringValue, forKeyPath: "project_name")
-                    existingProject.setValue(getDate(stringDate: oneProject["date_created"].stringValue), forKeyPath: "date_created")
+                    existingProject.setValue(StringManager.stringDateToDate(stringDate: oneProject["date_created"].stringValue), forKeyPath: "date_created")
                     existingProject.setValue(oneProject["received_state"].boolValue, forKeyPath: "received_state")
                     existingProject.setValue(oneProject["ready_state"].boolValue, forKeyPath: "ready_state")
                     existingProject.setValue(getCount(id: oneProject["project_id"].stringValue, count: count), forKeyPath: "video_count")
@@ -118,8 +109,8 @@ class DataManager {
                     
                     newVideo.setValue(oneVideo["video_id"].stringValue, forKeyPath: "video_id")
                     newVideo.setValue(oneVideo["project_id"].stringValue, forKeyPath: "project_id")
-                    newVideo.setValue(getDate(stringDate: oneVideo["date_uploaded"].stringValue), forKeyPath: "date_uploaded")
-                    newVideo.setValue(oneVideo["video_desc"].stringValue, forKeyPath: "video_desc")
+                    newVideo.setValue(StringManager.stringDateToDate(stringDate: oneVideo["uploaded"].stringValue), forKeyPath: "uploaded")
+                    newVideo.setValue(oneVideo["desc"].stringValue, forKeyPath: "desc")
                     newVideo.setValue(oneVideo["size"].intValue, forKeyPath: "size")
                     newVideo.setValue(oneVideo["length"].intValue, forKeyPath: "length")
                     newVideo.setValue(oneVideo["url"].stringValue, forKeyPath: "url")
@@ -127,8 +118,8 @@ class DataManager {
                     let existingVideo = records[0]
                     existingVideo.setValue(oneVideo["video_id"].stringValue, forKeyPath: "video_id")
                     existingVideo.setValue(oneVideo["project_id"].stringValue, forKeyPath: "project_id")
-                    existingVideo.setValue(getDate(stringDate: oneVideo["date_uploaded"].stringValue), forKeyPath: "date_uploaded")
-                    existingVideo.setValue(oneVideo["video_desc"].stringValue, forKeyPath: "video_desc")
+                    existingVideo.setValue(StringManager.stringDateToDate(stringDate: oneVideo["uploaded"].stringValue), forKeyPath: "uploaded")
+                    existingVideo.setValue(oneVideo["desc"].stringValue, forKeyPath: "desc")
                     existingVideo.setValue(oneVideo["size"].intValue, forKeyPath: "size")
                     existingVideo.setValue(oneVideo["length"].intValue, forKeyPath: "length")
                     existingVideo.setValue(oneVideo["url"].stringValue, forKeyPath: "url")
@@ -198,7 +189,6 @@ class DataManager {
                 newUpload.setValue( upload.size , forKeyPath: "size")
                 newUpload.setValue( upload.added , forKeyPath: "added")
                 newUpload.setValue( upload.uploadedState , forKeyPath: "uploaded_state")
-                newUpload.setValue( upload.updatedState , forKeyPath: "updated_state")
                 newUpload.setValue( upload.activeState, forKey: "active_state")
                 
             }
@@ -241,7 +231,7 @@ class DataManager {
     }
     
     
-    static func deleteMultiple (videoIds:[String], field:String, entity:String, completionHandler: @escaping (_ success: Bool) -> ()){
+    static func deleteMultiple (ids:[String], field:String, entity:String, completionHandler: @escaping (_ success: Bool) -> ()){
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -257,7 +247,7 @@ class DataManager {
             let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
             if records.count > 0 {
                 for record in records {
-                    if(videoIds.contains(record.value(forKey: field) as! String) ) {
+                    if(ids.contains(record.value(forKey: field) as! String) ) {
                         managedContext.delete(record)
                         
                     }
@@ -285,6 +275,58 @@ class DataManager {
     
     
     
+    static func convertRequestToVideo (request:NSManagedObject) {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: Constants.ENTITY_VIDEO)
+        
+        let predicate = NSPredicate(format: "video_id == %@", request.value(forKey: Constants.FIELD_VIDEO_ID) as! String)
+        
+        fetchRequest.predicate = predicate
+        
+        do {
+            let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            if records.count == 0 {
+                let newVideo = NSEntityDescription.insertNewObject(forEntityName: Constants.ENTITY_VIDEO, into: managedContext) as NSManagedObject
+                
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_ID), forKeyPath: Constants.FIELD_VIDEO_ID)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_DESC), forKeyPath: Constants.FIELD_VIDEO_DESC)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_URL), forKeyPath: Constants.FIELD_VIDEO_URL)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_LENGTH), forKeyPath: Constants.FIELD_VIDEO_LENGTH)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_PROJECT_ID), forKeyPath: Constants.FIELD_PROJECT_ID)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_SIZE), forKeyPath: Constants.FIELD_VIDEO_SIZE)
+                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_ADDED), forKeyPath: Constants.FIELD_VIDEO_UPLOADED)
+          
+            } else {
+                DataManager.deleteMultiple(ids: [request.value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: {
+                    (success) in
+                    
+                })
+                
+            }
+            
+        } catch {
+            print(error)
+        }
+    
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        
+    }
+    
+    
+    
+    
+    
     static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor]) -> [NSManagedObject] {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -301,7 +343,13 @@ class DataManager {
             
         }
         
-        if(predicates.count > 0) {
+        if(predicates.count > 1) {
+            let andPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: predicates)
+            fetchRequest.predicate = andPredicate
+            
+        }
+        
+        if(predicates.count == 1) {
             fetchRequest.predicate = predicates[0]
             
         }
@@ -341,6 +389,33 @@ class DataManager {
         do {
             let videos = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
             return videos
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+            return []
+        }
+        
+    }
+    
+    
+    static func getProjects () -> [NSManagedObject] {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return []
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest =
+            NSFetchRequest<NSManagedObject>(entityName: "Project")
+        
+        let sort = NSSortDescriptor(key: "date_created", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        
+        do {
+            let projects = try managedContext.fetch(fetchRequest)
+            return projects
+            
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
             return []

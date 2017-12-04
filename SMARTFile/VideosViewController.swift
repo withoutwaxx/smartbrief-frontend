@@ -77,7 +77,13 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     
     func updateToUploads() {
-        refreshView()
+        RequestDelegate.getVideos(projectId: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String) { (success, message) in
+            if(success) {
+                self.refreshView()
+                
+            }
+            
+        }
         
     }
     
@@ -94,6 +100,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             noVideosLabel.isHidden = true
             
         }
+    
         
     }
     
@@ -171,8 +178,8 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                 tableView.dequeueReusableCell(withIdentifier: "videoCell",
                                               for: indexPath) as! VideoCell
             
-            if(((video.value(forKeyPath: "video_desc") as? String)?.characters.count )! > 0){
-                cell.desc.text = video.value(forKeyPath: "video_desc") as? String
+            if(((video.value(forKeyPath: "desc") as? String)?.characters.count )! > 0){
+                cell.desc.text = video.value(forKeyPath: "desc") as? String
                 cell.desc.textColor = UIColor.white
 
             } else {
@@ -181,7 +188,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             cell.size.text = String(describing: video.value(forKeyPath: "size") ?? "") + " Mb"
-            cell.uploaded.text = "Uploaded \(StringManager.getDate(date: (video.value(forKeyPath: "date_uploaded") as? Date)))"
+            cell.uploaded.text = "Uploaded \(StringManager.dateToStringDate(date: (video.value(forKeyPath: "uploaded") as? Date)))"
             cell.length.text = StringManager.getTime(seconds: video.value(forKeyPath: "length") as! Int)
             
             if(currentProject?.value(forKeyPath: "ready_state") as? Bool == true) {
@@ -197,7 +204,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     func loadData() {
         
         let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
-        let sort = NSSortDescriptor(key: "date_uploaded", ascending: false)
+        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
 
         videos = DataManager.getVideos(predicates: [predicate], sort: [sort])
         

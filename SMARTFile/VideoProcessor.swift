@@ -28,11 +28,11 @@ class VideoProcessor {
             let length:Int = Int(asset.duration)
             let size = getVideoSize(asset: asset)
             let added = Date()
+            print("short date ", added)
             let uploadedState = false
             let activeState = false
-            let updatedState = false
             
-            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, added: added, uploadedState: uploadedState, activeState: activeState, updatedState: updatedState)
+            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, added: added, uploadedState: uploadedState, activeState: activeState)
             requests.append(request)
             
         }
