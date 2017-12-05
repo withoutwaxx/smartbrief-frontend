@@ -31,8 +31,9 @@ class VideoProcessor {
             print("short date ", added)
             let uploadedState = false
             let activeState = false
+            let local_url = ""
             
-            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, added: added, uploadedState: uploadedState, activeState: activeState)
+            let request = UploadRequest(videoId: videoId, userId: userId, projectId: projectId, taskId: taskId, localId: localId, desc: desc, url: url, length: length, size: size, added: added, uploadedState: uploadedState, activeState: activeState, localUrl: local_url)
             requests.append(request)
             
         }
@@ -64,6 +65,56 @@ class VideoProcessor {
         return Int(exactly: ((sizeOnDisk! / 1024) / 1024))!
         
     }
+    
+    
+    
+    func deleteVideoFile (localUrl:String) {
+        if let url = URL(string: localUrl) {
+            if FileManager.default.fileExists(atPath: url.path) {
+                do {
+                    try FileManager.default.removeItem(at: url)
+                    print("deleted \(url.path)")
+                
+                } catch {
+                    print("Unable to delete file")
+        
+                }
+            }
+            
+        }
+    
+    }
+        
+    
+        
+    
+    
+    func createVideoFile (localId:String, videoId:String) {
+        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
+        let docDataPath = documentsDirectory.appendingPathComponent("\(videoId).MOV") as String
+        
+        let manager = PHImageManager.default()
+        
+        let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil).firstObject
+        
+        manager.requestAVAsset(forVideo: asset!, options: nil, resultHandler: { (avasset, audio, info) in
+            if let avassetURL = avasset as? AVURLAsset {
+                
+                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
+                    return
+                }
+                
+                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
+                print(docDataPath)
+                
+                
+                
+            }
+        })
+        
+    }
+    
 
     
 }

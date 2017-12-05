@@ -153,6 +153,7 @@ class RequestDelegate {
         
         executeNewVideo(requests: requests, index: 0, completionHandler: { (
             success) in
+            
             completionHandler(true)
         
             

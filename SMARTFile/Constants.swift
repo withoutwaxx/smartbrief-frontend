@@ -35,6 +35,11 @@ class Constants {
     static let FIELD_VIDEO_LENGTH = "length"
     static let FIELD_VIDEO_URL = "url"
     static let FIELD_VIDEO_ADDED = "added"
+    
+    static let FIELD_UPLOAD_TASK_ID = "task_id"
+    static let FIELD_UPLOAD_ACTIVE = "active_state"
+    static let FIELD_UPLOAD_UPLOADED_STATE = "uploaded_state"
+    static let FIELD_UPLOAD_LOCAL_URL = "local_url"
 
 
 

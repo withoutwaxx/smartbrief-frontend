@@ -16,7 +16,7 @@ import AVKit
 import AssetsPickerViewController
 
 
-class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UploadDelegate {
+class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewVideoDelegate {
     
     @IBOutlet weak var noVideosLabel: UILabel!
     var videos:[NSManagedObject] = []
@@ -67,7 +67,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        AWSManager.awsManager.delegate = self
+        AWSManager.awsManager.videoDelegate = self
         videosTable.delegate = self
         videosTable.dataSource = self
   
@@ -76,7 +76,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     
-    func updateToUploads() {
+    func updateToVideo() {
         RequestDelegate.getVideos(projectId: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String) { (success, message) in
             if(success) {
                 self.refreshView()

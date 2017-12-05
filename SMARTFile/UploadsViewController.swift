@@ -61,7 +61,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        AWSManager.awsManager.delegate = self
+        AWSManager.awsManager.uploadDelegate = self
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
         loadData()
@@ -110,6 +110,10 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func updateToUploads() {
+        RequestDelegate.getVideos(projectId: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String) { (success, message) in
+            
+            
+        }
         updateView()
         
     }

@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class ProjectsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UploadDelegate {
+class ProjectsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewVideoDelegate {
     
     
     var projects:[NSManagedObject] = []
@@ -18,6 +18,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBOutlet weak var noProjectsLabel: UILabel!
     @IBOutlet weak var projectsTable: UITableView!
+    @IBOutlet weak var activityWheel: UIActivityIndicatorView!
     
     
     @IBAction func newProject(_ sender: Any) {
@@ -51,7 +52,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     
-    func updateToUploads() {
+    func updateToVideo() {
         RequestDelegate.getProjects { (success, message) in
             if(success) {
                 self.loadData()
@@ -69,26 +70,46 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
         projectsTable.delegate = self
         projectsTable.dataSource = self
-        AWSManager.awsManager.delegate = self
+        AWSManager.awsManager.videoDelegate = self
 
         
     }
+    
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
 
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
      
         return projects.count
     }
     
     
+    func startWheel () {
+        activityWheel.startAnimating()
+        activityWheel.isHidden = false
+        
+    }
+    
+    
+    func stopWheel () {
+        activityWheel.stopAnimating()
+        activityWheel.isHidden = false
+        
+    }
+    
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let project = projects[indexPath.row]
+        startWheel()
         RequestDelegate.getVideos(projectId: (project.value(forKeyPath: "project_id") as? String)!, completionHandler: {
             (success, message) in
+            self.stopWheel()
             if(success) {
                 self.selectedProject = project
                 self.performSegue(withIdentifier: "showVideos", sender: self)

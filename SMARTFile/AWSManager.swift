@@ -15,23 +15,34 @@ protocol UploadDelegate: class {
     
 }
 
+protocol NewVideoDelegate: class {
+    func updateToVideo()
+    
+}
+
 
 final class AWSManager {
     
     static let awsManager = AWSManager()
-    weak var delegate:UploadDelegate?
+    weak var uploadDelegate:UploadDelegate?
+    weak var videoDelegate:NewVideoDelegate?
 
     
     var transferUtility = AWSS3TransferUtility.default()
     var requests:[NSManagedObject] = []
+    var activeRequests:[NSManagedObject] = []
+
     
     
     private init() {}
     
     
-    func updateRequestList () {
-        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
+    func updateRequestLists () {
+        let sort = NSSortDescriptor(key: Constants.FIELD_VIDEO_ADDED, ascending: false)
         requests = DataManager.getUploadRequests(predicates: [], sort: [sort])
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "active_state = %@", true as CVarArg))
+        activeRequests = DataManager.getUploadRequests(predicates: [], sort: [sort])
         
     }
     
@@ -40,7 +51,7 @@ final class AWSManager {
     func checkForUploadedNotUpdated () {
         var requestsToSend:[NSManagedObject] = []
         for request in requests {
-            if(request.value(forKey: "uploaded_state") as! Bool == true) {
+            if(request.value(forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE) as! Bool == true) {
                 requestsToSend.append(request)
                 
             }
@@ -51,8 +62,8 @@ final class AWSManager {
             RequestDelegate.newVideos(requests: requestsToSend, completionHandler: {
                 (success) in
                 if(success) {
-                    if(self.delegate != nil) {
-                        self.delegate?.updateToUploads()
+                    if(self.videoDelegate != nil) {
+                        self.videoDelegate?.updateToVideo()
                         
                     }
                 }
@@ -64,43 +75,101 @@ final class AWSManager {
     
     
     
-    func checkForActive () {
-        var activeRequests:[NSManagedObject] = []
-        for request in requests {
-            if(request.value(forKey: "active_state") as! Bool == true) {
-                activeRequests.append(request)
+    func updateActiveUploads (activeUploads:[AWSS3TransferUtilityUploadTask], completionHandler: @escaping (_ success: Bool) -> ()) {
+        
+        var requestIds:[Int] = []
+        var taskIds:[Int] = []
+        var incorrectRequests:[Int] = []
+        var incorrectRequestFound = false
+        
+        for request in activeRequests {
+            requestIds.append(request.value(forKey: Constants.FIELD_UPLOAD_TASK_ID) as! Int)
+            
+        }
+        
+        for upload in activeUploads {
+            taskIds.append(Int(upload.taskIdentifier))
+            
+        }
+        
+        for req in requestIds {
+            if(!taskIds.contains(req)) {
+                incorrectRequests.append(req)
+                incorrectRequestFound = true
                 
             }
             
         }
+
         
-        if(!activeRequests.isEmpty) {
-            return true
-            
-        } else {
-           return false
+        if(incorrectRequestFound) {
+            DataManager.resetUploadTasks(ids:incorrectRequests, completionHandler: {
+                (success) in
+                if(self.uploadDelegate != nil) {
+                    self.uploadDelegate?.updateToUploads()
+                    
+                }
+                self.updateRequestLists()
+                completionHandler(true)
+                
+            })
             
         }
+    
+    }
+    
+    
+    
+    func validateActiveUpload(task:AWSS3TransferUtilityUploadTask) {
+        
         
     }
     
     
     
-    func checkForActive() {
+    func checkForActive ( completionHandler: @escaping (_ active: Bool) -> ()) {
         
+        updateRequestLists()
+    
+        transferUtility.getUploadTasks().continueWith(block: {
+            (task) in
+          
+            if let uploadTasks = task.result as? [AWSS3TransferUtilityUploadTask] {
+                
+                if((self.activeRequests.isEmpty) && (uploadTasks.isEmpty)){
+                    completionHandler(false)
+                    
+                }
+                
+                if(self.activeRequests.count != uploadTasks.count) {
+                    self.updateActiveUploads(activeUploads: uploadTasks, completionHandler: {
+                        (success) in
+                        for upload in uploadTasks {
+                            validateActiveUpload(upload)
+                            
+                        }
+                        
+                    })
+                    completionHandler(true)
         
+                } else {
+                    completionHandler(true)
+                    
+                }
+                
+            }
+  
+        })
+    
     }
     
     
     
     func refreshUploads () {
-        updateRequestList()
+        updateRequestLists()
         checkForUploadedNotUpdated()
-        if(checkForActive()) {
-            
-            
-        } else {
-            if(requests.count > 0) {
+        checkForActive { (success) in
+            if(success) {
                 
                 
             }
@@ -151,25 +220,7 @@ final class AWSManager {
         
         
         //
-        //        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-        //        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
-        //        let docDataPath = documentsDirectory.appendingPathComponent("newvideo.MOV") as String
-        //
-        //        let manager = PHImageManager.default()
-        //        manager.requestAVAsset(forVideo: asset, options: nil, resultHandler: { (avasset, audio, info) in
-        //            if let avassetURL = avasset as? AVURLAsset {
-        //                print("asset", avassetURL.url as URL)
-        //                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
-        //                    return
-        //                }
-        //
-        //                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
-        //                print(docDataPath)
-        //                AWSManager.uploadVideo(url:URL(fileURLWithPath: docDataPath), completion: self.completionHandler!)
-        //
-        //
-        //            }
-        //        })
+        //        
         
         
         

@@ -452,6 +452,10 @@
                                 <color key="textColor" red="0.60054280598958332" green="0.61332031249999996" blue="0.61332031249999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="mHN-JX-Xwf">
+                                <rect key="frame" x="354" y="47" width="20" height="20"/>
+                                <color key="color" red="1" green="0.64646367459999998" blue="0.34254609819999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.13281933069999999" green="0.13281933069999999" blue="0.13281933069999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -460,9 +464,11 @@
                             <constraint firstItem="VDg-Xz-4K5" firstAttribute="centerX" secondItem="4je-H7-VjH" secondAttribute="centerX" id="1Ic-6c-kFv"/>
                             <constraint firstItem="bLv-m7-fea" firstAttribute="top" secondItem="VDg-Xz-4K5" secondAttribute="bottom" constant="10" id="1ag-ps-ne3"/>
                             <constraint firstItem="XgN-BG-M6E" firstAttribute="centerX" secondItem="4je-H7-VjH" secondAttribute="centerX" id="2s7-WQ-Pax"/>
+                            <constraint firstItem="mHN-JX-Xwf" firstAttribute="centerY" secondItem="XgN-BG-M6E" secondAttribute="centerY" id="2tr-BI-kCn"/>
                             <constraint firstItem="ntw-pa-1fb" firstAttribute="leading" secondItem="4je-H7-VjH" secondAttribute="leading" constant="40" id="8dh-5A-03h">
                                 <variation key="widthClass=compact" constant="20"/>
                             </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="mHN-JX-Xwf" secondAttribute="trailing" constant="20" id="8ps-uE-9Bc"/>
                             <constraint firstItem="Q1Q-FR-Cz0" firstAttribute="top" secondItem="bLv-m7-fea" secondAttribute="bottom" id="8zc-ir-Cpt"/>
                             <constraint firstItem="K1S-j6-e3K" firstAttribute="top" secondItem="Q1Q-FR-Cz0" secondAttribute="bottom" id="Dmq-pG-GRA"/>
                             <constraint firstItem="XgN-BG-M6E" firstAttribute="centerY" secondItem="ntw-pa-1fb" secondAttribute="centerY" id="FRq-Bb-tEr"/>
@@ -513,6 +519,7 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="activityWheel" destination="mHN-JX-Xwf" id="Y7a-aQ-4WP"/>
                         <outlet property="noProjectsLabel" destination="3G6-Dq-esc" id="lWg-Nc-apN"/>
                         <outlet property="projectsTable" destination="bLv-m7-fea" id="X6M-cG-Rgu"/>
                         <segue destination="SJK-Eh-cZP" kind="presentation" modalTransitionStyle="crossDissolve" id="Eu5-TM-F2H"/>
@@ -1470,7 +1477,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Eu5-TM-F2H"/>
-        <segue reference="8di-cx-nsU"/>
-        <segue reference="0qj-Th-acr"/>
+        <segue reference="CMW-dl-upz"/>
+        <segue reference="nnu-0y-wGE"/>
     </inferredMetricsTieBreakers>
 </document>

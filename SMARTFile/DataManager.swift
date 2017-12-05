@@ -25,6 +25,96 @@ class DataManager {
         return 0
     }
     
+    
+    static func updateUnrecordedUploadTasks (ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        for id in ids {
+            var predicates:[NSPredicate] = []
+            predicates.append(NSPredicate(format: "task_id = %@", id))
+            
+            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+            
+            if(!uploadRequest.isEmpty) {
+                uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE)
+                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
+                if(!url.isEmpty) {
+                    let videoManager = VideoProcessor()
+                    videoManager.deleteVideoFile(localUrl: url)
+                    uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+                    
+                }
+                
+            }
+            
+        }
+        
+        do {
+            try managedContext.save()
+            completionHandler(true)
+            
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+            
+        }
+        
+        
+    }
+    
+    
+    
+    
+    static func resetUploadTasks(ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
+        
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        for id in ids {
+            var predicates:[NSPredicate] = []
+            predicates.append(NSPredicate(format: "task_id = %@", id))
+            
+            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+            
+            if(!uploadRequest.isEmpty) {
+                uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE)
+                uploadRequest[0].setValue(0, forKey: Constants.FIELD_UPLOAD_TASK_ID)
+                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
+                if(!url.isEmpty) {
+                    let videoManager = VideoProcessor()
+                    videoManager.deleteVideoFile(localUrl: url)
+                    uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+                    
+                }
+                
+            }
+            
+        }
+        
+        do {
+            try managedContext.save()
+            completionHandler(true)
+            
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        
+        }
+        
+    }
+
+    
+    
     static func saveProjects(projects:[JSON], count:[JSON]) {
         
         deleteAllOfType(type: "Project")
@@ -190,6 +280,7 @@ class DataManager {
                 newUpload.setValue( upload.added , forKeyPath: "added")
                 newUpload.setValue( upload.uploadedState , forKeyPath: "uploaded_state")
                 newUpload.setValue( upload.activeState, forKey: "active_state")
+                newUpload.setValue( upload.localUrl, forKey: "local_url")
                 
             }
     
