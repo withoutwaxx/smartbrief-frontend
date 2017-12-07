@@ -26,6 +26,47 @@ class DataManager {
     }
     
     
+    
+    static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool) {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "\(findField) = %@", findValue))
+        
+        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+        
+        if(!uploadRequest.isEmpty) {
+            if(updateTypeBool) {
+                uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+                
+            } else {
+                uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                
+            }
+            
+            
+        }
+        
+        do {
+            try managedContext.save()
+            
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+            
+        }
+        
+        
+    }
+    
+    
+    
     static func updateUnrecordedUploadTasks (ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -94,6 +135,7 @@ class DataManager {
                 if(!url.isEmpty) {
                     let videoManager = VideoProcessor()
                     videoManager.deleteVideoFile(localUrl: url)
+                    print("deleted video file")
                     uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
                     
                 }

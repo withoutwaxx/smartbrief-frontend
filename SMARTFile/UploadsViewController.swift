@@ -16,7 +16,8 @@ import AVKit
 import AssetsPickerViewController
 
 
-class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate, UploadDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate, UploadDelegate, UploadProgressDelegate {
+    
     
     var requestQueue:[NSManagedObject] = []
     var currentProject:NSManagedObject?
@@ -30,6 +31,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var selectProjectsLabel: UILabel!
     @IBOutlet weak var videosSummary: UILabel!
     @IBOutlet weak var uploadsTable: UITableView!
+    @IBOutlet weak var progressBar: UIProgressView!
     
     
 
@@ -62,6 +64,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         AWSManager.awsManager.uploadDelegate = self
+        AWSManager.awsManager.uploadProgressDelegate = self
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
         loadData()
@@ -98,6 +101,16 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             noVideosLabel.isHidden = false
             
         }
+        
+    }
+    
+    
+    
+    func updateToProgress(progress: Double) {
+        let value = Float(progress)
+        DispatchQueue.main.async(execute: {
+            self.progressBar.progress = value
+        })
         
     }
 

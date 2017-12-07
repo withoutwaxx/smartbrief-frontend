@@ -11,12 +11,12 @@ import Foundation
 
 class UploadRequest {
     
-    var videoId, userId, projectId, taskId, localId, desc, url, localUrl:String
-    var length, size:Int
+    var videoId, userId, projectId, localId, desc, url, localUrl:String
+    var length, size, taskId:Int
     var added:Date
     var uploadedState, activeState:Bool
     
-    init (videoId:String, userId:String, projectId:String, taskId:String, localId:String, desc:String, url:String, length:Int, size:Int, added:Date, uploadedState:Bool, activeState:Bool, localUrl:String) {
+    init (videoId:String, userId:String, projectId:String, taskId:Int, localId:String, desc:String, url:String, length:Int, size:Int, added:Date, uploadedState:Bool, activeState:Bool, localUrl:String) {
         
         self.videoId = videoId
         self.userId = userId

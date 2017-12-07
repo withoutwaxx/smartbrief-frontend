@@ -1,16 +1,16 @@
 PODS:
-  - Alamofire (4.5.1)
+  - Alamofire (4.6.0)
   - AssetsPickerViewController (2.2.1):
     - Dimmer (~> 1.0)
     - FadeView (~> 1.0)
     - PureLayout
     - SwiftARGB (< 2.0)
     - TinyLog (~> 1.0)
-  - AWSCognito (2.6.6):
-    - AWSCore (= 2.6.6)
-  - AWSCore (2.6.6)
-  - AWSS3 (2.6.6):
-    - AWSCore (= 2.6.6)
+  - AWSCognito (2.6.7):
+    - AWSCore (= 2.6.7)
+  - AWSCore (2.6.7)
+  - AWSS3 (2.6.7):
+    - AWSCore (= 2.6.7)
   - Dimmer (1.1.2):
     - FadeView
     - OptionalTypes
@@ -45,11 +45,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/DragonCherry/AssetsPickerViewController
 
 SPEC CHECKSUMS:
-  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   AssetsPickerViewController: ba566156e4056dd333bd6c34371235743ccc0eaf
-  AWSCognito: 7683df59094f1b4cd50d5a8e870a8ff59224d9b3
-  AWSCore: 64619e45b47678afab53ca0f9b4fa380ebee6f0b
-  AWSS3: 44c99957a049703e06b474f4b1898da215f2d922
+  AWSCognito: be5798e371a93b84ebb4c0577db21634e2c8c955
+  AWSCore: a5ff5fb202342b922eb9036af9ecc3bc28a032eb
+  AWSS3: cd4aec32f51fc202431e36596d2f535f821788e1
   Dimmer: d69bad35b7e4545c3d36b64737b2623b59fac55c
   FadeView: 7d4cdefa83ac9c17782613e9068c9fac0457285e
   JWTDecode: 83e8b381aafe27158d9f692cbdca2b12d61d460c

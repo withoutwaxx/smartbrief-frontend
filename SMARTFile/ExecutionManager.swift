@@ -185,12 +185,7 @@ class RequestExecutionManager {
                     if let value = response.result.value {
                         let json = JSON(value)
                         if(json["outcome"].boolValue) {
-                            if(json["exist"].boolValue) {
-                                let videos  = json["payload"].array
-                                completionHandler(true)
-                            } else {
-                                completionHandler(true)
-                            }
+                            completionHandler(true)
                             
                         } else {
                             completionHandler(false)
@@ -200,10 +195,8 @@ class RequestExecutionManager {
                     
                 case .failure(let error):
                     if(response.response?.statusCode == 401) {
-                        if let value = response.data {
-                            let json = JSON(value)
-                            completionHandler(false)
-                        }
+                        completionHandler(false)
+                    
                     } else {
                         completionHandler(false)
                     }

@@ -231,11 +231,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "534091354.711839"
+            timestampString = "534352700.887832"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
             landmarkName = "UploadsViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -247,11 +247,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "534091354.712272"
+            timestampString = "534352700.887923"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
             landmarkName = "assetsPicker(controller:selected:)"
             landmarkType = "7">
             <Locations>
@@ -310,11 +310,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "534091354.712598"
+            timestampString = "534352700.887982"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
             landmarkName = "assetsPicker(controller:selected:)"
             landmarkType = "7">
          </BreakpointContent>

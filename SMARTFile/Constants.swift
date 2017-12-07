@@ -40,6 +40,8 @@ class Constants {
     static let FIELD_UPLOAD_ACTIVE = "active_state"
     static let FIELD_UPLOAD_UPLOADED_STATE = "uploaded_state"
     static let FIELD_UPLOAD_LOCAL_URL = "local_url"
+    static let FIELD_UPLOAD_LOCAL_ID = "local_id"
+
 
 
 

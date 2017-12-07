@@ -8,6 +8,7 @@
 
 import Foundation
 import Photos
+import CoreData
 
 class VideoProcessor {
     
@@ -20,7 +21,7 @@ class VideoProcessor {
             
             let videoId = UuidGenerator.newUuid()
             let projectId = pProjectId
-            let taskId = ""
+            let taskId = 0
             let userId = User.id
             let localId = asset.localIdentifier
             let desc = ""
@@ -89,7 +90,7 @@ class VideoProcessor {
         
     
     
-    func createVideoFile (localId:String, videoId:String) {
+    func createVideoFile (request:NSManagedObject) -> (Bool, String){
         let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         let documentsDirectory: AnyObject = docPaths[0] as AnyObject
         let docDataPath = documentsDirectory.appendingPathComponent("\(videoId).MOV") as String

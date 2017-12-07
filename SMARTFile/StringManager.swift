@@ -85,8 +85,8 @@ class StringManager {
     static func buildNewVideoURL (request:NSManagedObject) -> String {
         
         let pVideoId = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
-        let projectId = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
-        let desc = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
+        let projectId = request.value(forKeyPath: Constants.FIELD_PROJECT_ID) as! String
+        let desc = request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as! String
         let size = request.value(forKeyPath: Constants.FIELD_VIDEO_SIZE) as! String
         let length = request.value(forKeyPath: Constants.FIELD_VIDEO_LENGTH) as! String
         let url = request.value(forKeyPath: Constants.FIELD_VIDEO_URL) as! String
