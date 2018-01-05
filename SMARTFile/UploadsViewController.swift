@@ -16,12 +16,19 @@ import AVKit
 import AssetsPickerViewController
 
 
+
 class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate, UploadDelegate, UploadProgressDelegate {
+    
+    
+    var transferUtility:AWSS3TransferUtility?
+    var requests:[NSManagedObject] = []
+    var activeRequests:[NSManagedObject] = []
+    var completionHandler:AWSS3TransferUtilityUploadCompletionHandlerBlock?
+    var uploadExpression:AWSS3TransferUtilityUploadExpression?
     
     
     var requestQueue:[NSManagedObject] = []
     var currentProject:NSManagedObject?
-    var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
     
     @IBOutlet weak var noVideosLabel: UILabel!
     @IBOutlet weak var uploadContainer: UIView!
@@ -75,6 +82,16 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
   
         setupViews()
         
+        self.uploadExpression = AWSS3TransferUtilityUploadExpression()
+        
+        uploadExpression?.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
+            DispatchQueue.main.async(execute: {
+                self.updateToProgress(progress: progress.fractionCompleted)
+                print("video upload progress update: \(progress.fractionCompleted)")
+                
+            })
+        }
+
     }
     
     
@@ -150,10 +167,93 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                     AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DUPLICATE_UPLOAD", comment: ""), currentViewController: self)
                 }
                 
+                self.startNewUpload(request: self.requestQueue[0])
+                
+                
             } else {
                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_UNABLE", comment: "") , currentViewController: self.parent!)
             }
             
+        })
+        
+    }
+    
+    
+    
+    func startNewUpload(request:NSManagedObject) {
+        
+        let videoProcessor = VideoProcessor()
+        
+        self.completionHandler = { (task, error) -> Void in
+            if(error != nil) {
+                DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], completionHandler: { (success) in
+                    if(success) {
+                        
+                        
+                    }
+        
+                })
+                
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS"
+, comment: ""), message: NSLocalizedString("ALERT_UPLOAD_FAIL", comment: ""), currentViewController: self)
+                
+                
+            } else {
+                
+                
+            }
+            
+        }
+        
+        videoProcessor.createVideoFile(request: request, completionHandler: {(success, url) in
+            if(success) {
+ 
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_SUCCESS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_START", comment: ""), currentViewController: self)
+
+                if let newUrl = url {
+        
+                    let transfer = AWSS3TransferUtility.default()
+                    
+                    transfer.uploadFile(newUrl, bucket: "finalsmartfilebucket", key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String, contentType: "video/mp4", expression: self.uploadExpression, completionHandler: self.completionHandler)
+                    
+                    
+                    
+                    transfer.getUploadTasks().continueWith(block: {
+                        (task) in
+                        
+                        if let uploadTasks = task.result as? [AWSS3TransferUtilityUploadTask] {
+                            for upload in uploadTasks {
+                                if(upload.key == request.value(forKey: Constants.FIELD_VIDEO_ID) as! String) {
+                                    
+                                    DataManager.setUploadTaskActive(request: request, localUrl: newUrl, taskId: Int(upload.taskIdentifier), completionHandler: { (success) in
+                                        if(success) {
+                                            
+                                            
+                                        }
+                                        
+                                    })
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        return nil
+                        
+                    })
+        
+            } else {
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_NO_START", comment: ""), currentViewController: self)
+                    
+                    DataManager.deleteMultiple(ids: [request.value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: { (success) in
+                        
+                        
+                    })
+            }
+        
+        }
+        
         })
         
     }
@@ -252,7 +352,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "uploaded_state = %@", false as CVarArg))
         
-        requestQueue = DataManager.getUploadRequests(predicates: predicates, sort: [sort])
+        requestQueue = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: false, context: nil)
 
     }
     
@@ -268,3 +368,6 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
 
 
 }
+
+
+

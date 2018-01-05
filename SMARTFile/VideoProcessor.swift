@@ -87,33 +87,92 @@ class VideoProcessor {
     }
         
     
-        
     
-    
-    func createVideoFile (request:NSManagedObject) -> (Bool, String){
+    func createDirectory () -> (Bool, URL?) {
         let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        
         let documentsDirectory: AnyObject = docPaths[0] as AnyObject
-        let docDataPath = documentsDirectory.appendingPathComponent("\(videoId).MOV") as String
         
-        let manager = PHImageManager.default()
+        let filePath:String = documentsDirectory.appendingPathComponent(User.id)
         
-        let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil).firstObject
+        let fileManager = FileManager.default
         
-        manager.requestAVAsset(forVideo: asset!, options: nil, resultHandler: { (avasset, audio, info) in
-            if let avassetURL = avasset as? AVURLAsset {
+        var isDir : ObjCBool = false
+        
+        if fileManager.fileExists  (atPath: filePath, isDirectory:&isDir) {
+            if isDir.boolValue {
+                return (true, URL(fileURLWithPath: filePath))
                 
-                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
-                    return
+            } else {
+                deleteVideoFile(localUrl: filePath)
+                do {
+                    try FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true, attributes: nil)
+                    return (true, URL(fileURLWithPath: filePath))
+                } catch let error as NSError {
+                    return (false, nil)
+                    NSLog("Unable to create directory \(error.debugDescription)")
                 }
                 
-                try? video.write(to: URL(fileURLWithPath: docDataPath), options: [])
-                print(docDataPath)
+            }
+        } else {
+            do {
+                try FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true, attributes: nil)
+                return (true, URL(fileURLWithPath: filePath))
+            } catch let error as NSError {
+                return (false, nil)
+                NSLog("Unable to create directory \(error.debugDescription)")
+            }
+            
+        }
+        
+    }
+    
+        
+    
+    
+    func createVideoFile (request:NSManagedObject, completionHandler: @escaping (_ success: Bool, _ url:URL?) -> ()) {
+        
+        let dir = createDirectory()
+        var returnPath:URL?
+        
+        if(dir.0) {
+            let docDataPath = dir.1?.appendingPathComponent("\(request.value(forKey: Constants.FIELD_VIDEO_ID) as! String).MOV")
+            
+            if let newPath = docDataPath {
                 
+                let manager = PHImageManager.default()
                 
+                let asset = PHAsset.fetchAssets(withLocalIdentifiers: [request.value(forKey: Constants.FIELD_UPLOAD_LOCAL_ID) as! String], options: nil).firstObject
+                
+                if let uAsset = asset {
+                    manager.requestAVAsset(forVideo: uAsset, options: nil, resultHandler: { (avasset, audio, info) in
+                        if let avassetURL = avasset as? AVURLAsset {
+                            
+                            guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
+                                completionHandler(false, nil)
+                                return
+                            }
+                            do {
+                                try video.write(to: URL(fileURLWithPath: newPath.path), options: [])
+                                completionHandler(true, newPath)
+                            
+                            } catch {
+                                completionHandler(false, nil)
+                                
+                            }
+                            
+                            
+                        }
+                    })
+                    
+                }
                 
             }
-        })
+            
+        }
         
+        completionHandler(false, nil)
+    
     }
     
 

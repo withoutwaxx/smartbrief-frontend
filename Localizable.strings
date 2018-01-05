@@ -14,6 +14,7 @@
 "ALERT_NEW_PROJECT_TITLE" = "New Project";
 "ALERT_NEW_PROJECT" = "Please enter the new project title below";
 "ALERT_TITLE_OOPS" = "Oops";
+"ALERT_TITLE_SUCCESS" = "Success";
 "ALERT_TITLE_WARNING" = "Warning";
 "ALERT_PROJECT_NAME_SHORT" = "Please enter a project title with a max of 140 characters";
 "ALERT_PROJECT_DELETE" = "Are you sure you want to delete this entire project? All included video files will also be deleted";
@@ -24,3 +25,6 @@
 "ALERT_PROJECT_READY_ACTION" = "Mark as Ready";
 "ALERT_VIDEO_UNABLE" = "Unable to process and upload selected video(s)";
 "ALERT_DUPLICATE_UPLOAD" = "You cannot upload a particular video to the same project more than once";
+"ALERT_UPLOAD_START" = "Uploads successfully started";
+"ALERT_UPLOAD_NO_START" = "Uploading was unable to start successfully";
+"ALERT_UPLOAD_FAIL" = "Uploading was unable to complete please retry";

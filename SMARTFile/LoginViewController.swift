@@ -39,8 +39,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                             DataManager.deleteAllRecords()
                             RequestDelegate.getProjects(completionHandler: { (success, message) in
                                 if(success) {
-                                    //
                                     self.performSegue(withIdentifier: "showProjects", sender: self)
+                                    guard let appDelegate =
+                                        UIApplication.shared.delegate as? AppDelegate else {
+                                            return
+                                    }
+                                    
+                                    let managedContext =
+                                        appDelegate.persistentContainer.newBackgroundContext()
+                                    appDelegate.persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
+                                    appDelegate.persistentContainer.viewContext.parent = managedContext
+                                    
+                                    DispatchQueue.global(qos: .background).async {
+                                        
+                                        AWSManager.awsManager.awakenUploads(context: managedContext)
+
+                                    }
                                     
                                 } else {
                                     self.loginText.layer.isHidden = true

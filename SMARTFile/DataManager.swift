@@ -27,41 +27,40 @@ class DataManager {
     
     
     
-    static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool) {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
+    static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool, context:NSManagedObjectContext) {
+       
         
 
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "\(findField) = %@", findValue))
         
-        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
         
         if(!uploadRequest.isEmpty) {
-            if(updateTypeBool) {
-                uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+            context.performAndWait {
                 
-            } else {
-                uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                if(updateTypeBool) {
+                    uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+                    
+                } else {
+                    uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                    
+                }
+                
+                if (context.hasChanges) {
+                    do {
+                        try context.save()
+                        
+                    } catch let error as NSError {
+                        print("Could not save. \(error), \(error.userInfo)")
+                        
+                    }
+                    
+                }
                 
             }
-            
-            
+    
         }
-        
-        do {
-            try managedContext.save()
-            
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-            
-        }
-        
         
     }
     
@@ -80,7 +79,7 @@ class DataManager {
             var predicates:[NSPredicate] = []
             predicates.append(NSPredicate(format: "task_id = %@", id))
             
-            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: nil)
             
             if(!uploadRequest.isEmpty) {
                 uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE)
@@ -110,6 +109,50 @@ class DataManager {
     
     
     
+    static func setUploadTaskActive(request:NSManagedObject, localUrl:URL, taskId:Int, completionHandler: @escaping (_ success: Bool) -> ()){
+        
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+       
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "video_id = %@", request.value(forKey: Constants.FIELD_VIDEO_ID) as! String))
+        
+        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
+        
+        if(!uploadRequest.isEmpty) {
+            uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE)
+            uploadRequest[0].setValue(taskId, forKey: Constants.FIELD_UPLOAD_TASK_ID)
+            uploadRequest[0].setValue(localUrl.path, forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+           
+            
+        } else {
+            completionHandler(false)
+            
+        }
+            
+        
+        
+        do {
+            try managedContext.save()
+            completionHandler(true)
+            
+        } catch let error as NSError {
+            completionHandler(false)
+            print("Could not save. \(error), \(error.userInfo)")
+            
+        }
+        
+    }
+    
+    
+    
     
     static func resetUploadTasks(ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
         
@@ -126,7 +169,7 @@ class DataManager {
             var predicates:[NSPredicate] = []
             predicates.append(NSPredicate(format: "task_id = %@", id))
             
-            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [])
+            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
             
             if(!uploadRequest.isEmpty) {
                 uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE)
@@ -460,14 +503,9 @@ class DataManager {
     
     
     
-    static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor]) -> [NSManagedObject] {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return []
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
+    static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor], bg:Bool, context:NSManagedObjectContext?) -> [NSManagedObject] {
+        let managedContext:NSManagedObjectContext
+        var requestQueue:[NSManagedObject]?
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
         
@@ -487,13 +525,53 @@ class DataManager {
             
         }
         
+        if(bg) {
+            context?.performAndWait {
+                do {
+                    requestQueue = try context?.fetch(fetchRequest) as? [NSManagedObject]
+                
+                } catch let error as NSError {
+                    print("Could not fetch. \(error), \(error.userInfo)")
+                
+                }
+            }
+            
+            if let checkRequests = requestQueue {
+                return checkRequests
+                
+            } else {
+                return []
+                
+            }
+            
+        }
+        
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return []
+        }
+        
+        managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        
         do {
-            let requestQueue = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-            return requestQueue
+            requestQueue = try managedContext.fetch(fetchRequest) as? [NSManagedObject]
+          
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
-            return []
+           
         }
+        
+        if let checkRequests = requestQueue {
+            return checkRequests
+            
+        } else {
+            return []
+            
+        }
+        
         
     }
     
