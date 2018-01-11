@@ -10,7 +10,17 @@ import Foundation
 import Photos
 import CoreData
 
-class VideoProcessor {
+
+
+final class VideoManager {
+    
+    static let sharedInstance = VideoManager()
+    
+    private init() {
+        
+        
+    }
+    
     
     
     func processNewVideos(assets:[PHAsset], pProjectId:String, completionHandler: @escaping (_ success: Bool, _ duplicate:Bool) -> ()) {
@@ -85,6 +95,29 @@ class VideoProcessor {
         }
     
     }
+    
+    
+    //Removes all files from users own dir. Used to ensure files do not build up if uploads fail
+    func clearUsersDirectory() {
+        let fileManager = FileManager.default
+        
+        let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        
+        let documentsDirectory: AnyObject = docPaths[0] as AnyObject
+        
+        let dirPath:String = documentsDirectory.appendingPathComponent(User.id)
+        
+        do {
+            let filePaths = try fileManager.contentsOfDirectory(atPath: dirPath)
+            for filePath in filePaths {
+                try fileManager.removeItem(atPath: dirPath + filePath)
+            }
+        } catch {
+            print("Could not clear temp folder: \(error)")
+        }
+        
+    }
+    
         
     
     

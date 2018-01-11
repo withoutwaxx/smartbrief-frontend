@@ -26,6 +26,40 @@ class DataManager {
     }
     
     
+    static func completeUploadTask (taskId:Int, context:NSManagedObjectContext) {
+        
+        
+        context.performAndWait {
+        
+            var predicates:[NSPredicate] = []
+            predicates.append(NSPredicate(format: "task_id = %@", taskId))
+            
+            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
+            
+            if(!uploadRequest.isEmpty) {
+                uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
+                uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE)
+                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
+                if(!url.isEmpty) {
+                    VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
+                    print("deleted video file")
+                    
+                }
+                
+            }
+            
+            do {
+                try context.save()
+                
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+                
+            }
+            
+        }
+        
+    }
+    
     
     static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool, context:NSManagedObjectContext) {
        
@@ -82,11 +116,10 @@ class DataManager {
             let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: nil)
             
             if(!uploadRequest.isEmpty) {
-                uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE)
+                uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
                 let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
                 if(!url.isEmpty) {
-                    let videoManager = VideoProcessor()
-                    videoManager.deleteVideoFile(localUrl: url)
+                    VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
                     uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
                     
                 }
@@ -127,7 +160,7 @@ class DataManager {
         let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
         
         if(!uploadRequest.isEmpty) {
-            uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE)
+            uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
             uploadRequest[0].setValue(taskId, forKey: Constants.FIELD_UPLOAD_TASK_ID)
             uploadRequest[0].setValue(localUrl.path, forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
            
@@ -154,46 +187,42 @@ class DataManager {
     
     
     
-    static func resetUploadTasks(ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
+    static func resetUploadTasks(ids:[Int], context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()){
         
         
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-        for id in ids {
-            var predicates:[NSPredicate] = []
-            predicates.append(NSPredicate(format: "task_id = %@", id))
+        context.performAndWait {
             
-            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
-            
-            if(!uploadRequest.isEmpty) {
-                uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE)
-                uploadRequest[0].setValue(0, forKey: Constants.FIELD_UPLOAD_TASK_ID)
-                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
-                if(!url.isEmpty) {
-                    let videoManager = VideoProcessor()
-                    videoManager.deleteVideoFile(localUrl: url)
-                    print("deleted video file")
-                    uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+            for id in ids {
+                
+                var predicates:[NSPredicate] = []
+                predicates.append(NSPredicate(format: "task_id = %@", id))
+                
+                let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
+                
+                if(!uploadRequest.isEmpty) {
+                    uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
+                    uploadRequest[0].setValue(0, forKey: Constants.FIELD_UPLOAD_TASK_ID)
+                    let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
+                    if(!url.isEmpty) {
+                        VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
+                        print("deleted video file")
+                        uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+                        
+                    }
                     
                 }
                 
             }
+
+            do {
+                try context.save()
+                completionHandler(true)
+                
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+                
+            }
             
-        }
-        
-        do {
-            try managedContext.save()
-            completionHandler(true)
-            
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        
         }
         
     }
@@ -407,7 +436,7 @@ class DataManager {
     }
     
     
-    static func deleteMultiple (ids:[String], field:String, entity:String, completionHandler: @escaping (_ success: Bool) -> ()){
+    static func deleteMultiple (ids:[String], field:String, entity:String, context:NSManagedObjectContext) {
         
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
@@ -439,67 +468,15 @@ class DataManager {
     
         do {
             try managedContext.save()
-            completionHandler(true)
+
         
         } catch let error as NSError {
-            completionHandler(false)
+
             print("Could not save. \(error), \(error.userInfo)")
         
         }
         
     }
-    
-    
-    
-    static func convertRequestToVideo (request:NSManagedObject) {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: Constants.ENTITY_VIDEO)
-        
-        let predicate = NSPredicate(format: "video_id == %@", request.value(forKey: Constants.FIELD_VIDEO_ID) as! String)
-        
-        fetchRequest.predicate = predicate
-        
-        do {
-            let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-            if records.count == 0 {
-                let newVideo = NSEntityDescription.insertNewObject(forEntityName: Constants.ENTITY_VIDEO, into: managedContext) as NSManagedObject
-                
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_ID), forKeyPath: Constants.FIELD_VIDEO_ID)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_DESC), forKeyPath: Constants.FIELD_VIDEO_DESC)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_URL), forKeyPath: Constants.FIELD_VIDEO_URL)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_LENGTH), forKeyPath: Constants.FIELD_VIDEO_LENGTH)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_PROJECT_ID), forKeyPath: Constants.FIELD_PROJECT_ID)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_SIZE), forKeyPath: Constants.FIELD_VIDEO_SIZE)
-                newVideo.setValue(request.value(forKey: Constants.FIELD_VIDEO_ADDED), forKeyPath: Constants.FIELD_VIDEO_UPLOADED)
-          
-            } else {
-                DataManager.deleteMultiple(ids: [request.value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: {
-                    (success) in
-                    
-                })
-                
-            }
-            
-        } catch {
-            print(error)
-        }
-    
-        do {
-            try managedContext.save()
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
-        
-    }
-    
-    
     
     
     

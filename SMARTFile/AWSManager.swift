@@ -26,8 +26,6 @@ protocol UploadProgressDelegate: class {
     
 }
 
-private let _awsManager = AWSManager()
-
 
 class AWSManager {
     
@@ -43,13 +41,10 @@ class AWSManager {
     var context:NSManagedObjectContext?
     
     
-    class var awsManager: AWSManager {
-        return _awsManager
-        
-    }
+    static let sharedInstance = AWSManager()
     
     
-    init() {
+    private init() {
         let credentialProvider = AWSCognitoCredentialsProvider (
             regionType: .EUWest2,
             identityPoolId: "eu-west-2:206e8f66-fe59-44dc-8cf5-2b6038bcf7a5"
@@ -136,10 +131,14 @@ class AWSManager {
         
         
         if(incorrectRequestFound) {
-            DataManager.resetUploadTasks(ids:incorrectRequests, completionHandler: {
+            DataManager.resetUploadTasks(ids:incorrectRequests, context: context!, completionHandler: {
                 (success) in
                 if(self.uploadDelegate != nil) {
-                    self.uploadDelegate?.updateToUploads()
+                    DispatchQueue.main.async {
+                        self.uploadDelegate?.updateToUploads()
+                        
+                    }
+                    
                     
                 }
                 self.updateRequestLists()
@@ -169,16 +168,18 @@ class AWSManager {
         }
         
         if(found) {
-            if(currentRequest?.value(forKey: Constants.FIELD_UPLOAD_ACTIVE) as! Bool  == false) {
+            if(currentRequest?.value(forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE) as! Bool  == false) {
                 if(!((currentRequest?.value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String).isEmpty)) {
-                    DataManager.updateSingleUploadTask(findField: Constants.FIELD_VIDEO_ID, findValue: currentRequest?.value(forKey: Constants.FIELD_VIDEO_ID) as! String, updateField: Constants.FIELD_UPLOAD_ACTIVE, updateValueBool: true, updateValueString: "", updateTypeBool: true, context: context!)
+                    DataManager.updateSingleUploadTask(findField: Constants.FIELD_VIDEO_ID, findValue: currentRequest?.value(forKey: Constants.FIELD_VIDEO_ID) as! String, updateField: Constants.FIELD_UPLOAD_ACTIVE_STATE, updateValueBool: true, updateValueString: "", updateTypeBool: true, context: context!)
                     
                 } else {
                     task.cancel()
-                    DataManager.resetUploadTasks(ids: [currentRequest?.value(forKey: Constants.FIELD_UPLOAD_TASK_ID) as! Int], completionHandler: { (success) in
-                        if(self.videoDelegate != nil) {
-                            self.videoDelegate?.updateToVideo()
+                    DataManager.resetUploadTasks(ids: [currentRequest?.value(forKey: Constants.FIELD_UPLOAD_TASK_ID) as! Int], context: context!, completionHandler: { (success) in
+                        if(self.uploadDelegate != nil) {
+                            DispatchQueue.main.async {
+                                self.uploadDelegate?.updateToUploads()
                             
+                            }
                         }
                         
                     })
@@ -235,8 +236,7 @@ class AWSManager {
     
     
     
-    func awakenUploads (context:NSManagedObjectContext) {
-        self.context = context
+    func awakenUploads () {
         updateRequestLists()
         checkForUploadedNotUpdated()
         updateActive(completionHandler: {
@@ -247,6 +247,9 @@ class AWSManager {
                 if(self.requests.count > 0) {
                     self.startNewUpload(request: self.requests[0])
                     
+                } else {
+                    VideoManager.sharedInstance.clearUsersDirectory()
+                    
                 }
                 
             }
@@ -256,13 +259,50 @@ class AWSManager {
     }
     
     
+    func completeUpload (task:AWSS3TransferUtilityUploadTask, status:Bool) {
+        
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "task_id = %@", task.taskIdentifier))
+        
+        let request = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: self.context)
+        
+        if(!request.isEmpty) {
+            VideoManager.sharedInstance.deleteVideoFile(localUrl: request.first?.value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String )
+            
+            if(status) {
+                DataManager.completeUploadTask(taskId: Int(task.taskIdentifier), context: context!)
+                RequestDelegate.executeNewVideo(requests: [request.first!], index: 0, context: context, completionHandler: {
+                    
+                    (success) in
+                    
+                    
+                })
+                
+            } else {
+                DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], context: self.context!, completionHandler: { (success) in
+                    if(self.uploadDelegate != nil) {
+                        DispatchQueue.main.async {
+                            self.uploadDelegate?.updateToUploads()
+                            
+                        }
+                    }
+                    self.awakenUploads()
+                    
+                })
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    
+    
+    
     func startNewUpload(request:NSManagedObject) {
         
-        self.uploadExpression = AWSS3TransferUtilityUploadExpression()
-        let fileURL:URL
-        let videoProcessor = VideoProcessor()
-        
-        uploadExpression?.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
+        self.uploadExpression?.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
             DispatchQueue.main.async(execute: {
                 if(self.uploadProgressDelegate != nil) {
                     self.uploadProgressDelegate?.updateToProgress(progress: progress.fractionCompleted)
@@ -275,27 +315,19 @@ class AWSManager {
         
         
         self.completionHandler = { (task, error) -> Void in
-            DispatchQueue.main.async(execute: {
                 if(error != nil) {
-                    DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], completionHandler: { (success) in
-                        if(self.uploadDelegate != nil) {
-                            self.uploadDelegate?.updateToUploads()
-                            
-                        }
-                        self.awakenUploads(context: self.context!)
-                        
-                    })
+                    self.completeUpload(task: task, status: false)
+                    
                     
                 } else {
-                    
+                    self.completeUpload(task: task, status: true)
                     
                 }
-                
-            })
+     
         }
         
         
-        videoProcessor.createVideoFile(request: request, completionHandler: {
+        VideoManager.sharedInstance.createVideoFile(request: request, completionHandler: {
         (success, url) in
         
             if(success) {
@@ -318,6 +350,9 @@ class AWSManager {
                                                     return nil;
               
                                                 }
+            } else {
+                //could not create video file
+                
             }
         })
     

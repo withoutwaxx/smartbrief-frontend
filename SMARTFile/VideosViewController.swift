@@ -67,7 +67,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        AWSManager.awsManager.videoDelegate = self
+        AWSManager.sharedInstance.videoDelegate = self
         videosTable.delegate = self
         videosTable.dataSource = self
   

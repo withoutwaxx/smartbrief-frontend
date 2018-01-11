@@ -36,7 +36,7 @@
 		E2D539021FA0D0B500DC9B28 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */; };
 		E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */; };
 		E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */; };
-		E2E0278A1FC8857D009CABB9 /* VideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E027891FC8857D009CABB9 /* VideoProcessor.swift */; };
+		E2E0278A1FC8857D009CABB9 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E027891FC8857D009CABB9 /* VideoManager.swift */; };
 		E2E0278C1FCCBB83009CABB9 /* UploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E0278B1FCCBB83009CABB9 /* UploadRequest.swift */; };
 		E2E0278E1FCDF705009CABB9 /* UploadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E0278D1FCDF705009CABB9 /* UploadCell.swift */; };
 		FB82FBF94AC48D551DD75F1B /* Pods_SMARTFile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E243CD350DF10656EA0D27 /* Pods_SMARTFile.framework */; };
@@ -99,7 +99,7 @@
 		E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Delete.swift; sourceTree = "<group>"; };
 		E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProjectCell.swift; path = ../ProjectCell.swift; sourceTree = "<group>"; };
-		E2E027891FC8857D009CABB9 /* VideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessor.swift; sourceTree = "<group>"; };
+		E2E027891FC8857D009CABB9 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
 		E2E0278B1FCCBB83009CABB9 /* UploadRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadRequest.swift; sourceTree = "<group>"; };
 		E2E0278D1FCDF705009CABB9 /* UploadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadCell.swift; sourceTree = SOURCE_ROOT; };
 		F1718C77673394DEC439891A /* Pods-SMARTFile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SMARTFile.release.xcconfig"; path = "Pods/Target Support Files/Pods-SMARTFile/Pods-SMARTFile.release.xcconfig"; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 		E253A5BD1FA2062700D5D424 /* utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E2E027891FC8857D009CABB9 /* VideoProcessor.swift */,
+				E2E027891FC8857D009CABB9 /* VideoManager.swift */,
 				E2B832291FA9EEFA00640AB7 /* AlertUserManager.swift */,
 				E2B8322A1FA9EEFA00640AB7 /* StringManager.swift */,
 				E2B8322B1FA9EEFA00640AB7 /* UuidGenerator.swift */,
@@ -497,7 +497,7 @@
 				E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */,
 				E2869D8B1FC0839600754906 /* AWSManager.swift in Sources */,
 				E2E0278E1FCDF705009CABB9 /* UploadCell.swift in Sources */,
-				E2E0278A1FC8857D009CABB9 /* VideoProcessor.swift in Sources */,
+				E2E0278A1FC8857D009CABB9 /* VideoManager.swift in Sources */,
 				E2B832281FA9EEE600640AB7 /* RequestDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

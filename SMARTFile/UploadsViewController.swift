@@ -70,8 +70,8 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        AWSManager.awsManager.uploadDelegate = self
-        AWSManager.awsManager.uploadProgressDelegate = self
+        AWSManager.sharedInstance.uploadDelegate = self
+        AWSManager.sharedInstance.uploadProgressDelegate = self
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
         loadData()
@@ -138,7 +138,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     }
     
-    
+    //Called when either an upload task completes and becomes a video or an uploadtask is cancelled
     func updateToUploads() {
         RequestDelegate.getVideos(projectId: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String) { (success, message) in
             
@@ -158,8 +158,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             })
         }
         
-        let videoProcesser = VideoProcessor()
-        videoProcesser.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success, duplicate) in
+        VideoManager.sharedInstance.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success, duplicate) in
             
             if(success) {
                 self.updateView()
@@ -167,93 +166,17 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                     AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DUPLICATE_UPLOAD", comment: ""), currentViewController: self)
                 }
                 
-                self.startNewUpload(request: self.requestQueue[0])
+                DispatchQueue.global(qos: .background).async {
+                    
+                    AWSManager.sharedInstance.awakenUploads()
+                    
+                }
                 
                 
             } else {
                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_UNABLE", comment: "") , currentViewController: self.parent!)
             }
             
-        })
-        
-    }
-    
-    
-    
-    func startNewUpload(request:NSManagedObject) {
-        
-        let videoProcessor = VideoProcessor()
-        
-        self.completionHandler = { (task, error) -> Void in
-            if(error != nil) {
-                DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], completionHandler: { (success) in
-                    if(success) {
-                        
-                        
-                    }
-        
-                })
-                
-                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS"
-, comment: ""), message: NSLocalizedString("ALERT_UPLOAD_FAIL", comment: ""), currentViewController: self)
-                
-                
-            } else {
-                
-                
-            }
-            
-        }
-        
-        videoProcessor.createVideoFile(request: request, completionHandler: {(success, url) in
-            if(success) {
- 
-                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_SUCCESS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_START", comment: ""), currentViewController: self)
-
-                if let newUrl = url {
-        
-                    let transfer = AWSS3TransferUtility.default()
-                    
-                    transfer.uploadFile(newUrl, bucket: "finalsmartfilebucket", key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String, contentType: "video/mp4", expression: self.uploadExpression, completionHandler: self.completionHandler)
-                    
-                    
-                    
-                    transfer.getUploadTasks().continueWith(block: {
-                        (task) in
-                        
-                        if let uploadTasks = task.result as? [AWSS3TransferUtilityUploadTask] {
-                            for upload in uploadTasks {
-                                if(upload.key == request.value(forKey: Constants.FIELD_VIDEO_ID) as! String) {
-                                    
-                                    DataManager.setUploadTaskActive(request: request, localUrl: newUrl, taskId: Int(upload.taskIdentifier), completionHandler: { (success) in
-                                        if(success) {
-                                            
-                                            
-                                        }
-                                        
-                                    })
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                        return nil
-                        
-                    })
-        
-            } else {
-                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_NO_START", comment: ""), currentViewController: self)
-                    
-                    DataManager.deleteMultiple(ids: [request.value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: { (success) in
-                        
-                        
-                    })
-            }
-        
-        }
-        
         })
         
     }
@@ -368,6 +291,88 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
 
 
 }
+
+
+//    func startNewUpload(request:NSManagedObject) {
+//
+//        let videoProcessor = VideoProcessor()
+//
+//        self.completionHandler = { (task, error) -> Void in
+//            if(error != nil) {
+//                self.paren
+//                DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], context: , completionHandler: { (success) in
+//                    if(success) {
+//
+//
+//                    }
+//
+//                })
+//
+//                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS"
+//, comment: ""), message: NSLocalizedString("ALERT_UPLOAD_FAIL", comment: ""), currentViewController: self)
+//
+//
+//            } else {
+//
+//
+//            }
+//
+//        }
+//
+//        videoProcessor.createVideoFile(request: request, completionHandler: {(success, url) in
+//            if(success) {
+//
+//                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_SUCCESS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_START", comment: ""), currentViewController: self)
+//
+//                if let newUrl = url {
+//
+//                    let transfer = AWSS3TransferUtility.default()
+//
+//                    transfer.uploadFile(newUrl, bucket: "finalsmartfilebucket", key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String, contentType: "video/mp4", expression: self.uploadExpression, completionHandler: self.completionHandler)
+//
+//
+//
+//                    transfer.getUploadTasks().continueWith(block: {
+//                        (task) in
+//
+//                        if let uploadTasks = task.result as? [AWSS3TransferUtilityUploadTask] {
+//                            for upload in uploadTasks {
+//                                if(upload.key == request.value(forKey: Constants.FIELD_VIDEO_ID) as! String) {
+//
+//                                    DataManager.setUploadTaskActive(request: request, localUrl: newUrl, taskId: Int(upload.taskIdentifier), completionHandler: { (success) in
+//                                        if(success) {
+//
+//
+//                                        }
+//
+//                                    })
+//
+//                                }
+//
+//                            }
+//
+//                        }
+//
+//                        return nil
+//
+//                    })
+//
+//            } else {
+//                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_NO_START", comment: ""), currentViewController: self)
+//
+//                    DataManager.deleteMultiple(ids: [request.value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler: { (success) in
+//
+//
+//                    })
+//            }
+//
+//        }
+//
+//        })
+//
+//    }
+//
+
 
 
 

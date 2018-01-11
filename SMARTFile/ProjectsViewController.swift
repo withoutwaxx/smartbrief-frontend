@@ -70,7 +70,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
         projectsTable.delegate = self
         projectsTable.dataSource = self
-        AWSManager.awsManager.videoDelegate = self
+        AWSManager.sharedInstance.videoDelegate = self
 
         
     }

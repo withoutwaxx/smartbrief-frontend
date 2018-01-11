@@ -48,11 +48,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                                     let managedContext =
                                         appDelegate.persistentContainer.newBackgroundContext()
                                     appDelegate.persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
-                                    appDelegate.persistentContainer.viewContext.parent = managedContext
                                     
                                     DispatchQueue.global(qos: .background).async {
                                         
-                                        AWSManager.awsManager.awakenUploads(context: managedContext)
+                                        AWSManager.sharedInstance.context = managedContext
+                                        AWSManager.sharedInstance.awakenUploads()
 
                                     }
                                     

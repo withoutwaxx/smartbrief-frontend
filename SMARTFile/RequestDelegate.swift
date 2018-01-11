@@ -119,20 +119,20 @@ class RequestDelegate {
     
     
     
-    static func executeNewVideo (requests:[NSManagedObject], index:Int, completionHandler: @escaping (_ success: Bool) -> ()){
+    static func executeNewVideo (requests:[NSManagedObject], index:Int, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()){
         
         let url = "\(Constants.newVideo)?".appending(StringManager.buildNewVideoURL(request: requests[index]))
         
         RequestExecutionManager.newVideo(endpoint: url, completionHandler: {
             (success) in
             if(success) {
-                DataManager.convertRequestToVideo(request: requests[index])
+                DataManager.deleteMultiple(ids: [requests[index].value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, context: context)
                 
             }
             
             let newIndex = index + 1
             if(newIndex < requests.count) {
-                executeNewVideo(requests: requests, index: newIndex, completionHandler: { (success) in
+                executeNewVideo(requests: requests, index: newIndex, context: context, completionHandler: { (success) in
                     if(success){
                         completionHandler(true)
                     }
