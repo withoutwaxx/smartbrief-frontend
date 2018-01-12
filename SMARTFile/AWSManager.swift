@@ -37,7 +37,6 @@ class AWSManager {
     var requests:[NSManagedObject] = []
     var activeRequests:[NSManagedObject] = []
     var completionHandler:AWSS3TransferUtilityUploadCompletionHandlerBlock?
-    var uploadExpression:AWSS3TransferUtilityUploadExpression?
     var context:NSManagedObjectContext?
     
     
@@ -53,7 +52,6 @@ class AWSManager {
         let configuration = AWSServiceConfiguration(region: .EUWest2, credentialsProvider: credentialProvider)
         let config:AWSS3TransferUtilityConfiguration = AWSS3TransferUtilityConfiguration()
         config.bucket = "finalsmartfilebucket"
-        config.isAccelerateModeEnabled = true
         AWSS3TransferUtility.register(with: configuration!, transferUtilityConfiguration: config, forKey: "UPLOAD_MANAGER")
         transferUtility = AWSS3TransferUtility.s3TransferUtility(forKey: "UPLOAD_MANAGER")
         
@@ -62,10 +60,12 @@ class AWSManager {
     
     func updateRequestLists () {
         let sort = NSSortDescriptor(key: Constants.FIELD_VIDEO_ADDED, ascending: false)
-        requests = DataManager.getUploadRequests(predicates: [], sort: [sort], bg: true, context: context )
         var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "active_state = %@", false as CVarArg))
+        requests = DataManager.getUploadRequests(predicates: [], sort: [sort], bg: true, context: context )
+        predicates = []
         predicates.append(NSPredicate(format: "active_state = %@", true as CVarArg))
-        activeRequests = DataManager.getUploadRequests(predicates: [], sort: [sort], bg: true, context: context )
+        activeRequests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
         
         
     }
@@ -83,7 +83,7 @@ class AWSManager {
         }
         
         if(!requestsToSend.isEmpty) {
-            RequestDelegate.newVideos(requests: requestsToSend, completionHandler: {
+            RequestDelegate.executeNewVideo(requests: requestsToSend, index: 0, context: context!, completionHandler: {
                 (success) in
                 if(success) {
                     if(self.videoDelegate != nil) {
@@ -259,10 +259,18 @@ class AWSManager {
     }
     
     
-    func completeUpload (task:AWSS3TransferUtilityUploadTask, status:Bool) {
+    func completeUpload (task:Int, status:Bool) {
+        
+        DispatchQueue.main.async(execute: {
+            if(self.uploadProgressDelegate != nil) {
+                self.uploadProgressDelegate?.updateToProgress(progress: 0.0)
+                
+            }
+            
+        })
         
         var predicates:[NSPredicate] = []
-        predicates.append(NSPredicate(format: "task_id = %@", task.taskIdentifier))
+        predicates.append(NSPredicate(format: "task_id = %d", task))
         
         let request = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: self.context)
         
@@ -270,22 +278,42 @@ class AWSManager {
             VideoManager.sharedInstance.deleteVideoFile(localUrl: request.first?.value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String )
             
             if(status) {
-                DataManager.completeUploadTask(taskId: Int(task.taskIdentifier), context: context!)
-                RequestDelegate.executeNewVideo(requests: [request.first!], index: 0, context: context, completionHandler: {
-                    
+                DataManager.completeUploadTask(taskId: task, context: context!, completionHandler: {
                     (success) in
-                    
+                    if(success) {
+                        RequestDelegate.executeNewVideo(requests: [request.first!], index: 0, context: self.context!, completionHandler: {
+                            (success) in
+                            if(success) {
+                                if(self.videoDelegate != nil) {
+                                    DispatchQueue.main.async {
+                                        self.videoDelegate?.updateToVideo()
+                                        
+                                    }
+                                }
+                                
+                            }
+                            self.awakenUploads()
+                            
+                        })
+                        
+                    }
                     
                 })
                 
+                
             } else {
-                DataManager.resetUploadTasks(ids: [Int(task.taskIdentifier)], context: self.context!, completionHandler: { (success) in
-                    if(self.uploadDelegate != nil) {
-                        DispatchQueue.main.async {
-                            self.uploadDelegate?.updateToUploads()
-                            
+                DataManager.resetUploadTasks(ids: [task], context: self.context!, completionHandler: {
+                    (success) in
+                    if(success) {
+                        if(self.uploadDelegate != nil) {
+                            DispatchQueue.main.async {
+                                self.uploadDelegate?.updateToUploads()
+                                
+                            }
                         }
+                        
                     }
+                    
                     self.awakenUploads()
                     
                 })
@@ -302,7 +330,8 @@ class AWSManager {
     
     func startNewUpload(request:NSManagedObject) {
         
-        self.uploadExpression?.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
+        var uploadExpression = AWSS3TransferUtilityUploadExpression()
+        uploadExpression.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
             DispatchQueue.main.async(execute: {
                 if(self.uploadProgressDelegate != nil) {
                     self.uploadProgressDelegate?.updateToProgress(progress: progress.fractionCompleted)
@@ -313,14 +342,21 @@ class AWSManager {
             })
         }
         
+
+        
         
         self.completionHandler = { (task, error) -> Void in
+            
+                let taskid = Int(task.taskIdentifier)
                 if(error != nil) {
-                    self.completeUpload(task: task, status: false)
+                    print(error)
+                    print(task.response)
+                    print(task.bucket)
+                    self.completeUpload(task: taskid, status: false)
                     
                     
                 } else {
-                    self.completeUpload(task: task, status: true)
+                    self.completeUpload(task: taskid, status: true)
                     
                 }
      
@@ -334,7 +370,7 @@ class AWSManager {
                  self.transferUtility.uploadFile(url!,
                                                key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String,
                                                contentType: "video/mp4",
-                                               expression: self.uploadExpression,
+                                               expression: uploadExpression,
                                                completionHandler: self.completionHandler).continueWith {
                                                     (task) -> AnyObject! in
                                                 
@@ -351,7 +387,7 @@ class AWSManager {
               
                                                 }
             } else {
-                //could not create video file
+                print("unable to create video file")
                 
             }
         })
@@ -361,36 +397,7 @@ class AWSManager {
 
 
 }
-    
-    //        let uploadRequest = AWSS3TransferManagerUploadRequest()
-    //
-    //        uploadRequest?.bucket = "smartfile-user-video17"
-    //        uploadRequest?.key = UuidGenerator.newUuid()
-    //        uploadRequest?.body = url
-    //
-    //        let uploader:AWSS3TransferManager = AWSS3TransferManager.default()
-    //
-    //        uploader.upload(uploadRequest!).continueWith(executor: AWSExecutor.mainThread(), block: { (task:AWSTask<AnyObject>) -> Any? in
-    //
-    //            if let error = task.error as NSError? {
-    //                if error.domain == AWSS3TransferManagerErrorDomain, let code = AWSS3TransferManagerErrorType(rawValue: error.code) {
-    //                    switch code {
-    //                    case .cancelled, .paused:
-    //                        break
-    //                    default:
-    //                        print("Error uploading: \(uploadRequest?.key ?? "") Error: \(error)")
-    //                    }
-    //                } else {
-    //                    print("Error uploading: \(uploadRequest?.key ?? "") Error: \(error)")
-    //                }
-    //                return nil
-    //            }
-    //
-    //            let uploadOutput = task.result
-    //            print("Upload complete for: \(uploadRequest?.key ?? "")")
-    //            return nil
-    //        })
-    
+
     
     
 

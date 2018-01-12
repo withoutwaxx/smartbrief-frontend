@@ -126,7 +126,7 @@ class RequestDelegate {
         RequestExecutionManager.newVideo(endpoint: url, completionHandler: {
             (success) in
             if(success) {
-                DataManager.deleteMultiple(ids: [requests[index].value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, context: context)
+                DataManager.deleteMultiple(ids: [requests[index].value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg:true, context: context)
                 
             }
             
@@ -148,20 +148,20 @@ class RequestDelegate {
     }
     
     
-    
-    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool) -> ()){
-        
-        executeNewVideo(requests: requests, index: 0, completionHandler: { (
-            success) in
-            
-            completionHandler(true)
-        
-            
-        })
-
-    }
-    
-    
+//
+//    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool) -> ()){
+//
+//        executeNewVideo(requests: requests, index: 0, completionHandler: { (
+//            success) in
+//
+//            completionHandler(true)
+//
+//
+//        })
+//
+//    }
+//
+//
     
     
     

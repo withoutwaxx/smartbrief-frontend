@@ -167,7 +167,6 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 DispatchQueue.global(qos: .background).async {
-                    
                     AWSManager.sharedInstance.awakenUploads()
                     
                 }
@@ -261,11 +260,9 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
  
     
     func didTapCell(index: IndexPath) {
-        DataManager.deleteMultiple(ids: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, completionHandler:  {
-            (success) in
-                self.updateView()
-            
-        })
+        DataManager.deleteMultiple(ids: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg: false, context: nil)
+        
+        self.updateView()
         
     }
     

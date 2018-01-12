@@ -107,15 +107,18 @@ final class VideoManager {
         
         let dirPath:String = documentsDirectory.appendingPathComponent(User.id)
         
-        do {
-            let filePaths = try fileManager.contentsOfDirectory(atPath: dirPath)
-            for filePath in filePaths {
-                try fileManager.removeItem(atPath: dirPath + filePath)
+        if(fileManager.fileExists(atPath: dirPath)) {
+            do {
+                let filePaths = try fileManager.contentsOfDirectory(atPath: dirPath)
+                for filePath in filePaths {
+                    try fileManager.removeItem(atPath: dirPath + filePath)
+                }
+            } catch {
+                print("Could not clear temp folder: \(error)")
             }
-        } catch {
-            print("Could not clear temp folder: \(error)")
+            
         }
-        
+    
     }
     
         

@@ -26,7 +26,7 @@ class DataManager {
     }
     
     
-    static func completeUploadTask (taskId:Int, context:NSManagedObjectContext) {
+    static func completeUploadTask (taskId:Int, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()) {
         
         
         context.performAndWait {
@@ -50,9 +50,11 @@ class DataManager {
             
             do {
                 try context.save()
+                completionHandler(true)
                 
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
+                completionHandler(false)
                 
             }
             
@@ -220,6 +222,7 @@ class DataManager {
                 
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
+                completionHandler(false)
                 
             }
             
@@ -436,45 +439,79 @@ class DataManager {
     }
     
     
-    static func deleteMultiple (ids:[String], field:String, entity:String, context:NSManagedObjectContext) {
+    static func deleteMultiple (ids:[String], field:String, entity:String, bg:Bool, context:NSManagedObjectContext?) {
         
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
         
-        do {
-            let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
-            if records.count > 0 {
-                for record in records {
-                    if(ids.contains(record.value(forKey: field) as! String) ) {
-                        managedContext.delete(record)
+        if(bg) {
+            context?.performAndWait {
+                do {
+                    let records = try context?.fetch(fetchRequest) as! [NSManagedObject]
+                    if records.count > 0 {
+                        for record in records {
+                            if(ids.contains(record.value(forKey: field) as! String) ) {
+                                context?.delete(record)
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                } catch {
+                    print(error)
+                }
+                
+                do {
+                    try context?.save()
+                    
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
+                    
+                }
+                
+                
+            }
+            
+        } else {
+            guard let appDelegate =
+                UIApplication.shared.delegate as? AppDelegate else {
+                    return
+            }
+            
+            let managedContext =
+                appDelegate.persistentContainer.viewContext
+            
+            do {
+                let records = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+                if records.count > 0 {
+                    for record in records {
+                        if(ids.contains(record.value(forKey: field) as! String) ) {
+                            managedContext.delete(record)
+                            
+                        }
                         
                     }
                     
                 }
                 
+            } catch {
+                print(error)
             }
             
-        } catch {
-            print(error)
+            do {
+                try managedContext.save()
+                
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+                
+            }
+            
+            
         }
-
-    
-        do {
-            try managedContext.save()
-
         
-        } catch let error as NSError {
-
-            print("Could not save. \(error), \(error.userInfo)")
         
-        }
         
     }
     
