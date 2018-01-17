@@ -140,8 +140,13 @@ class RequestDelegate {
                 })
                 
             } else {
-                completionHandler(true)
+                if(!success) {
+                    completionHandler(false)
                 
+                } else {
+                    completionHandler(true)
+                    
+                }
             }
         })
         

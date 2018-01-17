@@ -61,10 +61,10 @@ class AWSManager {
     func updateRequestLists () {
         let sort = NSSortDescriptor(key: Constants.FIELD_VIDEO_ADDED, ascending: false)
         var predicates:[NSPredicate] = []
-        predicates.append(NSPredicate(format: "active_state = %@", false as CVarArg))
-        requests = DataManager.getUploadRequests(predicates: [], sort: [sort], bg: true, context: context )
+        predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_ACTIVE_STATE) = %@", false as CVarArg))
+        requests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
         predicates = []
-        predicates.append(NSPredicate(format: "active_state = %@", true as CVarArg))
+        predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_ACTIVE_STATE) = %@", true as CVarArg))
         activeRequests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
         
         
@@ -236,6 +236,21 @@ class AWSManager {
     
     
     
+    func nextSuitableRequest () -> (Bool,NSManagedObject?) {
+        for request in requests {
+            if(request.value(forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE) as! Bool == false ) {
+                return (true, request)
+                
+            }
+            
+        }
+        
+        return (false, nil)
+        
+    }
+    
+    
+    
     func awakenUploads () {
         updateRequestLists()
         checkForUploadedNotUpdated()
@@ -244,8 +259,10 @@ class AWSManager {
         (complete) in
         
             if(self.activeRequests.count == 0) {
-                if(self.requests.count > 0) {
-                    self.startNewUpload(request: self.requests[0])
+                let (proceed, request) = self.nextSuitableRequest()
+                
+                if(proceed) {
+                    self.startNewUpload(request: request!)
                     
                 } else {
                     VideoManager.sharedInstance.clearUsersDirectory()
@@ -290,8 +307,15 @@ class AWSManager {
                                         
                                     }
                                 }
+                                if(self.uploadDelegate != nil) {
+                                    DispatchQueue.main.async {
+                                        self.uploadDelegate?.updateToUploads()
+                                        
+                                    }
+                                }
                                 
                             }
+                            self.updateRequestLists()
                             self.awakenUploads()
                             
                         })
@@ -313,7 +337,13 @@ class AWSManager {
                         }
                         
                     }
-                    
+                    if(self.uploadDelegate != nil) {
+                        DispatchQueue.main.async {
+                            self.uploadDelegate?.updateToUploads()
+                            
+                        }
+                    }
+                    self.updateRequestLists()
                     self.awakenUploads()
                     
                 })
@@ -330,7 +360,7 @@ class AWSManager {
     
     func startNewUpload(request:NSManagedObject) {
         
-        var uploadExpression = AWSS3TransferUtilityUploadExpression()
+        let uploadExpression = AWSS3TransferUtilityUploadExpression()
         uploadExpression.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
             DispatchQueue.main.async(execute: {
                 if(self.uploadProgressDelegate != nil) {
@@ -348,10 +378,9 @@ class AWSManager {
         self.completionHandler = { (task, error) -> Void in
             
                 let taskid = Int(task.taskIdentifier)
+            
                 if(error != nil) {
-                    print(error)
-                    print(task.response)
-                    print(task.bucket)
+
                     self.completeUpload(task: taskid, status: false)
                     
                     
@@ -367,17 +396,25 @@ class AWSManager {
         (success, url) in
         
             if(success) {
+            
                  self.transferUtility.uploadFile(url!,
                                                key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String,
                                                contentType: "video/mp4",
                                                expression: uploadExpression,
-                                               completionHandler: self.completionHandler).continueWith {
-                                                    (task) -> AnyObject! in
+                                               completionHandler: self.completionHandler).continueOnSuccessWith(block: { (task) -> Any? in
                                                 
                                                     print("starting new uploading")
                                                 
                                                     if let error = task.error {
                                                         print("Error: \(error.localizedDescription)")
+                                                    } else {
+                                                        DataManager.setUploadTaskActive(request: request, localUrl: url!, taskId: Int(task.result?.taskIdentifier), context: self.context!)
+                                                        if(self.uploadDelegate != nil) {
+                                                            DispatchQueue.main.async {
+                                                                self.uploadDelegate?.updateToUploads()
+                                                                
+                                                            }
+                                                        }
                                                     }
                                                 
                                                     if let _ = task.result {
@@ -385,7 +422,7 @@ class AWSManager {
                                                     }
                                                     return nil;
               
-                                                }
+                                                })
             } else {
                 print("unable to create video file")
                 

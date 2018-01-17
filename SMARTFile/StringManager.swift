@@ -87,14 +87,15 @@ class StringManager {
         let pVideoId = request.value(forKeyPath: Constants.FIELD_VIDEO_ID) as! String
         let projectId = request.value(forKeyPath: Constants.FIELD_PROJECT_ID) as! String
         let desc = request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as! String
-        let size = request.value(forKeyPath: Constants.FIELD_VIDEO_SIZE) as! String
-        let length = request.value(forKeyPath: Constants.FIELD_VIDEO_LENGTH) as! String
+        let size = request.value(forKeyPath: Constants.FIELD_VIDEO_SIZE) as! Int
+        let length = request.value(forKeyPath: Constants.FIELD_VIDEO_LENGTH) as! Int
         let url = request.value(forKeyPath: Constants.FIELD_VIDEO_URL) as! String
 
-
         
-        let fullUrl = "pVId=\(pVideoId)&pPId=\(projectId)&pDesc=\(desc)&pSize=\(size)&pLength=\(length)&pUrl=\(url)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         
+        let fullUrl = "pVId=\(pVideoId)&pPId=\(projectId)&pDesc=\(desc)&pSize=\(String(size))&pLength=\(String(length))&pUrl=\(url)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        
+        print("url is ", fullUrl)
         return fullUrl!
     }
     

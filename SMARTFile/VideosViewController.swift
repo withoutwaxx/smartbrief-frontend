@@ -52,7 +52,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                         RequestDelegate.updateProject(project: self.currentProject!, readyValue: 1, completionHandler: {
                             (success, message) in
                             if(success) {
-                                self.performSegue(withIdentifier: "deletedProject", sender: self)
+                                self.refreshView()
                                 
                             } else {
                                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
@@ -84,11 +84,16 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
         }
+        RequestDelegate.getProjects { (success, error) in
+            
+            
+        }
         
     }
     
     
     func refreshView() {
+        reloadProject()
         loadData()
         videosTable.reloadData()
         if(videos.isEmpty) {
@@ -100,8 +105,17 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             noVideosLabel.isHidden = true
             
         }
+        if(currentProject?.value(forKeyPath: "ready_state") as? Bool == true) {
+            readyCircle.fillColor = UIColor.green
+            readyCircle.setNeedsDisplay()
+            readyLabel.isUserInteractionEnabled = false
+            readyLabel.titleLabel?.textColor = UIColor.darkGray
+            readyLabel.setTitle(NSLocalizedString("UI_READY", comment: ""), for: UIControlState.normal)
+            deleteProject.isHidden = true
+            
+            
+        }
     
-        
     }
     
     
@@ -144,7 +158,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                     RequestDelegate.deleteProject(projectId: self.currentProject?.value(forKey: "project_id" ) as! String, completionHandler: {
                         (success, message) in
                         if(success) {
-                           self.performSegue(withIdentifier: "deletedProject", sender: self)
+                           self.performSegue(withIdentifier: "videosToProjects", sender: self)
                             
                         } else {
                             AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
@@ -178,7 +192,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                 tableView.dequeueReusableCell(withIdentifier: "videoCell",
                                               for: indexPath) as! VideoCell
             
-            if(((video.value(forKeyPath: "desc") as? String)?.characters.count )! > 0){
+            if(((video.value(forKeyPath: "desc") as? String)?.count)! > 0){
                 cell.desc.text = video.value(forKeyPath: "desc") as? String
                 cell.desc.textColor = UIColor.white
 
@@ -197,6 +211,15 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             return cell
+    }
+    
+    
+    func reloadProject() {
+        let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
+        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
+        
+        currentProject = DataManager.getProjects(id: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String).first
+        
     }
     
     

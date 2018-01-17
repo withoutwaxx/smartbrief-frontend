@@ -87,6 +87,7 @@ final class VideoManager {
                     print("deleted \(url.path)")
                 
                 } catch {
+                    print(error)
                     print("Unable to delete file")
         
                 }

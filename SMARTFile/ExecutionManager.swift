@@ -92,6 +92,7 @@ class RequestExecutionManager {
                         if(json["outcome"].boolValue) {
                             if(json["exist"].boolValue) {
                                 let projects  = json["payload"]["projects"].array
+                                print(projects)
                                 let count = json["payload"]["count"].array
                                 completionHandler(true, "", projects!, count!)
                             } else {

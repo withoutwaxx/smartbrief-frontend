@@ -1,4 +1,4 @@
-//
+                                                                                                                                             //
 //  DataManager.swift
 //  SMARTFile
 //
@@ -32,7 +32,7 @@ class DataManager {
         context.performAndWait {
         
             var predicates:[NSPredicate] = []
-            predicates.append(NSPredicate(format: "task_id = %@", taskId))
+            predicates.append(NSPredicate(format: "task_id = %d", taskId))
             
             let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
             
@@ -102,90 +102,33 @@ class DataManager {
     
     
     
-    static func updateUnrecordedUploadTasks (ids:[Int], completionHandler: @escaping (_ success: Bool) -> ()){
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
+    static func setUploadTaskActive(request:NSManagedObject, localUrl:URL, taskId:Int, context: NSManagedObjectContext ){
         
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
         
-        for id in ids {
-            var predicates:[NSPredicate] = []
-            predicates.append(NSPredicate(format: "task_id = %@", id))
-            
-            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: nil)
-            
-            if(!uploadRequest.isEmpty) {
+        var predicates:[NSPredicate] = []
+        predicates.append(NSPredicate(format: "video_id = %@", request.value(forKey: Constants.FIELD_VIDEO_ID) as! String))
+        
+        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
+        
+        if(!uploadRequest.isEmpty) {
+            context.performAndWait {
                 uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
-                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
-                if(!url.isEmpty) {
-                    VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
-                    uploadRequest[0].setValue("", forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+                uploadRequest[0].setValue(taskId, forKey: Constants.FIELD_UPLOAD_TASK_ID)
+                uploadRequest[0].setValue(localUrl.path, forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
+                
+                do {
+                    try context.save()
+                    
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
                     
                 }
                 
             }
-            
-        }
-        
-        do {
-            try managedContext.save()
-            completionHandler(true)
-            
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-            
-        }
-        
-        
-    }
-    
-    
-    
-    static func setUploadTaskActive(request:NSManagedObject, localUrl:URL, taskId:Int, completionHandler: @escaping (_ success: Bool) -> ()){
-        
-        
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let managedContext =
-            appDelegate.persistentContainer.viewContext
-        
-       
-        var predicates:[NSPredicate] = []
-        predicates.append(NSPredicate(format: "video_id = %@", request.value(forKey: Constants.FIELD_VIDEO_ID) as! String))
-        
-        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
-        
-        if(!uploadRequest.isEmpty) {
-            uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
-            uploadRequest[0].setValue(taskId, forKey: Constants.FIELD_UPLOAD_TASK_ID)
-            uploadRequest[0].setValue(localUrl.path, forKey: Constants.FIELD_UPLOAD_LOCAL_URL)
-           
-            
-        } else {
-            completionHandler(false)
-            
-        }
-            
-        
-        
-        do {
-            try managedContext.save()
-            completionHandler(true)
-            
-        } catch let error as NSError {
-            completionHandler(false)
-            print("Could not save. \(error), \(error.userInfo)")
-            
+
         }
         
     }
-    
     
     
     
@@ -197,7 +140,7 @@ class DataManager {
             for id in ids {
                 
                 var predicates:[NSPredicate] = []
-                predicates.append(NSPredicate(format: "task_id = %@", id))
+                predicates.append(NSPredicate(format: "task_id = %d", id))
                 
                 let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
                 
@@ -622,7 +565,7 @@ class DataManager {
     }
     
     
-    static func getProjects () -> [NSManagedObject] {
+    static func getProjects (id:String?) -> [NSManagedObject] {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 return []
@@ -636,6 +579,13 @@ class DataManager {
         
         let sort = NSSortDescriptor(key: "date_created", ascending: false)
         fetchRequest.sortDescriptors = [sort]
+        
+        
+        if let findId = id {
+            let localIdPredicate = NSPredicate(format: "\(Constants.FIELD_PROJECT_ID) = %@", findId)
+            fetchRequest.predicate = localIdPredicate
+            
+        }
         
         do {
             let projects = try managedContext.fetch(fetchRequest)

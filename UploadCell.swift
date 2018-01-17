@@ -25,6 +25,7 @@ class UploadCell: UITableViewCell {
     @IBOutlet weak var sizeLabel: UILabel!
     @IBOutlet weak var deleteButton: DeleteButton!
     
+    @IBOutlet weak var activityWheel: UIActivityIndicatorView!
     
 
     @IBAction func deletePressed(_ sender: Any) {

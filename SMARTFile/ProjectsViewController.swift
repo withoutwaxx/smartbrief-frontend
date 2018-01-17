@@ -172,7 +172,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     func loadData() {
-       projects = DataManager.getProjects()
+        projects = DataManager.getProjects(id:nil)
         
     }
     
