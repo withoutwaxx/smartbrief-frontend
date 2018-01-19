@@ -37,12 +37,19 @@ class StringManager {
     
     static func stringDateToDate (stringDate:String) -> Date {
         
-        let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
-        let shortDate = stringDate.substring(to: index)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let date = dateFormatter.date(from: shortDate)!
-        return date
+        if(stringDate.count > 14) {
+            let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
+            let shortDate = stringDate.substring(to: index)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = dateFormatter.date(from: shortDate)!
+            return date
+        
+        } else {
+            return Date()
+            
+        }
+        
     }
     
     
@@ -95,7 +102,6 @@ class StringManager {
         
         let fullUrl = "pVId=\(pVideoId)&pPId=\(projectId)&pDesc=\(desc)&pSize=\(String(size))&pLength=\(String(length))&pUrl=\(url)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         
-        print("url is ", fullUrl)
         return fullUrl!
     }
     

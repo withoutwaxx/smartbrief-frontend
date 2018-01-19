@@ -17,7 +17,7 @@ import AssetsPickerViewController
 
 
 
-class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, CellDelegate, UploadDelegate, UploadProgressDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, uploadCellDelegate, UploadDelegate, UploadProgressDelegate {
     
     
     var transferUtility:AWSS3TransferUtility?
@@ -271,7 +271,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
  
     
-    func didTapCell(index: IndexPath) {
+    func deleteRequestPressed(index: IndexPath) {
         DataManager.deleteMultiple(ids: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg: false, context: nil)
         
         self.updateView()

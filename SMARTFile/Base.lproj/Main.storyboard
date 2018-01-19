@@ -523,7 +523,7 @@
                         <outlet property="noProjectsLabel" destination="3G6-Dq-esc" id="lWg-Nc-apN"/>
                         <outlet property="projectsTable" destination="bLv-m7-fea" id="X6M-cG-Rgu"/>
                         <segue destination="SJK-Eh-cZP" kind="presentation" modalTransitionStyle="crossDissolve" id="Eu5-TM-F2H"/>
-                        <segue destination="v73-6c-1zp" kind="presentation" identifier="showVideos" modalTransitionStyle="coverVertical" id="CMW-dl-upz"/>
+                        <segue destination="v73-6c-1zp" kind="presentation" identifier="showVideos" modalTransitionStyle="crossDissolve" id="CMW-dl-upz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v22-IG-bHE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -558,7 +558,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="D1s-cL-V7X" kind="presentation" identifier="showManager" modalTransitionStyle="coverVertical" id="Oh4-nM-wh7"/>
+                                    <action selector="showManagerPressed:" destination="v73-6c-1zp" eventType="touchUpInside" id="BnG-Zh-pox"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" allowsSelection="NO" rowHeight="120" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="TxW-9c-dHQ">
@@ -803,7 +803,7 @@
                                 </constraints>
                                 <state key="normal" image="backIcon"/>
                                 <connections>
-                                    <segue destination="M8r-Ng-Wvh" kind="presentation" identifier="videosToProjects" id="0qj-Th-acr"/>
+                                    <segue destination="M8r-Ng-Wvh" kind="presentation" identifier="videosToProjects" modalTransitionStyle="crossDissolve" id="0qj-Th-acr"/>
                                 </connections>
                             </button>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vRI-Ba-bCI">
@@ -894,11 +894,12 @@
                         <outlet property="uploadContainerHeight" destination="pCH-D9-ykr" id="0dJ-VL-PZj"/>
                         <outlet property="uploadingLabel" destination="tWY-J2-Oce" id="PKC-8o-8pJ"/>
                         <outlet property="videosTable" destination="TxW-9c-dHQ" id="gN6-FK-Hvd"/>
+                        <segue destination="D1s-cL-V7X" kind="presentation" identifier="showManager" modalTransitionStyle="coverVertical" id="xTl-dT-9wP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KvP-xl-V8V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1124.6376811594205" y="759.78260869565224"/>
+            <point key="canvasLocation" x="1116" y="766"/>
         </scene>
         <!--Settings View Controller-->
         <scene sceneID="Zvu-5j-c0X">
@@ -1151,7 +1152,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="q0s-za-iKU">
-                                                    <rect key="frame" x="389" y="3" width="20" height="20"/>
+                                                    <rect key="frame" x="389" y="5" width="20" height="20"/>
                                                     <color key="color" red="0.99622660880000002" green="0.44834579159999999" blue="0.241902378" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </activityIndicatorView>
                                                 <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zPy-Dd-oIj" customClass="DeleteButton" customModule="SMARTFile" customModuleProvider="target">
@@ -1182,7 +1183,7 @@
                                                 <constraint firstItem="OS6-SI-fia" firstAttribute="centerY" secondItem="our-J6-cja" secondAttribute="centerY" id="9od-OP-Iiv"/>
                                                 <constraint firstItem="OS6-SI-fia" firstAttribute="width" secondItem="T53-ci-hL6" secondAttribute="width" multiplier="2.2" id="F0c-u0-xan"/>
                                                 <constraint firstItem="OS6-SI-fia" firstAttribute="leading" secondItem="T53-ci-hL6" secondAttribute="trailing" id="G3e-4t-MDf"/>
-                                                <constraint firstItem="q0s-za-iKU" firstAttribute="top" secondItem="Xq1-Zm-0Vf" secondAttribute="top" constant="3" id="GR1-4Y-unw"/>
+                                                <constraint firstItem="q0s-za-iKU" firstAttribute="top" secondItem="Xq1-Zm-0Vf" secondAttribute="top" constant="5" id="GR1-4Y-unw"/>
                                                 <constraint firstItem="T53-ci-hL6" firstAttribute="height" secondItem="our-J6-cja" secondAttribute="height" id="VSe-Q0-cdf"/>
                                                 <constraint firstItem="T53-ci-hL6" firstAttribute="width" secondItem="our-J6-cja" secondAttribute="width" id="VUR-0k-6r7"/>
                                                 <constraint firstItem="our-J6-cja" firstAttribute="height" secondItem="Xq1-Zm-0Vf" secondAttribute="height" multiplier="0.2" id="Vx9-cn-vlo"/>
@@ -1432,7 +1433,7 @@
                         <outlet property="selectVideos" destination="iOA-DR-5rh" id="0Zx-us-s8p"/>
                         <outlet property="uploadsTable" destination="DdH-HH-UqR" id="J1V-vm-VGX"/>
                         <outlet property="videosSummary" destination="dXs-QU-8dl" id="K2e-F4-H71"/>
-                        <segue destination="v73-6c-1zp" kind="presentation" identifier="returnToVideos" id="8di-cx-nsU"/>
+                        <segue destination="v73-6c-1zp" kind="presentation" identifier="returnToVideos" modalTransitionStyle="crossDissolve" id="8di-cx-nsU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="akP-CY-EQg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1448,6 +1449,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="Eu5-TM-F2H"/>
         <segue reference="8di-cx-nsU"/>
-        <segue reference="0qj-Th-acr"/>
+        <segue reference="nnu-0y-wGE"/>
     </inferredMetricsTieBreakers>
 </document>

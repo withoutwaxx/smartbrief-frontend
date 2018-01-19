@@ -9,14 +9,14 @@
 import UIKit
 
 
-protocol CellDelegate: class {
-    func didTapCell(index: IndexPath)
+protocol uploadCellDelegate: class {
+    func deleteRequestPressed(index: IndexPath)
 }
 
 
 class UploadCell: UITableViewCell {
     
-    var delegateCell:CellDelegate?
+    var delegateCell:uploadCellDelegate?
     var indexPath:IndexPath?
     
     @IBOutlet weak var descLabel: UILabel!
@@ -29,7 +29,7 @@ class UploadCell: UITableViewCell {
     
 
     @IBAction func deletePressed(_ sender: Any) {
-        delegateCell?.didTapCell(index: indexPath!)
+        delegateCell?.deleteRequestPressed(index: indexPath!)
         
     }
     

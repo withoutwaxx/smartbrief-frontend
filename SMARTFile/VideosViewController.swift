@@ -16,7 +16,7 @@ import AVKit
 import AssetsPickerViewController
 
 
-class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewVideoDelegate {
+class VideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NewVideoDelegate, videoCellDelegate {
     
     @IBOutlet weak var noVideosLabel: UILabel!
     var videos:[NSManagedObject] = []
@@ -36,6 +36,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var receivedCircle: Circle!
     @IBOutlet weak var readyLabel: UIButton!
     @IBOutlet weak var readyCircle: Circle!
+    
     
     
 
@@ -151,6 +152,38 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     
+    
+    func deleteVideoPressed(index: IndexPath) {
+    
+        AWSManager.sharedInstance.deleteAWSAsset(key: videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String) {
+            
+            (success) in
+            if(success) {
+                RequestDelegate.deleteVideo(videoId: self.videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String, projectId: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String, completionHandler: {
+                    
+                    (success, message) in
+                    
+                    if(success) {
+                        self.refreshView()
+                        
+                    } else {
+                        AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                        
+                    }
+                    
+                })
+                
+            } else {
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_VIDEO_UNABLE", comment: ""), currentViewController: self)
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
     func deleteProjectAction(_ sender:UITapGestureRecognizer){
         AlertUserManager.warnUser(action: NSLocalizedString("ALERT_PROJECT_DELETE_ACTION", comment: ""), message: NSLocalizedString("ALERT_PROJECT_DELETE", comment: ""), currentViewController: self, completionHandler:
             {(success) in
@@ -191,6 +224,8 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             let cell =
                 tableView.dequeueReusableCell(withIdentifier: "videoCell",
                                               for: indexPath) as! VideoCell
+            cell.delegateCell = self
+            cell.indexPath = indexPath
             
             if(((video.value(forKeyPath: "desc") as? String)?.count)! > 0){
                 cell.desc.text = video.value(forKeyPath: "desc") as? String
@@ -246,6 +281,19 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
     }
+    
+    
+    @IBAction func showManagerPressed(_ sender: Any) {
+        if(currentProject?.value(forKey: Constants.FIELD_PROJECT_READY) as! Bool == false) {
+            performSegue(withIdentifier: "showManager", sender: self)
+            
+        } else {
+            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_UPLOAD_UNAVAILABLE_WHEN_READY", comment: ""), currentViewController: self)
+            
+        }
+        
+    }
+    
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

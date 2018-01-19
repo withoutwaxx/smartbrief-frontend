@@ -24,7 +24,10 @@
 "ALERT_PROJECT_DELETE_ACTION" = "Delete Project";
 "ALERT_PROJECT_READY_ACTION" = "Mark as Ready";
 "ALERT_VIDEO_UNABLE" = "Unable to process and upload selected video(s)";
+"ALERT_DELETE_VIDEO_UNABLE" = "Currently unable to delete the selected video";
 "ALERT_DUPLICATE_UPLOAD" = "You cannot upload a particular video to the same project more than once";
 "ALERT_UPLOAD_START" = "Uploads successfully started";
 "ALERT_UPLOAD_NO_START" = "Uploading was unable to start successfully";
 "ALERT_UPLOAD_FAIL" = "Uploading was unable to complete please retry";
+"ALERT_UPLOAD_UNAVAILABLE_WHEN_READY" = "You are unable to upload videos to this project as it is already marked as ready";
+

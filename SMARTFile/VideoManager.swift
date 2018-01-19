@@ -35,11 +35,10 @@ final class VideoManager {
             let userId = User.id
             let localId = asset.localIdentifier
             let desc = ""
-            let url = "\(Constants.s3BaseURL)\(videoId)"
+            let url = "\(Constants.S3_BASE_URL)\(videoId)"
             let length:Int = Int(asset.duration)
             let size = getVideoSize(asset: asset)
             let added = Date()
-            print("short date ", added)
             let uploadedState = false
             let activeState = false
             let local_url = ""
@@ -83,12 +82,10 @@ final class VideoManager {
         if let url = URL(string: localUrl) {
             if FileManager.default.fileExists(atPath: url.path) {
                 do {
-                    try FileManager.default.removeItem(at: url)
-                    print("deleted \(url.path)")
+                    try FileManager.default.removeItem(atPath: url.absoluteString)
                 
                 } catch {
                     print(error)
-                    print("Unable to delete file")
         
                 }
             }
@@ -112,10 +109,12 @@ final class VideoManager {
             do {
                 let filePaths = try fileManager.contentsOfDirectory(atPath: dirPath)
                 for filePath in filePaths {
-                    try fileManager.removeItem(atPath: dirPath + filePath)
+                    print(filePath)
+                    try fileManager.removeItem(atPath: dirPath + "/" + filePath)
                 }
             } catch {
                 print("Could not clear temp folder: \(error)")
+                print("full directory us : \(dirPath)")
             }
             
         }
@@ -174,6 +173,8 @@ final class VideoManager {
         
         if(dir.0) {
             let docDataPath = dir.1?.appendingPathComponent("\(request.value(forKey: Constants.FIELD_VIDEO_ID) as! String).MOV")
+            
+            print("new video path is ", docDataPath?.absoluteString)
             
             if let newPath = docDataPath {
                 

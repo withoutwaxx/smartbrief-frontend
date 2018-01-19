@@ -8,9 +8,14 @@
 
 import UIKit
 
+protocol videoCellDelegate: class {
+    func deleteVideoPressed(index: IndexPath)
+}
+
 class VideoCell: UITableViewCell {
     
-    
+    var delegateCell:videoCellDelegate?
+    var indexPath:IndexPath?
 
     @IBOutlet weak var desc: UILabel!
     @IBOutlet weak var size: UILabel!
@@ -20,6 +25,8 @@ class VideoCell: UITableViewCell {
     
     
     @IBAction func deleteVideoPressed(_ sender: Any) {
+        delegateCell?.deleteVideoPressed(index: indexPath!)
+        
     }
     
     

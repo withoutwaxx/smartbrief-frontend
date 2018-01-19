@@ -34,7 +34,8 @@ class AWSManager {
     weak var uploadProgressDelegate:UploadProgressDelegate?
     
     var transferUtility:AWSS3TransferUtility
-    var requests:[NSManagedObject] = []
+    var newRequests:[NSManagedObject] = []
+    var requestsToSend:[NSManagedObject] = []
     var activeRequests:[NSManagedObject] = []
     var completionHandler:AWSS3TransferUtilityUploadCompletionHandlerBlock?
     var context:NSManagedObjectContext?
@@ -51,7 +52,7 @@ class AWSManager {
         
         let configuration = AWSServiceConfiguration(region: .EUWest2, credentialsProvider: credentialProvider)
         let config:AWSS3TransferUtilityConfiguration = AWSS3TransferUtilityConfiguration()
-        config.bucket = "finalsmartfilebucket"
+        config.bucket = Constants.S3_BUCKET
         AWSS3TransferUtility.register(with: configuration!, transferUtilityConfiguration: config, forKey: "UPLOAD_MANAGER")
         transferUtility = AWSS3TransferUtility.s3TransferUtility(forKey: "UPLOAD_MANAGER")
         
@@ -62,10 +63,14 @@ class AWSManager {
         let sort = NSSortDescriptor(key: Constants.FIELD_VIDEO_ADDED, ascending: false)
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_ACTIVE_STATE) = %@", false as CVarArg))
-        requests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
+        predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_UPLOADED_STATE) = %@", false as CVarArg))
+        newRequests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
         predicates = []
         predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_ACTIVE_STATE) = %@", true as CVarArg))
         activeRequests = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
+        predicates = []
+        predicates.append(NSPredicate(format: "\(Constants.FIELD_UPLOAD_UPLOADED_STATE) = %@", true as CVarArg))
+        requestsToSend = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: context )
         
         
     }
@@ -73,14 +78,6 @@ class AWSManager {
     
     
     func checkForUploadedNotUpdated () {
-        var requestsToSend:[NSManagedObject] = []
-        for request in requests {
-            if(request.value(forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE) as! Bool == true) {
-                requestsToSend.append(request)
-                
-            }
-            
-        }
         
         if(!requestsToSend.isEmpty) {
             RequestDelegate.executeNewVideo(requests: requestsToSend, index: 0, context: context!, completionHandler: {
@@ -157,7 +154,7 @@ class AWSManager {
         var currentRequest:NSManagedObject?
         var found = false
         
-        for request in requests {
+        for request in newRequests {
             if(request.value(forKey: Constants.FIELD_UPLOAD_TASK_ID) as! Int == Int(task.taskIdentifier)) {
                 currentRequest = request
                 found = true
@@ -206,21 +203,17 @@ class AWSManager {
             
             if let uploadTasks = task.result as? [AWSS3TransferUtilityUploadTask] {
                 
-                if(self.activeRequests.count != uploadTasks.count) {
-                    self.updateActiveUploads(activeUploads: uploadTasks, completionHandler: {
-                        (success) in
-                        for upload in uploadTasks {
-                            self.validateActiveUpload(task: upload)
-                            
-                        }
+                self.updateActiveUploads(activeUploads: uploadTasks, completionHandler: {
+                    (success) in
+                    for upload in uploadTasks {
+                        self.validateActiveUpload(task: upload)
                         
-                    })
-                    completionHandler(true)
+                    }
                     
-                } else {
-                    completionHandler(true)
-                    
-                }
+                })
+                completionHandler(true)
+                
+               
                 
                 return nil
                 
@@ -237,7 +230,7 @@ class AWSManager {
     
     
     func nextSuitableRequest () -> (Bool,NSManagedObject?) {
-        for request in requests {
+        for request in newRequests {
             if(request.value(forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE) as! Bool == false ) {
                 return (true, request)
                 
@@ -307,13 +300,13 @@ class AWSManager {
                                         
                                     }
                                 }
-                                if(self.uploadDelegate != nil) {
-                                    DispatchQueue.main.async {
-                                        self.uploadDelegate?.updateToUploads()
-                                        
-                                    }
-                                }
                                 
+                            }
+                            if(self.uploadDelegate != nil) {
+                                DispatchQueue.main.async {
+                                    self.uploadDelegate?.updateToUploads()
+                                    
+                                }
                             }
                             self.updateRequestLists()
                             self.awakenUploads()
@@ -355,6 +348,27 @@ class AWSManager {
         
     }
     
+    
+    
+    func deleteAWSAsset(key:String, completionHandler: @escaping (_ success: Bool) -> ()) {
+        let delReq = AWSS3DeleteObjectRequest()
+        delReq?.bucket = Constants.S3_BUCKET
+        delReq?.key = key
+        AWSS3.default().deleteObject(delReq!).continueWith {
+            (output) -> Any? in
+            if(!output.isFaulted) {
+                completionHandler(true)
+                
+            } else {
+                completionHandler(false)
+                
+            }
+            
+            return nil
+            
+        }
+        
+    }
     
     
     

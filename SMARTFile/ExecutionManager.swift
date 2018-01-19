@@ -92,7 +92,6 @@ class RequestExecutionManager {
                         if(json["outcome"].boolValue) {
                             if(json["exist"].boolValue) {
                                 let projects  = json["payload"]["projects"].array
-                                print(projects)
                                 let count = json["payload"]["count"].array
                                 completionHandler(true, "", projects!, count!)
                             } else {
@@ -123,7 +122,7 @@ class RequestExecutionManager {
     
     
     
-    static func getVideos(endpoint:String, completionHandler: @escaping (_ success: Bool, _ message :String, _ videos:[JSON] ) -> ()) {
+    static func videoRequest(endpoint:String, completionHandler: @escaping (_ success: Bool, _ message :String, _ videos:[JSON] ) -> ()) {
     
         let headers: HTTPHeaders = [
             "Authorization" : "Bearer " + User.token

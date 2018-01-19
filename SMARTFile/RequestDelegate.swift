@@ -83,8 +83,29 @@ class RequestDelegate {
     }
     
     
+    
+    static func deleteVideo( videoId:String, projectId:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
+        print(projectId)
+        print(videoId)
+        let url = "\(Constants.deleteVideo)?pid=\(projectId)&vid=\(videoId)&"
+        RequestExecutionManager.videoRequest(endpoint: url, completionHandler: {
+            (success, message, videos) in
+            if(success) {
+                DataManager.saveVideos(videos: videos)
+                completionHandler(true, "")
+                
+            } else {
+                completionHandler(false, message)
+                
+            }
+        })
+        
+    }
+    
+    
+    
     static func getVideos( projectId:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
-        RequestExecutionManager.getVideos(endpoint: StringManager.buildGetVideosURL(projectId: projectId), completionHandler: {
+        RequestExecutionManager.videoRequest(endpoint: StringManager.buildGetVideosURL(projectId: projectId), completionHandler: {
             (success, message, videos) in
             
             if(success) {
@@ -151,25 +172,6 @@ class RequestDelegate {
         })
         
     }
-    
-    
-//
-//    static func newVideos(requests:[NSManagedObject], completionHandler: @escaping (_ success: Bool) -> ()){
-//
-//        executeNewVideo(requests: requests, index: 0, completionHandler: { (
-//            success) in
-//
-//            completionHandler(true)
-//
-//
-//        })
-//
-//    }
-//
-//
-    
-    
-    
     
 
 }
