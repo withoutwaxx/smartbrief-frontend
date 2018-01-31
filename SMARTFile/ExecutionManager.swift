@@ -176,9 +176,12 @@ class RequestExecutionManager {
             
         ]
         
+        
+        let serialQ = DispatchQueue.global(qos: .utility)
+        
         self.requestSecurityManager.request(endpoint, method: .post, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200..<300)
             .validate(contentType: ["application/json"])
-            .responseJSON { response in
+            .responseJSON(queue: serialQ) { response in
                 
                 switch response.result {
                 case .success:

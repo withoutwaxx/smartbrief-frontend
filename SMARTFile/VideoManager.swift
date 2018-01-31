@@ -31,7 +31,7 @@ final class VideoManager {
             
             let videoId = UuidGenerator.newUuid()
             let projectId = pProjectId
-            let taskId = 0
+            let taskId = -1
             let userId = User.id
             let localId = asset.localIdentifier
             let desc = ""
@@ -124,7 +124,7 @@ final class VideoManager {
         
     
     
-    func createDirectory () -> (Bool, URL?) {
+    func createDirectory () -> (Bool, URL?, String) {
         let docPaths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         
         let documentsDirectory: AnyObject = docPaths[0] as AnyObject
@@ -137,26 +137,26 @@ final class VideoManager {
         
         if fileManager.fileExists  (atPath: filePath, isDirectory:&isDir) {
             if isDir.boolValue {
-                return (true, URL(fileURLWithPath: filePath))
+                return (true, URL(fileURLWithPath: filePath), "what")
                 
             } else {
                 deleteVideoFile(localUrl: filePath)
                 do {
                     try FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true, attributes: nil)
-                    return (true, URL(fileURLWithPath: filePath))
+                    return (true, URL(fileURLWithPath: filePath), "weird")
                 } catch let error as NSError {
-                    return (false, nil)
-                    NSLog("Unable to create directory \(error.debugDescription)")
+                    print("Unable to create directory \(error.debugDescription)")
+                    return (false, nil, "first first")
                 }
                 
             }
         } else {
             do {
                 try FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true, attributes: nil)
-                return (true, URL(fileURLWithPath: filePath))
+                return (true, URL(fileURLWithPath: filePath), "")
             } catch let error as NSError {
-                return (false, nil)
-                NSLog("Unable to create directory \(error.debugDescription)")
+                print("Unable to create directory \(error.debugDescription)")
+                return (false, nil, "second second")
             }
             
         }
@@ -166,39 +166,52 @@ final class VideoManager {
         
     
     
-    func createVideoFile (request:NSManagedObject, completionHandler: @escaping (_ success: Bool, _ url:URL?) -> ()) {
+    func createVideoFile (request:NSManagedObject, completionHandler: @escaping (_ success: Bool, _ url:URL?, _ err:String?) -> ()) {
         
         let dir = createDirectory()
-        var returnPath:URL?
         
-        if(dir.0) {
+        if(dir.0 == true) {
+            print("true")
+            
+        } else {
+           print("here")
+            
+        }
+        
+        if(dir.0 == true) {
+            
             let docDataPath = dir.1?.appendingPathComponent("\(request.value(forKey: Constants.FIELD_VIDEO_ID) as! String).MOV")
-            
-            print("new video path is ", docDataPath?.absoluteString)
-            
+                        
             if let newPath = docDataPath {
+                
+                print("here")
                 
                 let manager = PHImageManager.default()
                 
                 let asset = PHAsset.fetchAssets(withLocalIdentifiers: [request.value(forKey: Constants.FIELD_UPLOAD_LOCAL_ID) as! String], options: nil).firstObject
                 
+                print("here two two")
+                
                 if let uAsset = asset {
                     manager.requestAVAsset(forVideo: uAsset, options: nil, resultHandler: { (avasset, audio, info) in
                         if let avassetURL = avasset as? AVURLAsset {
                             
-                            guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
-                                completionHandler(false, nil)
-                                return
-                            }
-                            do {
-                                try video.write(to: URL(fileURLWithPath: newPath.path), options: [])
-                                completionHandler(true, newPath)
-                            
-                            } catch {
-                                completionHandler(false, nil)
-                                
-                            }
-                            
+                            print("here three")
+                             
+                                guard let video = try? Data(contentsOf: avassetURL.url as URL) else {
+                                    print("here four")
+                                    completionHandler(false, nil, "first")
+                                    return
+                                }
+                                do {
+                                    try video.write(to: URL(fileURLWithPath: newPath.path), options: [])
+                                    print("here two")
+                                    completionHandler(true, newPath, "correct")
+                                    
+                                } catch {
+                                    completionHandler(false, nil, "second")
+                                    
+                                }
                             
                         }
                     })
@@ -207,9 +220,12 @@ final class VideoManager {
                 
             }
             
+        } else {
+            completionHandler(false, nil, dir.2)
+            
         }
         
-        completionHandler(false, nil)
+        
     
     }
     

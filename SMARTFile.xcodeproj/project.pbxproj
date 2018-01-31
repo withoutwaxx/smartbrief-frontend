@@ -34,6 +34,7 @@
 		E2D538F21FA0B03B00DC9B28 /* SMARTFileUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538F11FA0B03B00DC9B28 /* SMARTFileUITests.swift */; };
 		E2D539001FA0CC3F00DC9B28 /* ProjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D538FF1FA0CC3F00DC9B28 /* ProjectsViewController.swift */; };
 		E2D539021FA0D0B500DC9B28 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */; };
+		E2DC51A3201B9C95001F95B2 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DC51A2201B9C95001F95B2 /* NotificationManager.swift */; };
 		E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */; };
 		E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */; };
 		E2E0278A1FC8857D009CABB9 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E027891FC8857D009CABB9 /* VideoManager.swift */; };
@@ -73,6 +74,7 @@
 		E253A5C31FA22C9A00D5D424 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E253A5C51FA23D3600D5D424 /* cert.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = cert.cer; sourceTree = "<group>"; };
 		E2869D8A1FC0839600754906 /* AWSManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSManager.swift; sourceTree = "<group>"; };
+		E2A7E7F2201A24310046C171 /* SMARTFile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SMARTFile.entitlements; sourceTree = "<group>"; };
 		E2B832231FA9EEC100640AB7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E2B832251FA9EEE600640AB7 /* ExecutionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionManager.swift; sourceTree = "<group>"; };
 		E2B832261FA9EEE600640AB7 /* RequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		E2D538F31FA0B03B00DC9B28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E2D538FF1FA0CC3F00DC9B28 /* ProjectsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectsViewController.swift; sourceTree = "<group>"; };
 		E2D539011FA0D0B500DC9B28 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		E2DC51A2201B9C95001F95B2 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Delete.swift; sourceTree = "<group>"; };
 		E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProjectCell.swift; path = ../ProjectCell.swift; sourceTree = "<group>"; };
 		E2E027891FC8857D009CABB9 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
@@ -164,6 +167,7 @@
 		E253A5BD1FA2062700D5D424 /* utilities */ = {
 			isa = PBXGroup;
 			children = (
+				E2DC51A2201B9C95001F95B2 /* NotificationManager.swift */,
 				E2E027891FC8857D009CABB9 /* VideoManager.swift */,
 				E2B832291FA9EEFA00640AB7 /* AlertUserManager.swift */,
 				E2B8322A1FA9EEFA00640AB7 /* StringManager.swift */,
@@ -215,6 +219,7 @@
 		E2D538CD1FA0B03B00DC9B28 /* SMARTFile */ = {
 			isa = PBXGroup;
 			children = (
+				E2A7E7F2201A24310046C171 /* SMARTFile.entitlements */,
 				E253A5C11FA210EF00D5D424 /* Localizable.strings */,
 				E2D538CE1FA0B03B00DC9B28 /* AppDelegate.swift */,
 				E2D538D21FA0B03B00DC9B28 /* Main.storyboard */,
@@ -325,6 +330,14 @@
 						CreatedOnToolsVersion = 8.3.1;
 						DevelopmentTeam = 4XYD7C65F7;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Multipath = {
+								enabled = 1;
+							};
+						};
 					};
 					E2D538E11FA0B03B00DC9B28 = {
 						CreatedOnToolsVersion = 8.3.1;
@@ -480,6 +493,7 @@
 				E2D538D11FA0B03B00DC9B28 /* LoginViewController.swift in Sources */,
 				E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */,
 				E2B8322C1FA9EEFA00640AB7 /* AlertUserManager.swift in Sources */,
+				E2DC51A3201B9C95001F95B2 /* NotificationManager.swift in Sources */,
 				E2B832271FA9EEE600640AB7 /* ExecutionManager.swift in Sources */,
 				E2B832241FA9EEC100640AB7 /* Constants.swift in Sources */,
 				E253A5C41FA22C9A00D5D424 /* User.swift in Sources */,
@@ -666,6 +680,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SMARTFile/SMARTFile.entitlements;
 				DEVELOPMENT_TEAM = 4XYD7C65F7;
 				INFOPLIST_FILE = SMARTFile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
@@ -682,6 +697,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SMARTFile/SMARTFile.entitlements;
 				DEVELOPMENT_TEAM = 4XYD7C65F7;
 				INFOPLIST_FILE = SMARTFile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;

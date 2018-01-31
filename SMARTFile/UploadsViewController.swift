@@ -17,54 +17,42 @@ import AssetsPickerViewController
 
 
 
-class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, uploadCellDelegate, UploadDelegate, UploadProgressDelegate {
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, AssetsPickerViewControllerDelegate, uploadCellDelegate, UploadDelegate, UploadProgressDelegate, NewVideoDelegate {
     
     
-    var transferUtility:AWSS3TransferUtility?
-    var requests:[NSManagedObject] = []
-    var activeRequests:[NSManagedObject] = []
-    var completionHandler:AWSS3TransferUtilityUploadCompletionHandlerBlock?
-    var uploadExpression:AWSS3TransferUtilityUploadExpression?
-    
-    
-    var requestQueue:[NSManagedObject] = []
+    var requestQueueAll:[NSManagedObject] = []
+    var requestQueueCurrent:[NSManagedObject] = []
     var currentProject:NSManagedObject?
     
     @IBOutlet weak var noVideosLabel: UILabel!
-    @IBOutlet weak var uploadContainer: UIView!
-    @IBOutlet weak var uploadContainerHeight: NSLayoutConstraint!
-    @IBOutlet weak var uploadingLabel: UILabel!
     @IBOutlet weak var selectVideos: UIView!
     @IBOutlet weak var selectProjectsLabel: UILabel!
     @IBOutlet weak var videosSummary: UILabel!
     @IBOutlet weak var uploadsTable: UITableView!
     @IBOutlet weak var progressBar: UIProgressView!
     
+    @IBOutlet weak var allUploadsSwitch: UISwitch!
     @IBOutlet weak var progressLabel: UILabel!
     
-
     
     
-    @IBAction func readyPressed(_ sender: Any) {
-        if(requestQueue.isEmpty) {
-            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEOS_COUNT", comment: ""), currentViewController: self)
-            
-        } else {
-            AlertUserManager.warnUser(action: NSLocalizedString("ALERT_PROJECT_READY_ACTION", comment: ""), message: NSLocalizedString("ALERT_PROJECT_READY", comment: ""), currentViewController: self, completionHandler:
-                {(success) in
-                    if(success){
-                        RequestDelegate.updateProject(project: self.currentProject!, readyValue: 1, completionHandler: {
-                            (success, message) in
-                            if(success) {
-                                self.performSegue(withIdentifier: "deletedProject", sender: self)
-                                
-                            } else {
-                                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
-                            }
-                        })
-                    }
-            })
-        }
+    @IBAction func viewAllToggled(_ sender: Any) {
+        uploadsTable.reloadData()
+        uploadsTable.setNeedsLayout()
+        
+        
+    }
+    
+    
+    
+    func updateToVideo() {
+        RequestDelegate.getVideos(projectId: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String) { (success, message) in
+            }
+        
+        RequestDelegate.getProjects {
+            (success, error) in
+            }
+        
     }
     
    
@@ -75,29 +63,23 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         AWSManager.sharedInstance.uploadProgressDelegate = self
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
-        loadData()
-        if(requestQueue.isEmpty) {
-            uploadsTable.isHidden = true
-            noVideosLabel.isHidden = false
-        }
-  
-        setupViews()
+        uploadsTable.tableFooterView = UIView()
+        loadData(completionHandler:{ (complete) in
+            if(self.requestQueueAll.isEmpty) {
+                self.uploadsTable.isHidden = true
+                self.noVideosLabel.isHidden = false
+            }
+            
+            self.setupViews()
+            
+        })
         
-        self.uploadExpression = AWSS3TransferUtilityUploadExpression()
-        
-        uploadExpression?.progressBlock = { (task: AWSS3TransferUtilityTask,progress: Progress) -> Void in
-            DispatchQueue.main.async(execute: {
-                self.updateToProgress(progress: progress.fractionCompleted)
-                print("video upload progress update: \(progress.fractionCompleted)")
-                
-            })
-        }
 
     }
     
     
     func setupViews() {
-        videosSummary.text = " \(requestQueue.count) videos in upload queue"
+        videosSummary.text = " \(requestQueueAll.count) video(s) in upload queue"
         let selectVideosTouch = UITapGestureRecognizer(target: self, action:  #selector (self.addVideosAction(_:)))
         self.selectVideos.addGestureRecognizer(selectVideosTouch)
         selectProjectsLabel.adjustsFontSizeToFitWidth = true
@@ -107,26 +89,31 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func updateView() {
-        self.loadData()
-        self.uploadsTable.reloadData()
-        if(requestQueue.count == 1) {
-            videosSummary.text = " \(requestQueue.count) video in upload queue"
-            
-        } else {
-            videosSummary.text = " \(requestQueue.count) videos in upload queue"
-            
-        }
-    
-        if(!requestQueue.isEmpty) {
-            uploadsTable.isHidden = false
-            noVideosLabel.isHidden = true
-            
-        } else {
-            uploadsTable.isHidden = true
-            noVideosLabel.isHidden = false
-            
-        }
+        loadData(completionHandler: {
+            (complete) in
         
+            self.uploadsTable.reloadData()
+            self.uploadsTable.setNeedsLayout()
+            if(self.requestQueueAll.count == 1) {
+                self.videosSummary.text = " \(self.requestQueueAll.count) video in upload queue"
+                
+            } else {
+                self.videosSummary.text = " \(self.requestQueueAll.count) videos in upload queue"
+                
+            }
+            
+            if(!self.requestQueueAll.isEmpty) {
+                self.uploadsTable.isHidden = false
+                self.noVideosLabel.isHidden = true
+                
+            } else {
+                self.uploadsTable.isHidden = true
+                self.noVideosLabel.isHidden = false
+                
+            }
+            
+        })
+
     }
     
     
@@ -135,7 +122,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         let value = Float(progress)
         DispatchQueue.main.async(execute: {
             self.progressBar.progress = value
-            self.progressLabel.text = "\(String(Int(value * 100)))%"
+            self.progressLabel.text = "\(String(format:"%.1f", value * 100))%"
         })
         
     }
@@ -161,12 +148,6 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func assetsPicker(controller: AssetsPickerViewController, selected assets: [PHAsset]) {
         
-        self.completionHandler = { (task, error) -> Void in
-            DispatchQueue.main.async(execute: {
-                print("upload complete")
-            })
-        }
-        
         VideoManager.sharedInstance.processNewVideos(assets: assets, pProjectId: currentProject?.value(forKey: "project_id") as! String ,  completionHandler: { (success, duplicate) in
             
             if(success) {
@@ -175,7 +156,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                     AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DUPLICATE_UPLOAD", comment: ""), currentViewController: self)
                 }
                 
-                DispatchQueue.global(qos: .background).async {
+                DispatchQueue.global(qos: .utility).async {
                     AWSManager.sharedInstance.awakenUploads()
                     
                 }
@@ -227,7 +208,13 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return requestQueue.count
+        if(allUploadsSwitch.isOn) {
+            return requestQueueAll.count
+            
+        } else {
+            return requestQueueCurrent.count
+            
+        }
     }
     
     
@@ -236,7 +223,16 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                    cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
             
-            let request = requestQueue[indexPath.row]
+            var request:NSManagedObject
+            
+            if(allUploadsSwitch.isOn) {
+                request = requestQueueAll[indexPath.row]
+                
+            } else {
+                request = requestQueueCurrent[indexPath.row]
+                
+            }
+    
             let cell =
                 tableView.dequeueReusableCell(withIdentifier: "uploadCell",
                                               for: indexPath) as! UploadCell
@@ -244,20 +240,20 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             cell.indexPath = indexPath
             cell.delegateCell = self
             
-            if(((request.value(forKeyPath: "desc") as? String)?.count)! > 0){
-                cell.descLabel.text = request.value(forKeyPath: "video_desc") as? String
+            if(((request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String)?.count)! > 0) {
+                cell.descLabel.text = request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String
                 cell.descLabel.textColor = UIColor.white
 
             } else {
-                cell.descLabel.text = "No description"
+                cell.descLabel.text = "Tap to add a description"
                 cell.descLabel.textColor = UIColor.gray
             }
             
             cell.sizeLabel.text = String(describing: request.value(forKeyPath: "size") ?? "") + " Mb"
             cell.dateLabel.text = "Added \(StringManager.dateToStringDate(date: (request.value(forKeyPath: "added") as? Date)))"
-            cell.lengthLabel.text = StringManager.getTime(seconds: request.value(forKeyPath: "length") as! Int)
+            cell.lengthLabel.text = StringManager.getTime(seconds: request.value(forKeyPath: Constants.FIELD_VIDEO_LENGTH ) as! Int)
             
-            if(request.value(forKey: "active_state") as? Bool == true) {
+            if(request.value(forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE) as? Bool == true) {
                 cell.deleteButton.isHidden = true
                 cell.activityWheel.startAnimating()
                 
@@ -269,22 +265,73 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             
             return cell
     }
+    
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        AlertUserManager.getInfoFromUser(title: NSLocalizedString("ALERT_VIDEO_DESC_TITLE", comment: ""), message: NSLocalizedString("ALERT_VIDEO_DESC", comment: ""), finishedAction: NSLocalizedString("UI_DONE", comment: ""), placeholder: NSLocalizedString("UI_DESC", comment: ""), currentViewController: self) {
+            
+            (success, text) in
+            if(success) {
+                var request:NSManagedObject
+                if(self.allUploadsSwitch.isOn) {
+                    request = self.requestQueueAll[indexPath.row]
+                    
+                } else {
+                    request = self.requestQueueCurrent[indexPath.row]
+                    
+                }
+                
+                if(text.count > 0 && text.count < 201) {
+
+                    DataManager.updateSingleUploadTask(findField: Constants.FIELD_VIDEO_ID, findValue: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String , updateField: Constants.FIELD_VIDEO_DESC, updateValueBool: false, updateValueString: text, updateTypeBool: false, bg:false, context: nil)
+                    
+                    self.updateView()
+                
+                } else {
+                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_DESC_LENGTH", comment: ""), currentViewController: self)
+                    
+                }
+                
+                
+            }
+            
+        }
+        
+    }
+    
  
     
+    
     func deleteRequestPressed(index: IndexPath) {
-        DataManager.deleteMultiple(ids: [requestQueue[index.row].value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg: false, context: nil)
+        var request:NSManagedObject
+        if(self.allUploadsSwitch.isOn) {
+            request = self.requestQueueAll[index.row]
+            
+        } else {
+            request = self.requestQueueCurrent[index.row]
+            
+        }
+        DataManager.deleteMultiple(ids: [request.value(forKey: ("video_id")) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg: false, context: nil)
         
         self.updateView()
         
     }
     
     
-    func loadData() {
-        let sort = NSSortDescriptor(key: "added", ascending: false)
+    
+    func loadData( completionHandler: @escaping (_ complete:Bool) -> ()) {
+        let sort = NSSortDescriptor(key: "added", ascending: true)
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "uploaded_state = %@", false as CVarArg))
         
-        requestQueue = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: false, context: nil)
+        requestQueueAll = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: AWSManager.sharedInstance.context)
+        
+        predicates.append(NSPredicate(format: "\(Constants.FIELD_PROJECT_ID) = %@", currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String))
+        
+        requestQueueCurrent = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: AWSManager.sharedInstance.context)
+        
+        completionHandler(true)
 
     }
     

@@ -36,6 +36,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var receivedCircle: Circle!
     @IBOutlet weak var readyLabel: UIButton!
     @IBOutlet weak var readyCircle: Circle!
+    @IBOutlet weak var activityWheel: UIActivityIndicatorView!
     
     
     
@@ -71,6 +72,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         AWSManager.sharedInstance.videoDelegate = self
         videosTable.delegate = self
         videosTable.dataSource = self
+        videosTable.tableFooterView = UIView()
   
         setupViews()
         
@@ -97,6 +99,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         reloadProject()
         loadData()
         videosTable.reloadData()
+        videosTable.setNeedsLayout()
         if(videos.isEmpty) {
             videosTable.isHidden = true
             noVideosLabel.isHidden = false
@@ -115,6 +118,17 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
             deleteProject.isHidden = true
             
             
+        } else {
+            readyCircle.fillColor = UIColor.red
+            
+        }
+        
+        if(currentProject?.value(forKeyPath: "received_state") as? Bool == true) {
+            receivedCircle.fillColor = UIColor.green
+            
+        } else {
+            receivedCircle.fillColor = UIColor.red
+            
         }
     
     }
@@ -128,34 +142,35 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         receivedLabel.adjustsFontSizeToFitWidth = true
         readyLabel.titleLabel?.adjustsFontSizeToFitWidth = true
         projectTitle.adjustsFontSizeToFitWidth = true
-        if(currentProject?.value(forKeyPath: "received_state") as? Bool == true) {
-            receivedCircle.fillColor = UIColor.green
-            
-        } else {
-            receivedCircle.fillColor = UIColor.red
-            
-        }
+        refreshView()
         
-        if(currentProject?.value(forKeyPath: "ready_state") as? Bool == true) {
-            readyCircle.fillColor = UIColor.green
-            readyLabel.isUserInteractionEnabled = false
-            readyLabel.titleLabel?.textColor = UIColor.darkGray
-            readyLabel.setTitle(NSLocalizedString("UI_READY", comment: ""), for: UIControlState.normal)
-            deleteProject.isHidden = true
-            
-            
-        } else {
-            readyCircle.fillColor = UIColor.red
-            
-        }
+    }
+    
+    
+    
+    func startWheel () {
+        activityWheel.startAnimating()
+        activityWheel.isHidden = false
+        
+    }
+    
+    
+    func stopWheel () {
+        activityWheel.stopAnimating()
+        activityWheel.isHidden = true
         
     }
     
     
     
     func deleteVideoPressed(index: IndexPath) {
-    
-        AWSManager.sharedInstance.deleteAWSAsset(key: videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String) {
+        
+        startWheel()
+        
+        let cell:VideoCell = videosTable.cellForRow(at: index) as! VideoCell
+        cell.deleteVideo.isHidden = true
+        
+        AWSManager.sharedInstance.deleteAWSAssets(keys: [videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String], index: 0) {
             
             (success) in
             if(success) {
@@ -165,16 +180,35 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     if(success) {
                         self.refreshView()
+                        RequestDelegate.getProjects(completionHandler: { (success, message) in
+                            
+                        })
                         
                     } else {
                         AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                        DispatchQueue.main.async {
+                            cell.deleteVideo.isHidden = false
+                            
+                        }
+                    
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.stopWheel()
                         
                     }
                     
                 })
                 
             } else {
+                
                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_VIDEO_UNABLE", comment: ""), currentViewController: self)
+                
+                DispatchQueue.main.async {
+                    self.stopWheel()
+                     cell.deleteVideo.isHidden = false
+                    
+                }
                 
             }
             
@@ -188,16 +222,47 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         AlertUserManager.warnUser(action: NSLocalizedString("ALERT_PROJECT_DELETE_ACTION", comment: ""), message: NSLocalizedString("ALERT_PROJECT_DELETE", comment: ""), currentViewController: self, completionHandler:
             {(success) in
                 if(success){
-                    RequestDelegate.deleteProject(projectId: self.currentProject?.value(forKey: "project_id" ) as! String, completionHandler: {
-                        (success, message) in
+                    
+                    DispatchQueue.main.async {
+                        self.startWheel()
+                        self.deleteProject.isHidden = true
+                        
+                    }
+                    
+                    AWSManager.sharedInstance.deleteAWSAssets(keys: DataManager.objectsToKeys(objects: self.videos), index: 0, completionHandler: {
+                        
+                        (success) in
+                        
                         if(success) {
-                           self.performSegue(withIdentifier: "videosToProjects", sender: self)
+                            RequestDelegate.deleteProject(projectId: self.currentProject?.value(forKey: "project_id" ) as! String, completionHandler: {
+                                (success, message) in
+                                if(success) {
+                                    self.performSegue(withIdentifier: "videosToProjects", sender: self)
+                                    
+                                } else {
+                                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                                    
+                                    DispatchQueue.main.async {
+                                        self.stopWheel()
+                                        self.deleteProject.isHidden = false
+                                        
+                                    }
+                                }
+                                
+                            })
                             
                         } else {
-                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                            DispatchQueue.main.async {
+                                self.stopWheel()
+                                self.deleteProject.isHidden = false
+                                
+                            }
+                            
+                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_PROJECT_UNABLE", comment: ""), currentViewController: self)
+                            
                         }
-                        
                     })
+                    
           
                 }
         })
@@ -226,8 +291,13 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                                               for: indexPath) as! VideoCell
             cell.delegateCell = self
             cell.indexPath = indexPath
+            cell.deleteVideo.isHidden = false
             
-            if(((video.value(forKeyPath: "desc") as? String)?.count)! > 0){
+            let colorView = UIView()
+            colorView.backgroundColor = UIColor.black
+            cell.selectedBackgroundView = colorView
+            
+            if(((video.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String)?.count)! > 0){
                 cell.desc.text = video.value(forKeyPath: "desc") as? String
                 cell.desc.textColor = UIColor.white
 
@@ -244,15 +314,54 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                 cell.deleteVideo.isHidden = true
                 
             }
-            
+                        
             return cell
     }
     
     
-    func reloadProject() {
-        let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
-        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        AlertUserManager.getInfoFromUser(title: NSLocalizedString("ALERT_VIDEO_DESC_TITLE", comment: ""), message: NSLocalizedString("ALERT_VIDEO_DESC", comment: ""), finishedAction: NSLocalizedString("UI_DONE", comment: ""), placeholder: NSLocalizedString("UI_DESC", comment: ""), currentViewController: self) {
+            
+            (success, text) in
+            if(success) {
+                
+                if(text.count > 0 && text.count < 201) {
+                    
+                    self.startWheel()
+                    
+                    RequestDelegate.updateVideo(projectId: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String, videoId: self.videos[indexPath.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String, desc: text, completionHandler: {
+                        
+                        (success, message) in
+                        
+                        if(success) {
+                            self.refreshView()
+                            
+                        } else {
+                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                            
+                        }
+                        
+                        self.stopWheel()
+                        self.refreshView()
+                        
+                    })
+                    
+                } else {
+                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_VIDEO_DESC_LENGTH", comment: ""), currentViewController: self)
+                    
+                }
+                
+                
+            }
+            
+        }
         
+    }
+    
+    
+    
+    func reloadProject() {
         currentProject = DataManager.getProjects(id: currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String).first
         
     }
@@ -261,8 +370,8 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     func loadData() {
         
-        let predicate = NSPredicate(format: "project_id == %@", currentProject?.value(forKeyPath: "project_id") as! String)
-        let sort = NSSortDescriptor(key: "uploaded", ascending: false)
+        let predicate = NSPredicate(format: "\(Constants.FIELD_PROJECT_ID) == %@", currentProject?.value(forKeyPath: Constants.FIELD_PROJECT_ID) as! String)
+        let sort = NSSortDescriptor(key: Constants.FIELD_VIDEO_UPLOADED, ascending: false)
 
         videos = DataManager.getVideos(predicates: [predicate], sort: [sort])
         
@@ -274,11 +383,6 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewWillAppear(animated)
         
         loadData()
-        if(videos.isEmpty) {
-            videosTable.isHidden = true
-            noVideosLabel.isHidden = false
-        
-        }
 
     }
     

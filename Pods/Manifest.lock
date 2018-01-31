@@ -6,11 +6,11 @@ PODS:
     - PureLayout
     - SwiftARGB (< 2.0)
     - TinyLog (~> 1.0)
-  - AWSCognito (2.6.7):
-    - AWSCore (= 2.6.7)
-  - AWSCore (2.6.7)
-  - AWSS3 (2.6.7):
-    - AWSCore (= 2.6.7)
+  - AWSCognito (2.6.11):
+    - AWSCore (= 2.6.11)
+  - AWSCore (2.6.11)
+  - AWSS3 (2.6.11):
+    - AWSCore (= 2.6.11)
   - Dimmer (1.1.2):
     - FadeView
     - OptionalTypes
@@ -47,9 +47,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   AssetsPickerViewController: ba566156e4056dd333bd6c34371235743ccc0eaf
-  AWSCognito: be5798e371a93b84ebb4c0577db21634e2c8c955
-  AWSCore: a5ff5fb202342b922eb9036af9ecc3bc28a032eb
-  AWSS3: cd4aec32f51fc202431e36596d2f535f821788e1
+  AWSCognito: 1e6f65e3512bc9332e28c64e8a36001bce6213f9
+  AWSCore: a461695bf302a32a366768bf36056be3a2c87d8d
+  AWSS3: d13e29a4dbfecb7cd99b4ce833a9fe221dee8cba
   Dimmer: d69bad35b7e4545c3d36b64737b2623b59fac55c
   FadeView: 7d4cdefa83ac9c17782613e9068c9fac0457285e
   JWTDecode: 83e8b381aafe27158d9f692cbdca2b12d61d460c

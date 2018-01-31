@@ -85,9 +85,8 @@ class RequestDelegate {
     
     
     static func deleteVideo( videoId:String, projectId:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
-        print(projectId)
-        print(videoId)
-        let url = "\(Constants.deleteVideo)?pid=\(projectId)&vid=\(videoId)&"
+
+        let url = "\(Constants.deleteVideo)?pPid=\(projectId)&pVid=\(videoId)&"
         RequestExecutionManager.videoRequest(endpoint: url, completionHandler: {
             (success, message, videos) in
             if(success) {
@@ -121,6 +120,28 @@ class RequestDelegate {
     }
     
     
+    
+    static func updateVideo( projectId:String, videoId:String, desc:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
+        
+        let url = "\(Constants.updateVideo)?".appending(StringManager.buildUpdateVideoURL(projectId: projectId, videoId: videoId, desc: desc))
+        RequestExecutionManager.videoRequest(endpoint: url, completionHandler: {
+            (success, message, videos) in
+            
+            if(success) {
+                DataManager.saveVideos(videos: videos)
+                completionHandler(true, "")
+                
+            } else {
+                completionHandler(false, message)
+                
+            }
+        })
+        
+    }
+    
+    
+    
+    
     static func updateProject( project:NSManagedObject, readyValue:Int, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
         let url = "\(Constants.updateProject)?".appending(StringManager.buildUpdateProjectURL(project: project, readyValue: readyValue))
         RequestExecutionManager.projectRequest(endpoint: url, completionHandler: {
@@ -140,40 +161,53 @@ class RequestDelegate {
     
     
     
-    static func executeNewVideo (requests:[NSManagedObject], index:Int, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()){
+    static func executeNewVideo (requests:[NSManagedObject], index:Int, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()) {
         
         let url = "\(Constants.newVideo)?".appending(StringManager.buildNewVideoURL(request: requests[index]))
         
         RequestExecutionManager.newVideo(endpoint: url, completionHandler: {
+            
             (success) in
+
             if(success) {
+                
                 DataManager.deleteMultiple(ids: [requests[index].value(forKey: Constants.FIELD_VIDEO_ID) as! String], field: Constants.FIELD_VIDEO_ID, entity: Constants.ENTITY_UPLOAD_REQUEST, bg:true, context: context)
                 
             }
-            
+        
             let newIndex = index + 1
             if(newIndex < requests.count) {
-                executeNewVideo(requests: requests, index: newIndex, context: context, completionHandler: { (success) in
+                executeNewVideo(requests: requests, index: newIndex, context: context, completionHandler: {
+                    
+                    (success) in
+                    
                     if(success){
                         completionHandler(true)
+                    
+                    } else {
+                        completionHandler(false)
+                        
                     }
                     
                 })
                 
             } else {
+                
                 if(!success) {
                     completionHandler(false)
                 
                 } else {
                     completionHandler(true)
-                    
+                
                 }
+                
             }
-        })
-        
-    }
     
+        })
+  
+    }
 
 }
+
 
 

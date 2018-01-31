@@ -22,10 +22,13 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     @IBAction func newProject(_ sender: Any) {
-        AlertUserManager.getInfoFromUser(title: NSLocalizedString("ALERT_NEW_PROJECT_TITLE", comment: ""), message: NSLocalizedString("ALERT_NEW_PROJECT", comment: ""), currentViewController: self, completionHandler:
+        AlertUserManager.getInfoFromUser(title: NSLocalizedString("ALERT_NEW_PROJECT_TITLE", comment: ""), message: NSLocalizedString("ALERT_NEW_PROJECT", comment: ""), finishedAction: NSLocalizedString("UI_CREATE", comment: ""), placeholder: NSLocalizedString("UI_PROJECT_NAME", comment: ""), currentViewController: self, completionHandler:
             {(success, title) in
                 if(success){
                     if(title.count > 0 && title.count < 140) {
+                        
+                        self.startWheel()
+                        
                         RequestDelegate.newProject(projectTitle: title, completionHandler: {
                         (success, message) in
                             if(success) {
@@ -37,9 +40,12 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
                                 }
                                 
                                 self.projectsTable.reloadData()
+                                
                             } else {
                                 AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
                             }
+                            
+                            self.stopWheel()
                         
                         })
                     } else {
@@ -57,6 +63,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
             if(success) {
                 self.loadData()
                 self.projectsTable.reloadData()
+                self.projectsTable.setNeedsLayout()
                 
             }
             
@@ -70,6 +77,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
         projectsTable.delegate = self
         projectsTable.dataSource = self
+        projectsTable.tableFooterView = UIView()
         AWSManager.sharedInstance.videoDelegate = self
 
         
@@ -98,7 +106,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func stopWheel () {
         activityWheel.stopAnimating()
-        activityWheel.isHidden = false
+        activityWheel.isHidden = true
         
     }
     

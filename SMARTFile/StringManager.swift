@@ -38,11 +38,11 @@ class StringManager {
     static func stringDateToDate (stringDate:String) -> Date {
         
         if(stringDate.count > 14) {
-            let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
-            let shortDate = stringDate.substring(to: index)
+            //let index = stringDate.index(stringDate.endIndex, offsetBy: -14)
+            //let shortDate = stringDate.substring(to: index)
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let date = dateFormatter.date(from: shortDate)!
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            let date = dateFormatter.date(from: stringDate)!
             return date
         
         } else {
@@ -87,6 +87,17 @@ class StringManager {
         
         return url!
     }
+    
+    
+    
+    static func buildUpdateVideoURL(projectId:String, videoId:String, desc:String) -> String {
+   
+        let fullUrl = "pVId=\(videoId)&pPId=\(projectId)&pDesc=\(desc)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        
+        return fullUrl!
+        
+    }
+    
     
     
     static func buildNewVideoURL (request:NSManagedObject) -> String {

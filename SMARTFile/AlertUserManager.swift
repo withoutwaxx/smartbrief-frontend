@@ -23,9 +23,9 @@ class AlertUserManager {
     }
     
     
-    static func getInfoFromUser(title:String, message:String, currentViewController:UIViewController, completionHandler: @escaping (_ success: Bool, _ projectTitle :String) -> ()){
+    static func getInfoFromUser(title:String, message:String, finishedAction:String, placeholder:String, currentViewController:UIViewController, completionHandler: @escaping (_ success: Bool, _ userText :String) -> ()){
         let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert )
-        let okAction = UIAlertAction(title: "Create", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+        let okAction = UIAlertAction(title: finishedAction, style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
             completionHandler(true, (alertController.textFields?[0].text)!)
         }
         
@@ -37,7 +37,8 @@ class AlertUserManager {
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
         alertController.addTextField(configurationHandler: {(_ textField: UITextField) -> Void in
-            textField.placeholder = "Project name"
+            textField.placeholder = placeholder
+            
         })
         currentViewController.present(alertController, animated: true, completion: nil)
         

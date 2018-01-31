@@ -11,6 +11,7 @@ import CoreData
 import AWSCore
 import AWSCognito
 import AWSS3
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -26,6 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region: .EUWest2, credentialsProvider: credentialProvider)
         
         AWSServiceManager.default().defaultServiceConfiguration = configuration
+        
+        let center =  UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { (result, error) in
+            //handle result of request failure
+        }
         
         return true
     }
@@ -46,7 +52,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        RequestDelegate.getProjects { (success, message) in
+            
+        }
+        
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

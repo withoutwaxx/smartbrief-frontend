@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/ProjectsViewController.swift"
-            timestampString = "537977525.095737"
+            timestampString = "538663722.044144"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,7 +122,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/ProjectsViewController.swift"
-            timestampString = "537977525.0960881"
+            timestampString = "538663722.0445729"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "6"
@@ -215,7 +215,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/LoginViewController.swift"
-            timestampString = "537472380.8438849"
+            timestampString = "539098615.725551"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "39"
@@ -231,92 +231,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "538076133.989295"
+            timestampString = "539098615.725629"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
             landmarkName = "UploadsViewController"
             landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "538076133.9893709"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
-            landmarkName = "assetsPicker(controller:selected:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "SMARTFile.UploadsViewController.assetsPicker(controller: AssetsPickerViewController.AssetsPickerViewController, selected: Swift.Array&lt;__ObjC.PHAsset&gt;) -&gt; ()"
-                  moduleName = "SMARTFile"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Tom/Documents/WithoutWaxx/Development/clients/junction9/smartfile/development/frontend/development/smartfile/SMARTFile/UploadsViewController.swift"
-                  timestampString = "534091354.868465"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "128"
-                  endingLineNumber = "128"
-                  offsetFromSymbolStart = "100">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "SMARTFile.UploadsViewController.assetsPicker(controller: AssetsPickerViewController.AssetsPickerViewController, selected: Swift.Array&lt;__ObjC.PHAsset&gt;) -&gt; ()"
-                  moduleName = "SMARTFile"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Tom/Documents/WithoutWaxx/Development/clients/junction9/smartfile/development/frontend/development/smartfile/SMARTFile/UploadsViewController.swift"
-                  timestampString = "534091354.870519"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "128"
-                  endingLineNumber = "128"
-                  offsetFromSymbolStart = "848">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 (Swift.Bool, Swift.Bool) -&gt; () in SMARTFile.UploadsViewController.assetsPicker(controller: AssetsPickerViewController.AssetsPickerViewController, selected: Swift.Array&lt;__ObjC.PHAsset&gt;) -&gt; ()"
-                  moduleName = "SMARTFile"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Tom/Documents/WithoutWaxx/Development/clients/junction9/smartfile/development/frontend/development/smartfile/SMARTFile/UploadsViewController.swift"
-                  timestampString = "534091354.872439"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "130"
-                  endingLineNumber = "130"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "538076133.989432"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
-            landmarkName = "assetsPicker(controller:selected:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -486,11 +407,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.9896851"
+            timestampString = "539098615.726241"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
             landmarkName = "awakenUploads()"
             landmarkType = "7">
          </BreakpointContent>
@@ -502,87 +423,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.989772"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "254"
-            endingLineNumber = "254"
-            landmarkName = "awakenUploads()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.989854"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
-            landmarkName = "awakenUploads()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.989935"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "405"
-            endingLineNumber = "405"
-            landmarkName = "startNewUpload(request:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.990015"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "validateActiveUpload(task:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/UploadsViewController.swift"
-            timestampString = "538076133.990098"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "addVideosAction(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.9901561"
+            timestampString = "539098615.726657"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "257"
@@ -598,11 +439,75 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.990236"
+            timestampString = "539098615.726998"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
+            startingLineNumber = "262"
+            endingLineNumber = "262"
+            landmarkName = "awakenUploads()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.7273149"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
+            landmarkName = "validateActiveUpload(task:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/UploadsViewController.swift"
+            timestampString = "539098615.727626"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
+            landmarkName = "addVideosAction(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.72795"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
+            landmarkName = "awakenUploads()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.728256"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "283"
+            endingLineNumber = "283"
             landmarkName = "completeUpload(task:status:)"
             landmarkType = "7">
             <Locations>
@@ -646,11 +551,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.990316"
+            timestampString = "539098615.728572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
+            startingLineNumber = "311"
+            endingLineNumber = "311"
             landmarkName = "completeUpload(task:status:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -662,11 +567,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.990396"
+            timestampString = "539098615.728878"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
             landmarkName = "completeUpload(task:status:)"
             landmarkType = "7">
             <Locations>
@@ -710,11 +615,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/DataManager.swift"
-            timestampString = "538076133.990477"
+            timestampString = "539098615.7291861"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "475"
-            endingLineNumber = "475"
+            startingLineNumber = "500"
+            endingLineNumber = "500"
             landmarkName = "getUploadRequests(predicates:sort:bg:context:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -726,11 +631,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.990537"
+            timestampString = "539098615.7292531"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "awakenUploads()"
             landmarkType = "7">
             <Locations>
@@ -774,11 +679,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/DataManager.swift"
-            timestampString = "538076133.990615"
+            timestampString = "539098615.72956"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
             landmarkName = "deleteMultiple(ids:field:entity:bg:context:)"
             landmarkType = "7">
             <Locations>
@@ -822,11 +727,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/RequestDelegate.swift"
-            timestampString = "538076133.990674"
+            timestampString = "539005182.408221"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "executeNewVideo(requests:index:context:completionHandler:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -838,27 +743,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/RequestDelegate.swift"
-            timestampString = "538076133.991142"
+            timestampString = "539005182.408656"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
-            landmarkName = "executeNewVideo(requests:index:context:completionHandler:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "SMARTFile/RequestDelegate.swift"
-            timestampString = "538076133.9914401"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "executeNewVideo(requests:index:context:completionHandler:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -870,11 +759,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/VideosViewController.swift"
-            timestampString = "538076133.991738"
+            timestampString = "538668939.147635"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
             landmarkName = "refreshView()"
             landmarkType = "7">
          </BreakpointContent>
@@ -886,11 +775,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/VideosViewController.swift"
-            timestampString = "538076133.9918081"
+            timestampString = "538668939.147992"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
             landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -902,11 +791,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/VideosViewController.swift"
-            timestampString = "538076133.991876"
+            timestampString = "538668939.14832"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
             landmarkName = "refreshView()"
             landmarkType = "7">
          </BreakpointContent>
@@ -918,11 +807,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/DataManager.swift"
-            timestampString = "538076133.991944"
+            timestampString = "539098615.729741"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "saveProjects(projects:count:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -934,11 +823,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/DataManager.swift"
-            timestampString = "538076133.992009"
+            timestampString = "539098615.729802"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
             landmarkName = "saveProjects(projects:count:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -950,11 +839,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/DataManager.swift"
-            timestampString = "538076133.992074"
+            timestampString = "539098615.729862"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "saveProjects(projects:count:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -966,11 +855,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/VideosViewController.swift"
-            timestampString = "538076133.992129"
+            timestampString = "538668939.148697"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "loadData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -978,15 +867,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.992196"
+            timestampString = "539098615.729955"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "updateActiveUploads(activeUploads:completionHandler:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -994,16 +883,128 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SMARTFile/AWSManager.swift"
-            timestampString = "538076133.992263"
+            timestampString = "539098615.730262"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
             landmarkName = "updateActiveUploads(activeUploads:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/DataManager.swift"
+            timestampString = "539098615.730563"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "resetUploadTasks(ids:context:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.7306269"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
+            landmarkName = "updateActiveUploads(activeUploads:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/DataManager.swift"
+            timestampString = "539098615.730927"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
+            landmarkName = "resetUploadTasks(ids:context:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.730988"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
+            landmarkName = "awakenUploads()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.731289"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "updateActiveUploads(activeUploads:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/AWSManager.swift"
+            timestampString = "539098615.731594"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "updateActiveUploads(activeUploads:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SMARTFile/UploadsViewController.swift"
+            timestampString = "539098615.731894"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
+            landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

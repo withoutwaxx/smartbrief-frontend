@@ -47,14 +47,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                                     
                                     let managedContext =
                                         appDelegate.persistentContainer.newBackgroundContext()
-                                    appDelegate.persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
+                                appDelegate.persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
+                                    managedContext.automaticallyMergesChangesFromParent = true
                                     
-                                    DispatchQueue.global(qos: .background).async {
-                                        
+                                    
+                                    DispatchQueue.global(qos: .utility).async {
                                         AWSManager.sharedInstance.context = managedContext
                                         AWSManager.sharedInstance.awakenUploads()
-
+                                        
                                     }
+                
                                     
                                 } else {
                                     self.loginText.layer.isHidden = true

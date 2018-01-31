@@ -26,28 +26,20 @@ class DataManager {
     }
     
     
-    static func completeUploadTask (taskId:Int, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()) {
+    static func completeUploadTask (request:NSManagedObject, context:NSManagedObjectContext, completionHandler: @escaping (_ success: Bool) -> ()) {
         
         
         context.performAndWait {
-        
-            var predicates:[NSPredicate] = []
-            predicates.append(NSPredicate(format: "task_id = %d", taskId))
             
-            let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
-            
-            if(!uploadRequest.isEmpty) {
-                uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
-                uploadRequest[0].setValue(true, forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE)
-                let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
-                if(!url.isEmpty) {
-                    VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
-                    print("deleted video file")
-                    
-                }
+            request.setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
+            request.setValue(true, forKey: Constants.FIELD_UPLOAD_UPLOADED_STATE)
+            let url = request.value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
+            if(!url.isEmpty) {
+                VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
+                print("deleted video file")
                 
             }
-            
+        
             do {
                 try context.save()
                 completionHandler(true)
@@ -57,35 +49,38 @@ class DataManager {
                 completionHandler(false)
                 
             }
-            
+                
         }
         
     }
     
     
-    static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool, context:NSManagedObjectContext) {
+    static func updateSingleUploadTask (findField:String, findValue:String, updateField:String, updateValueBool:Bool, updateValueString:String, updateTypeBool:Bool, bg:Bool, context:NSManagedObjectContext?) {
        
         
 
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "\(findField) = %@", findValue))
         
-        let uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
+        var uploadRequest:[NSManagedObject] = []
         
-        if(!uploadRequest.isEmpty) {
-            context.performAndWait {
-                
-                if(updateTypeBool) {
-                    uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+        if(bg) {
+            uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: true, context: context)
+            
+            
+            if(!uploadRequest.isEmpty) {
+                context?.performAndWait {
                     
-                } else {
-                    uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                    if(updateTypeBool) {
+                        uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+                        
+                    } else {
+                        uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                        
+                    }
                     
-                }
-                
-                if (context.hasChanges) {
                     do {
-                        try context.save()
+                        try context?.save()
                         
                     } catch let error as NSError {
                         print("Could not save. \(error), \(error.userInfo)")
@@ -95,7 +90,39 @@ class DataManager {
                 }
                 
             }
-    
+        } else {
+            uploadRequest = DataManager.getUploadRequests(predicates: predicates, sort: [], bg: false, context: nil)
+            
+            if(!uploadRequest.isEmpty) {
+                guard let appDelegate =
+                    UIApplication.shared.delegate as? AppDelegate else {
+                        return
+                }
+                
+                let managedContext =
+                    appDelegate.persistentContainer.viewContext
+                
+                if(updateTypeBool) {
+                    uploadRequest[0].setValue(updateValueBool, forKey: updateField)
+                    
+                } else {
+                    uploadRequest[0].setValue(updateValueString, forKey: updateField)
+                    
+                }
+                
+                if (managedContext.hasChanges) {
+                    do {
+                        try managedContext.save()
+                        
+                    } catch let error as NSError {
+                        print("Could not save. \(error), \(error.userInfo)")
+                        
+                    }
+                    
+                }
+                
+            }
+            
         }
         
     }
@@ -146,7 +173,7 @@ class DataManager {
                 
                 if(!uploadRequest.isEmpty) {
                     uploadRequest[0].setValue(false, forKey: Constants.FIELD_UPLOAD_ACTIVE_STATE)
-                    uploadRequest[0].setValue(0, forKey: Constants.FIELD_UPLOAD_TASK_ID)
+                    uploadRequest[0].setValue(-1, forKey: Constants.FIELD_UPLOAD_TASK_ID)
                     let url = uploadRequest[0].value(forKey: Constants.FIELD_UPLOAD_LOCAL_URL) as! String
                     if(!url.isEmpty) {
                         VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
@@ -260,7 +287,8 @@ class DataManager {
                     newVideo.setValue(oneVideo["video_id"].stringValue, forKeyPath: "video_id")
                     newVideo.setValue(oneVideo["project_id"].stringValue, forKeyPath: "project_id")
                     newVideo.setValue(StringManager.stringDateToDate(stringDate: oneVideo["uploaded"].stringValue), forKeyPath: "uploaded")
-                    newVideo.setValue(oneVideo["desc"].stringValue, forKeyPath: "desc")
+                    
+                    newVideo.setValue(oneVideo["description"].stringValue, forKeyPath: "desc")
                     newVideo.setValue(oneVideo["size"].intValue, forKeyPath: "size")
                     newVideo.setValue(oneVideo["length"].intValue, forKeyPath: "length")
                     newVideo.setValue(oneVideo["url"].stringValue, forKeyPath: "url")
@@ -408,12 +436,12 @@ class DataManager {
                 
                 do {
                     try context?.save()
+                    print("saved new context")
                     
                 } catch let error as NSError {
                     print("Could not save. \(error), \(error.userInfo)")
                     
                 }
-                
                 
             }
             
@@ -451,10 +479,7 @@ class DataManager {
                 
             }
             
-            
         }
-        
-        
         
     }
     
@@ -595,6 +620,24 @@ class DataManager {
             print("Could not fetch. \(error), \(error.userInfo)")
             return []
         }
+        
+    }
+    
+    
+    
+    //static func checkUserNotifications
+    
+    
+    
+    
+    static func objectsToKeys(objects:[NSManagedObject]) -> [String] {
+        var keys:[String] = []
+        for object in objects {
+            keys.append(object.value(forKey: Constants.FIELD_VIDEO_ID) as! String)
+            
+        }
+        
+        return keys
         
     }
     

@@ -11,14 +11,17 @@ import Foundation
 
 class Constants {
 
-    private static let baseURL = "https://www.smartfile-portal.com/v1"
+    private static let baseURL = "https://www.smartfile-portal.com:443/v1"
     
     static let signUpURL = "\(baseURL)/signup"
     static let signInURL = "\(baseURL)/signin"
     
+    static let THREAD_ID = "com.smartfile.upload"
+    
     static let getVideos = "\(baseURL)/videos"
     static let newVideo = "\(baseURL)/videos/create"
     static let deleteVideo = "\(baseURL)/videos/delete"
+    static let updateVideo = "\(baseURL)/videos/update"
     
     static let deleteProject = "\(baseURL)/projects/delete"
     static let updateProject = "\(baseURL)/projects/update"
