@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E2276E0D1FACADA200654D7F /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2276E0C1FACADA200654D7F /* Circle.swift */; };
 		E238ABA01FAA01B400B0C8F4 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E238AB9F1FAA01B400B0C8F4 /* DataManager.swift */; };
+		E23C6A9D2029F97B002E2D2D /* TextFieldBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23C6A9C2029F97B002E2D2D /* TextFieldBottom.swift */; };
+		E23C6A9F202A0E25002E2D2D /* RotationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23C6A9E202A0E25002E2D2D /* RotationExtension.swift */; };
 		E23EB2CB1FC738C7004E1E8D /* UploadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23EB2CA1FC738C7004E1E8D /* UploadsViewController.swift */; };
 		E23EB2CD1FC73E75004E1E8D /* Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23EB2CC1FC73E75004E1E8D /* Add.swift */; };
 		E253A5801FA203A200D5D424 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E253A57F1FA203A200D5D424 /* SecurityManager.swift */; };
@@ -67,6 +69,8 @@
 		B34EE83D42B1AC6FA4D0422F /* Pods_SMARTFileTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SMARTFileTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2276E0C1FACADA200654D7F /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 		E238AB9F1FAA01B400B0C8F4 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		E23C6A9C2029F97B002E2D2D /* TextFieldBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldBottom.swift; sourceTree = "<group>"; };
+		E23C6A9E202A0E25002E2D2D /* RotationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationExtension.swift; sourceTree = "<group>"; };
 		E23EB2CA1FC738C7004E1E8D /* UploadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadsViewController.swift; sourceTree = "<group>"; };
 		E23EB2CC1FC73E75004E1E8D /* Add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Add.swift; sourceTree = "<group>"; };
 		E253A57F1FA203A200D5D424 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
@@ -227,7 +231,9 @@
 				E2DF5C0D1FB4B1A8008E9EEA /* Delete.swift */,
 				E23EB2CC1FC73E75004E1E8D /* Add.swift */,
 				E2B832231FA9EEC100640AB7 /* Constants.swift */,
+				E23C6A9C2029F97B002E2D2D /* TextFieldBottom.swift */,
 				E2E0278B1FCCBB83009CABB9 /* UploadRequest.swift */,
+				E23C6A9E202A0E25002E2D2D /* RotationExtension.swift */,
 				E253A5BE1FA2064300D5D424 /* views */,
 				E253A5BD1FA2062700D5D424 /* utilities */,
 				E253A57E1FA2038A00D5D424 /* requests */,
@@ -494,11 +500,13 @@
 				E2DF5C101FB5D2ED008E9EEA /* ProjectCell.swift in Sources */,
 				E2B8322C1FA9EEFA00640AB7 /* AlertUserManager.swift in Sources */,
 				E2DC51A3201B9C95001F95B2 /* NotificationManager.swift in Sources */,
+				E23C6A9F202A0E25002E2D2D /* RotationExtension.swift in Sources */,
 				E2B832271FA9EEE600640AB7 /* ExecutionManager.swift in Sources */,
 				E2B832241FA9EEC100640AB7 /* Constants.swift in Sources */,
 				E253A5C41FA22C9A00D5D424 /* User.swift in Sources */,
 				E2D538CF1FA0B03B00DC9B28 /* AppDelegate.swift in Sources */,
 				E2D539021FA0D0B500DC9B28 /* SettingsViewController.swift in Sources */,
+				E23C6A9D2029F97B002E2D2D /* TextFieldBottom.swift in Sources */,
 				E2276E0D1FACADA200654D7F /* Circle.swift in Sources */,
 				E2E0278C1FCCBB83009CABB9 /* UploadRequest.swift in Sources */,
 				E2D538D71FA0B03B00DC9B28 /* SMARTFile.xcdatamodeld in Sources */,
@@ -683,7 +691,7 @@
 				CODE_SIGN_ENTITLEMENTS = SMARTFile/SMARTFile.entitlements;
 				DEVELOPMENT_TEAM = 4XYD7C65F7;
 				INFOPLIST_FILE = SMARTFile/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Smartphone-Media.SMARTFile";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -700,7 +708,7 @@
 				CODE_SIGN_ENTITLEMENTS = SMARTFile/SMARTFile.entitlements;
 				DEVELOPMENT_TEAM = 4XYD7C65F7;
 				INFOPLIST_FILE = SMARTFile/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Smartphone-Media.SMARTFile";
 				PRODUCT_NAME = "$(TARGET_NAME)";

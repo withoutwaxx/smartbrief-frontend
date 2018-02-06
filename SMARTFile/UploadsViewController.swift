@@ -64,7 +64,10 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         uploadsTable.delegate = self
         uploadsTable.dataSource = self
         uploadsTable.tableFooterView = UIView()
-        loadData(completionHandler:{ (complete) in
+        loadData(completionHandler:{
+            
+            (complete) in
+            
             if(self.requestQueueAll.isEmpty) {
                 self.uploadsTable.isHidden = true
                 self.noVideosLabel.isHidden = false
@@ -91,7 +94,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     func updateView() {
         loadData(completionHandler: {
             (complete) in
-        
+            
             self.uploadsTable.reloadData()
             self.uploadsTable.setNeedsLayout()
             if(self.requestQueueAll.count == 1) {
@@ -240,7 +243,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             cell.indexPath = indexPath
             cell.delegateCell = self
             
-            if(((request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String)?.count)! > 0) {
+            if(!(((request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String)?.isEmpty)!)) {
                 cell.descLabel.text = request.value(forKeyPath: Constants.FIELD_VIDEO_DESC) as? String
                 cell.descLabel.textColor = UIColor.white
 
@@ -321,17 +324,31 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     
     func loadData( completionHandler: @escaping (_ complete:Bool) -> ()) {
+        
         let sort = NSSortDescriptor(key: "added", ascending: true)
         var predicates:[NSPredicate] = []
         predicates.append(NSPredicate(format: "uploaded_state = %@", false as CVarArg))
         
-        requestQueueAll = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: AWSManager.sharedInstance.context)
+
+        DataManager.getUploadRequestsWithCompletion(predicates: predicates, sort: [sort], context: AWSManager.sharedInstance.context) {
+            
+            (requests) in
+                
+            self.requestQueueAll = requests
+            
+            predicates.append(NSPredicate(format: "\(Constants.FIELD_PROJECT_ID) = %@", self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String))
+            
+            DataManager.getUploadRequestsWithCompletion(predicates: predicates, sort: [sort], context: AWSManager.sharedInstance.context) {
+                
+                (secondRequests) in
+            
+                    self.requestQueueCurrent = secondRequests
+                
+                    completionHandler(true)
+            
+            }
         
-        predicates.append(NSPredicate(format: "\(Constants.FIELD_PROJECT_ID) = %@", currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String))
-        
-        requestQueueCurrent = DataManager.getUploadRequests(predicates: predicates, sort: [sort], bg: true, context: AWSManager.sharedInstance.context)
-        
-        completionHandler(true)
+        }
 
     }
     

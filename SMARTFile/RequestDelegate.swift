@@ -28,6 +28,26 @@ class RequestDelegate {
         
     }
     
+    
+    
+    static func changePassword(oldPasswordParam:String, newPasswordParam: String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
+        RequestExecutionManager.updateCredentials(endpoint: Constants.updatePasswordURL, oldPassword:oldPasswordParam, newPassword:newPasswordParam, completionHandler: {
+            (success, message) in
+            
+            if(success) {
+                completionHandler(true, "")
+                
+            } else {
+                completionHandler(false, message)
+                
+            }
+        })
+        
+    }
+    
+    
+    
+    
     static func getProjects( completionHandler: @escaping (_ success: Bool, _ message :String) -> ()){
         RequestExecutionManager.projectRequest(endpoint: Constants.getProjects, completionHandler: {
             (success, message, projects, count) in

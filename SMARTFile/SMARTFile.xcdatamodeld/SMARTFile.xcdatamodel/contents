@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17B1003" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Notifications" representedClassName="Notifications" syncable="YES" codeGenerationType="class">
         <attribute name="notify_status" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="user_id" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Project" representedClassName="Project" syncable="YES" codeGenerationType="class">
         <attribute name="date_created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -36,9 +37,9 @@
         <attribute name="video_id" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Notifications" positionX="-63" positionY="117" width="128" height="75"/>
         <element name="Project" positionX="-63" positionY="-18" width="128" height="135"/>
         <element name="UploadRequestObj" positionX="-63" positionY="54" width="128" height="240"/>
         <element name="Video" positionX="-63" positionY="27" width="128" height="150"/>
-        <element name="Notifications" positionX="-63" positionY="117" width="128" height="60"/>
     </elements>
 </model>

@@ -38,6 +38,7 @@ class DataManager {
                 VideoManager.sharedInstance.deleteVideoFile(localUrl: url)
                 print("deleted video file")
                 
+                
             }
         
             do {
@@ -436,7 +437,6 @@ class DataManager {
                 
                 do {
                     try context?.save()
-                    print("saved new context")
                     
                 } catch let error as NSError {
                     print("Could not save. \(error), \(error.userInfo)")
@@ -483,6 +483,45 @@ class DataManager {
         
     }
     
+    
+    
+    static func getUploadRequestsWithCompletion (predicates:[NSPredicate], sort:[NSSortDescriptor], context:NSManagedObjectContext?, completionHandler: @escaping (_ requestQueue:[NSManagedObject]) -> ()) {
+
+        var requestQueue:[NSManagedObject]?
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "UploadRequestObj")
+        
+        if(sort.count > 0) {
+            fetchRequest.sortDescriptors = sort
+            
+        }
+        
+        if(predicates.count > 1) {
+            let andPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: predicates)
+            fetchRequest.predicate = andPredicate
+            
+        }
+        
+        if(predicates.count == 1) {
+            fetchRequest.predicate = predicates[0]
+            
+        }
+        
+       
+        context?.performAndWait {
+            do {
+                requestQueue = try context?.fetch(fetchRequest) as? [NSManagedObject]
+                
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+                
+            }
+            
+            completionHandler(requestQueue!)
+            
+        }
+        
+    }
     
     
     static func getUploadRequests (predicates:[NSPredicate], sort:[NSSortDescriptor], bg:Bool, context:NSManagedObjectContext?) -> [NSManagedObject] {
@@ -625,7 +664,124 @@ class DataManager {
     
     
     
-    //static func checkUserNotifications
+    static func initialiseUserNotifications () {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Notifications")
+        let user:[NSManagedObject]
+
+        fetchRequest.predicate = NSPredicate(format: "\(Constants.FIELD_USER_ID) = %@", User.id)
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        do {
+            user = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+            return
+            
+        }
+        
+        if(user.isEmpty) {
+            
+            let newUser = NSEntityDescription.insertNewObject(forEntityName: "Notifications", into: managedContext) as NSManagedObject
+            
+            newUser.setValue(true, forKey: Constants.FIELD_NOTIFY_STATUS)
+            newUser.setValue(User.id, forKey: Constants.FIELD_USER_ID)
+            
+            do {
+                try managedContext.save()
+                
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+                
+            }
+            
+        }
+    
+    }
+    
+    
+    
+    static func updateUserNotifications (value:Bool) {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Notifications")
+        let user:[NSManagedObject]
+        
+        fetchRequest.predicate = NSPredicate(format: "\(Constants.FIELD_USER_ID) = %@", User.id)
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        do {
+            user = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+            
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+            return
+            
+        }
+        
+        if(!user.isEmpty) {
+            
+            user[0].setValue(value, forKey: Constants.FIELD_NOTIFY_STATUS)
+            
+            do {
+                try managedContext.save()
+                
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    static func getUserNotifications (context:NSManagedObjectContext) -> Bool {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Notifications")
+        var user:[NSManagedObject] = []
+        
+        fetchRequest.predicate = NSPredicate(format: "\(Constants.FIELD_USER_ID) = %@", User.id)
+        
+       
+        context.performAndWait {
+            do {
+                user = try context.fetch(fetchRequest) as! [NSManagedObject]
+                
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+                
+            }
+            
+        }
+        
+        if(!user.isEmpty) {
+            
+            if(user[0].value(forKey: Constants.FIELD_NOTIFY_STATUS) as! Bool) {
+                return true
+                
+            }
+            
+        }
+        
+        return false
+        
+    }
     
     
     

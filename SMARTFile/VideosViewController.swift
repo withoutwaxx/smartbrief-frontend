@@ -302,7 +302,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                 cell.desc.textColor = UIColor.white
 
             } else {
-                cell.desc.text = "No description"
+                cell.desc.text = "Tap to add a description"
                 cell.desc.textColor = UIColor.gray
             }
             

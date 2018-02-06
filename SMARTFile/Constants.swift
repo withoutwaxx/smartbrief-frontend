@@ -15,6 +15,9 @@ class Constants {
     
     static let signUpURL = "\(baseURL)/signup"
     static let signInURL = "\(baseURL)/signin"
+    static let updatePasswordURL = "\(baseURL)/update"
+    
+    static let SMARTFILE_HOME_URL = "http://www.smartphoneproductions.co.uk"
     
     static let THREAD_ID = "com.smartfile.upload"
     
@@ -44,6 +47,8 @@ class Constants {
     static let FIELD_VIDEO_ADDED = "added"
     
     static let FIELD_PROJECT_READY = "ready_state"
+    static let FIELD_USER_ID = "user_id"
+    static let FIELD_NOTIFY_STATUS = "notify_status"
     
     static let FIELD_UPLOAD_TASK_ID = "task_id"
     static let FIELD_UPLOAD_ACTIVE_STATE = "active_state"

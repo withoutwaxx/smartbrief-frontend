@@ -16,6 +16,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
     var selectedProject:NSManagedObject?
 
     
+    @IBOutlet weak var settingsWheel: UIButton!
     @IBOutlet weak var noProjectsLabel: UILabel!
     @IBOutlet weak var projectsTable: UITableView!
     @IBOutlet weak var activityWheel: UIActivityIndicatorView!
@@ -79,6 +80,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         projectsTable.dataSource = self
         projectsTable.tableFooterView = UIView()
         AWSManager.sharedInstance.videoDelegate = self
+        settingsWheel.startRotating(duration: 2)
 
         
     }
@@ -161,7 +163,7 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
             colorView.backgroundColor = UIColor.black
             cell.selectedBackgroundView = colorView
             
-            if(((project.value(forKeyPath: "project_name") as? String)?.characters.count)! > 0){
+            if(((project.value(forKeyPath: "project_name") as? String)?.count)! > 0){
                 cell.projectTitle.text = project.value(forKeyPath: "project_name") as? String
                 cell.projectTitle.textColor = UIColor.white
                 

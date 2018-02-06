@@ -71,7 +71,65 @@ class RequestExecutionManager {
                     break
                 }
         }
+        
     }
+    
+    
+    
+    static func updateCredentials(endpoint:String, oldPassword:String, newPassword:String, completionHandler: @escaping (_ success: Bool, _ message :String) -> ()) {
+        
+        let data = (oldPassword + ":" + newPassword).data(using: String.Encoding.utf8)
+        let encodedAuth = data!.base64EncodedString()
+        
+        
+        let headers: HTTPHeaders = [
+            "Authorization" : "Bearer " + User.token,
+            "Update" : encodedAuth
+            
+        ]
+        
+        self.requestSecurityManager.request(endpoint, method: .post, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200..<300)
+            .validate(contentType: ["application/json"])
+            .responseJSON { response in
+                
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        if(json["outcome"].boolValue) {
+                            User.token = json["token"].stringValue
+                            do {
+                                let jwt = try decode(jwt: User.token)
+                                User.id = jwt.body["id"] as! String
+                            } catch {
+                                print(error.localizedDescription)
+                                
+                            }
+                            completionHandler(true, "")
+                        } else {
+                            completionHandler(false, json["message"].stringValue)
+                        }
+                    }
+                    break
+                    
+                case .failure(let error):
+                    if(response.response?.statusCode == 401) {
+                        if let value = response.data {
+                            let json = JSON(value)
+                            completionHandler(false, json["message"].stringValue)
+                        }
+                    } else {
+                        completionHandler(false, "Unable to complete request")
+                    }
+                    
+                    print(error)
+                    break
+                }
+        }
+        
+    }
+    
+    
     
     
     static func projectRequest(endpoint:String, completionHandler: @escaping (_ success: Bool, _ message :String, _ projects:[JSON], _ count:[JSON] ) -> ()) {

@@ -7,7 +7,10 @@
 */
 
 
-"ALERT_PASSWORD_SHORT" = "Your password should be at least 8 characters long";
+"ALERT_PASSWORD_SHORT" = "Check your password is at least 8 characters long";
+"ALERT_PASSWORD_MISMATCH" = "Check your new passwords match and they are different from your previous password";
+"ALERT_PASSWORDS_SHORT" = "Check all passwords are not empty and at least 8 characters long";
+"ALERT_PASSWORD_CHANGED" = "Password updated successfully";
 "ALERT_INVALID_EMAIL" = "Please check your email address";
 "ALERT_EMPTY_PASSWORD" = "Enter a password to continue";
 "ALERT_EMPTY_EMAIL" = "Enter an email address to continue";

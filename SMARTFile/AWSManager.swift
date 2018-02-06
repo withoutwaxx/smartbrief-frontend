@@ -258,11 +258,11 @@ class AWSManager {
                 let (proceed, request) = self.nextSuitableRequest()
                 
                 if(proceed) {
-                    //print("should be proceeding")
+                    print("should be proceeding")
                     self.startNewUpload(request: request!)
                     
                 } else {
-                    //print("no next video found")
+                    print("no next video found")
                     
                     RequestDelegate.getProjects(completionHandler: { (success, message) in
                     })
@@ -272,6 +272,8 @@ class AWSManager {
                 }
                 
             }
+            
+            print("zero found")
             
         })
         
@@ -303,29 +305,43 @@ class AWSManager {
                         
                         RequestDelegate.executeNewVideo(requests: [request.first!], index: 0, context: self.context!, completionHandler: {
                             (success) in
+                            
+                            print("hereeeeeeeeeeeeeeeeeee 55")
         
                             if(success) {
                                 
-                                NotificationManager.sharedInstance.notifyUser()
+                                print("hereeeeeeeeeeeeeeeeeee 66")
                                 
-                                if(self.videoDelegate != nil) {
-                                    DispatchQueue.main.async {
+                                NotificationManager.sharedInstance.notifyUser(context: self.context!)
+                                
+                                print("hereeeeeeeeeeeeeeeeeee 77")
+                                
+                                DispatchQueue.main.async {
+                                    if(self.videoDelegate != nil) {
                                         self.videoDelegate?.updateToVideo()
                                         
                                     }
                                 }
                                 
+                                print("hereeeeeeeeeeeeeeeeeee 88")
+                                
                             }
-                            if(self.uploadDelegate != nil) {
-                                DispatchQueue.main.sync {
+                            
+                            print("hereeeeeeeeeeeeeeeeeee 999")
+                            
+                            DispatchQueue.main.async {
+                                if(self.uploadDelegate != nil) {
                                     self.uploadDelegate?.updateToUploads()
-                                    
+
                                 }
                             }
                             
                             
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                self.updateRequestLists()
+                            print("hereeeeeeeeeeeeeeeeeee 2")
+                            DispatchQueue.global(qos: .utility).async {
+                                
+                                print("hereeeeeeeeeeeeeeeeeee")
+                              
                                 self.awakenUploads()
                                 
                             }
@@ -341,24 +357,26 @@ class AWSManager {
                 DataManager.resetUploadTasks(ids: [task], context: self.context!, completionHandler: {
                     (success) in
                     if(success) {
-                        if(self.uploadDelegate != nil) {
-                            DispatchQueue.main.async {
+                        DispatchQueue.main.async {
+                            if(self.uploadDelegate != nil) {
+                            
                                 self.uploadDelegate?.updateToUploads()
                                 
                             }
                         }
                         
                     }
-                    if(self.uploadDelegate != nil) {
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        if(self.uploadDelegate != nil) {
+                        
                             self.uploadDelegate?.updateToUploads()
                             
                         }
                     }
                     
             
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.updateRequestLists()
+                    DispatchQueue.global(qos: .utility).async {
+                        
                         self.awakenUploads()
                         
                     }
@@ -441,9 +459,13 @@ class AWSManager {
         
                     self.completeUpload(task: taskid, status: false)
                     
+                    print("hereeeeeeeeeeeeeeeeeee33 ")
+                    
                 } else {
                     
                     self.completeUpload(task: taskid, status: true)
+                    
+                    print("hereeeeeeeeeeeeeeeeeee 44")
                 }
      
         }
@@ -460,7 +482,7 @@ class AWSManager {
                                                key: request.value(forKey: Constants.FIELD_VIDEO_ID) as! String,
                                                contentType: "video/mp4",
                                                expression: uploadExpression,
-                                               completionHandler: self.completionHandler).continueOnSuccessWith(block: { (task) -> Any? in
+                                               completionHandler: self.completionHandler).continueWith(block: { (task) -> Any? in
                                                 
                                                     print("starting new uploading")
                                                 
@@ -470,7 +492,7 @@ class AWSManager {
                                                     } else {
                                                         DataManager.setUploadTaskActive(request: request, localUrl: url!, taskId: Int(task.result?.taskIdentifier), context: self.context!)
                                                         if(self.uploadDelegate != nil) {
-                                                            DispatchQueue.main.async {
+                                                            DispatchQueue.main.sync {
                                                                 self.uploadDelegate?.updateToUploads()
                                                                 
                                                             }

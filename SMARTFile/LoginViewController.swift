@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -14,12 +15,39 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailText: UITextField!
     @IBOutlet weak var passwordText: UITextField!
     
+    @IBOutlet weak var logo: UIImageView!
+    @IBOutlet weak var infoLabel: UILabel!
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.emailText.delegate = self
         self.passwordText.delegate = self
+        let viewHomeTouch = UITapGestureRecognizer(target: self, action:  #selector (self.openHome (_:)))
+        logo.addGestureRecognizer(viewHomeTouch)
+        
+        emailText.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
+        passwordText.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
+
+        
         // Do any additional setup after loading the view, typically from a nib.
+    
     }
+    
+    
+
+
+    
+    
+    func openHome(_ sender:UITapGestureRecognizer){
+        if let url = URL(string: Constants.SMARTFILE_HOME_URL) {
+            UIApplication.shared.open(url, options: [:])
+        }
+    }
+    
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -37,6 +65,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         if(success) {
                             self.loginText.text = "Getting projects.."
                             DataManager.deleteAllRecords()
+                            DataManager.initialiseUserNotifications()
                             RequestDelegate.getProjects(completionHandler: { (success, message) in
                                 if(success) {
                                     self.performSegue(withIdentifier: "showProjects", sender: self)

@@ -12,14 +12,55 @@ import CoreData
 
 class StringManager {
     
+    
+    static func verifyPasswordChange(oldPassword: String, newPassword: String, newRepeatPassword: String) -> (Bool, String) {
+        if(checkPasswordLength(str: oldPassword)) {
+            if(checkPasswordLength(str: newPassword)) {
+                if(checkPasswordLength(str: newRepeatPassword)) {
+                    if((newRepeatPassword == newPassword) && (oldPassword != newPassword)) {
+                        return (true, "")
+                        
+                    } else {
+                        return(false, NSLocalizedString("ALERT_PASSWORD_MISMATCH", comment: ""))
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        return (false, NSLocalizedString("ALERT_PASSWORDS_SHORT", comment: ""))
+        
+    }
+    
+    
+    static func checkPasswordLength (str:String) -> Bool {
+        
+        let newStr = str.replacingOccurrences(of: " ", with: "")
+        
+        if((newStr.count>7) && (!newStr.isEmpty)) {
+            return true
+        }
+        
+        return false
+        
+    }
+    
+    
+    
     static func checkEmailPassword (email:String, password:String) -> (Bool, String) {
         
         if validateEmail(email: email) {
-            if password.characters.count < 8 {
+            if password.count < 8 {
                 return (false, NSLocalizedString("ALERT_PASSWORD_SHORT", comment: ""))
+                
             }
+            
         } else {
             return (false, NSLocalizedString("ALERT_INVALID_EMAIL", comment: ""))
+            
         }
         
         return (true, "")

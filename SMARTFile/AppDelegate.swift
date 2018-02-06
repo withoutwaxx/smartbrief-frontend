@@ -52,10 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        RequestDelegate.getProjects { (success, message) in
-            
-        }
-        
+  
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
