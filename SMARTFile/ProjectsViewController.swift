@@ -80,7 +80,8 @@ class ProjectsViewController: UIViewController, UITableViewDataSource, UITableVi
         projectsTable.dataSource = self
         projectsTable.tableFooterView = UIView()
         AWSManager.sharedInstance.videoDelegate = self
-        settingsWheel.startRotating(duration: 2)
+        settingsWheel.startRotating()
+        settingsWheel.setNeedsLayout()
 
         
     }

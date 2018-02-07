@@ -11,18 +11,17 @@ import UIKit
 
 extension UIView {
     
-    func startRotating(duration: Double = 1) {
-        let kAnimationKey = "rotation"
-
+    func startRotating() {
+        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
+        animation.toValue = Double.pi * 2.0
+        animation.duration = 3.0
+        animation.isCumulative = true
+        animation.repeatCount = Float.infinity
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = kCAFillModeForwards
+        self.layer.add(animation, forKey: "rotationAnimation")
         
-        if self.layer.animation(forKey: kAnimationKey) == nil {
-            let animate = CABasicAnimation(keyPath: "transform.rotation")
-            animate.duration = duration
-            animate.repeatCount = Float.infinity
-            animate.fromValue = 0.0
-            animate.toValue = Float(Double.pi)
-            self.layer.add(animate, forKey: kAnimationKey)
-        }
+        
     }
     func stopRotating() {
         let kAnimationKey = "rotation"

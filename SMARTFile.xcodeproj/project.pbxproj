@@ -17,6 +17,7 @@
 		E253A5C21FA210EF00D5D424 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E253A5C11FA210EF00D5D424 /* Localizable.strings */; };
 		E253A5C41FA22C9A00D5D424 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E253A5C31FA22C9A00D5D424 /* User.swift */; };
 		E253A5C81FA23FAD00D5D424 /* cert.cer in Resources */ = {isa = PBXBuildFile; fileRef = E253A5C51FA23D3600D5D424 /* cert.cer */; };
+		E27044B9202B57ED0025B506 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E27044B8202B57EC0025B506 /* IntroView.swift */; };
 		E2869D8B1FC0839600754906 /* AWSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2869D8A1FC0839600754906 /* AWSManager.swift */; };
 		E2B832241FA9EEC100640AB7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832231FA9EEC100640AB7 /* Constants.swift */; };
 		E2B832271FA9EEE600640AB7 /* ExecutionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B832251FA9EEE600640AB7 /* ExecutionManager.swift */; };
@@ -77,6 +78,7 @@
 		E253A5C11FA210EF00D5D424 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ../Localizable.strings; sourceTree = "<group>"; };
 		E253A5C31FA22C9A00D5D424 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E253A5C51FA23D3600D5D424 /* cert.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = cert.cer; sourceTree = "<group>"; };
+		E27044B8202B57EC0025B506 /* IntroView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
 		E2869D8A1FC0839600754906 /* AWSManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSManager.swift; sourceTree = "<group>"; };
 		E2A7E7F2201A24310046C171 /* SMARTFile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SMARTFile.entitlements; sourceTree = "<group>"; };
 		E2B832231FA9EEC100640AB7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		E253A5BE1FA2064300D5D424 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				E27044B8202B57EC0025B506 /* IntroView.swift */,
 				E2CC6A9B1FB489BC0069C65F /* VideosViewController.swift */,
 				E23EB2CA1FC738C7004E1E8D /* UploadsViewController.swift */,
 				E2DF5C0F1FB5D2ED008E9EEA /* ProjectCell.swift */,
@@ -516,6 +519,7 @@
 				E23EB2CB1FC738C7004E1E8D /* UploadsViewController.swift in Sources */,
 				E2B8322E1FA9EEFA00640AB7 /* UuidGenerator.swift in Sources */,
 				E2CC6A9C1FB489BC0069C65F /* VideosViewController.swift in Sources */,
+				E27044B9202B57ED0025B506 /* IntroView.swift in Sources */,
 				E2DF5C0E1FB4B1A8008E9EEA /* Delete.swift in Sources */,
 				E2869D8B1FC0839600754906 /* AWSManager.swift in Sources */,
 				E2E0278E1FCDF705009CABB9 /* UploadCell.swift in Sources */,

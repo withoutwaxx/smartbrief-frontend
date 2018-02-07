@@ -273,7 +273,6 @@ class AWSManager {
                 
             }
             
-            print("zero found")
             
         })
         
@@ -306,15 +305,12 @@ class AWSManager {
                         RequestDelegate.executeNewVideo(requests: [request.first!], index: 0, context: self.context!, completionHandler: {
                             (success) in
                             
-                            print("hereeeeeeeeeeeeeeeeeee 55")
         
                             if(success) {
                                 
-                                print("hereeeeeeeeeeeeeeeeeee 66")
                                 
                                 NotificationManager.sharedInstance.notifyUser(context: self.context!)
                                 
-                                print("hereeeeeeeeeeeeeeeeeee 77")
                                 
                                 DispatchQueue.main.async {
                                     if(self.videoDelegate != nil) {
@@ -323,11 +319,9 @@ class AWSManager {
                                     }
                                 }
                                 
-                                print("hereeeeeeeeeeeeeeeeeee 88")
                                 
                             }
                             
-                            print("hereeeeeeeeeeeeeeeeeee 999")
                             
                             DispatchQueue.main.async {
                                 if(self.uploadDelegate != nil) {
@@ -337,10 +331,8 @@ class AWSManager {
                             }
                             
                             
-                            print("hereeeeeeeeeeeeeeeeeee 2")
                             DispatchQueue.global(qos: .utility).async {
                                 
-                                print("hereeeeeeeeeeeeeeeeeee")
                               
                                 self.awakenUploads()
                                 
@@ -459,13 +451,11 @@ class AWSManager {
         
                     self.completeUpload(task: taskid, status: false)
                     
-                    print("hereeeeeeeeeeeeeeeeeee33 ")
                     
                 } else {
                     
                     self.completeUpload(task: taskid, status: true)
                     
-                    print("hereeeeeeeeeeeeeeeeeee 44")
                 }
      
         }
