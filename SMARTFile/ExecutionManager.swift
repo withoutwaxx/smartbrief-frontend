@@ -42,6 +42,7 @@ class RequestExecutionManager {
                     if let value = response.result.value {
                         let json = JSON(value)
                         if(json["outcome"].boolValue) {
+                            print(json["token"].stringValue)
                             User.token = json["token"].stringValue
                             do {
                                 let jwt = try decode(jwt: User.token)
@@ -85,7 +86,7 @@ class RequestExecutionManager {
         let headers: HTTPHeaders = [
             "Authorization" : "Bearer " + User.token,
             "Update" : encodedAuth
-            
+        
         ]
         
         self.requestSecurityManager.request(endpoint, method: .post, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200..<300)

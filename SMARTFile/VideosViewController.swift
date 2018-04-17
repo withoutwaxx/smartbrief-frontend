@@ -136,7 +136,7 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     func setupViews() {
         projectTitle.text = currentProject?.value(forKeyPath: "project_name") as? String
-        let deleteProjectTouch = UITapGestureRecognizer(target: self, action:  #selector (self.deleteProjectAction (_:)))
+        let deleteProjectTouch = UITapGestureRecognizer(target: self, action:  #selector (self.deleteTotalProjectAction (_:)))
         self.deleteProject.addGestureRecognizer(deleteProjectTouch)
         deleteProjectLabel.adjustsFontSizeToFitWidth = true
         receivedLabel.adjustsFontSizeToFitWidth = true
@@ -165,60 +165,95 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
     
     func deleteVideoPressed(index: IndexPath) {
         
-        startWheel()
-        
-        let cell:VideoCell = videosTable.cellForRow(at: index) as! VideoCell
-        cell.deleteVideo.isHidden = true
-        
-        AWSManager.sharedInstance.deleteAWSAssets(keys: [videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String], index: 0) {
-            
-            (success) in
-            if(success) {
-                RequestDelegate.deleteVideo(videoId: self.videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String, projectId: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String, completionHandler: {
-                    
-                    (success, message) in
-                    
-                    if(success) {
-                        self.refreshView()
-                        RequestDelegate.getProjects(completionHandler: { (success, message) in
-                            
-                        })
+        AlertUserManager.warnUser(action: NSLocalizedString("ALERT_VIDEO_DELETE_ACTION", comment: ""), message: NSLocalizedString("ALERT_VIDEO_DELETE", comment: ""), currentViewController: self, completionHandler:
+            {
+                (success) in
+                
+                if(success) {
+
+                    self.startWheel()
+                
+                    let cell:VideoCell = self.videosTable.cellForRow(at: index) as! VideoCell
+                    cell.deleteVideo.isHidden = true
+                
+                    AWSManager.sharedInstance.deleteAWSAssets(keys: [self.videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String], index: 0) {
                         
-                    } else {
-                        AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
-                        DispatchQueue.main.async {
-                            cell.deleteVideo.isHidden = false
+                        (success) in
+                        
+                        if(success) {
+                            
+                            RequestDelegate.deleteVideo(videoId: self.videos[index.row].value(forKey: Constants.FIELD_VIDEO_ID) as! String, projectId: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID) as! String, completionHandler: {
+                                
+                                (success, message) in
+                                
+                                if(success) {
+                                    self.refreshView()
+                                    RequestDelegate.getProjects(completionHandler: { (success, message) in
+                                        
+                                    })
+                                    
+                                } else {
+                                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                                    DispatchQueue.main.async {
+                                        cell.deleteVideo.isHidden = false
+                                        
+                                    }
+                                
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    self.stopWheel()
+                                    
+                                }
+                                
+                            })
+                            
+                        } else {
+                            
+                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_VIDEO_UNABLE", comment: ""), currentViewController: self)
+                            
+                            DispatchQueue.main.async {
+                                self.stopWheel()
+                                 cell.deleteVideo.isHidden = false
+                                
+                            }
                             
                         }
-                    
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.stopWheel()
                         
                     }
-                    
-                })
-                
-            } else {
-                
-                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_VIDEO_UNABLE", comment: ""), currentViewController: self)
-                
-                DispatchQueue.main.async {
-                    self.stopWheel()
-                     cell.deleteVideo.isHidden = false
                     
                 }
                 
-            }
-            
-        }
+        })
         
     }
     
     
     
-    func deleteProjectAction(_ sender:UITapGestureRecognizer){
+    func deleteInnerProject (id:String) {
+        RequestDelegate.deleteProject(projectId: id, completionHandler: {
+            (success, message) in
+            if(success) {
+                self.performSegue(withIdentifier: "videosToProjects", sender: self)
+                
+            } else {
+                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
+                
+                DispatchQueue.main.async {
+                    self.stopWheel()
+                    self.deleteProject.isHidden = false
+                    
+                }
+            }
+            
+        })
+        
+    }
+    
+    
+    
+    
+    func deleteTotalProjectAction(_ sender:UITapGestureRecognizer){
         AlertUserManager.warnUser(action: NSLocalizedString("ALERT_PROJECT_DELETE_ACTION", comment: ""), message: NSLocalizedString("ALERT_PROJECT_DELETE", comment: ""), currentViewController: self, completionHandler:
             {(success) in
                 if(success){
@@ -229,54 +264,48 @@ class VideosViewController: UIViewController, UITableViewDataSource, UITableView
                         
                     }
                     
-                    AWSManager.sharedInstance.deleteAWSAssets(keys: DataManager.objectsToKeys(objects: self.videos), index: 0, completionHandler: {
-                        
-                        (success) in
-                        
-                        if(success) {
-                            RequestDelegate.deleteProject(projectId: self.currentProject?.value(forKey: "project_id" ) as! String, completionHandler: {
-                                (success, message) in
-                                if(success) {
-                                    self.performSegue(withIdentifier: "videosToProjects", sender: self)
+                    if(!self.videos.isEmpty) {
+                    
+                        AWSManager.sharedInstance.deleteAWSAssets(keys: DataManager.objectsToKeys(objects: self.videos), index: 0, completionHandler: {
+                            
+                            (success) in
+                            
+                            if(success) {
+                                self.deleteInnerProject(id: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID ) as! String)
+                                
+                            } else {
+                                DispatchQueue.main.async {
+                                    self.stopWheel()
+                                    self.deleteProject.isHidden = false
                                     
-                                } else {
-                                    AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: message, currentViewController: self)
-                                    
-                                    DispatchQueue.main.async {
-                                        self.stopWheel()
-                                        self.deleteProject.isHidden = false
-                                        
-                                    }
                                 }
                                 
-                            })
-                            
-                        } else {
-                            DispatchQueue.main.async {
-                                self.stopWheel()
-                                self.deleteProject.isHidden = false
+                                AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_PROJECT_UNABLE", comment: ""), currentViewController: self)
                                 
                             }
-                            
-                            AlertUserManager.displayInfoToUser(title: NSLocalizedString("ALERT_TITLE_OOPS", comment: ""), message: NSLocalizedString("ALERT_DELETE_PROJECT_UNABLE", comment: ""), currentViewController: self)
-                            
-                        }
-                    })
+                        })
+                        
+                    } else {
+                        self.deleteInnerProject(id: self.currentProject?.value(forKey: Constants.FIELD_PROJECT_ID ) as! String)
+                        
+                    }
                     
-          
                 }
+                
         })
         
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+        
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return videos.count
+        
     }
     
     

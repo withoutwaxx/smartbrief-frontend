@@ -35,7 +35,7 @@ final class VideoManager {
             let userId = User.id
             let localId = asset.localIdentifier
             let desc = ""
-            let url = "\(Constants.S3_BASE_URL)\(videoId)"
+            let url = videoId
             let length:Int = Int(asset.duration)
             let size = getVideoSize(asset: asset)
             let added = Date()

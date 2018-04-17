@@ -21,6 +21,7 @@
 "ALERT_TITLE_WARNING" = "Warning";
 "ALERT_PROJECT_NAME_SHORT" = "Please enter a project title with a max of 140 characters";
 "ALERT_PROJECT_DELETE" = "Are you sure you want to delete this entire project? All included video files will also be deleted";
+"ALERT_VIDEO_DELETE" = "Are you sure you want to permanantly delete this video?";
 
 "UI_READY" = "Ready";
 "UI_DONE" = "Done";
@@ -31,6 +32,8 @@
 "ALERT_VIDEOS_COUNT" = "A project needs at least one video to be marked ready";
 "ALERT_PROJECT_READY" = "Are you sure you want to mark this project as ready? You will not be able to add/remove any further videos from the project. This action cannot be undone.";
 "ALERT_PROJECT_DELETE_ACTION" = "Delete Project";
+"ALERT_VIDEO_DELETE_ACTION" = "Delete Video";
+
 "ALERT_PROJECT_READY_ACTION" = "Mark as Ready";
 "ALERT_VIDEO_UNABLE" = "Unable to process and upload selected video(s)";
 "ALERT_DELETE_VIDEO_UNABLE" = "Currently unable to delete the selected video";

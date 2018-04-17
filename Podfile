@@ -9,4 +9,5 @@ target 'SMARTFile' do
     pod 'AWSCognito' 
     pod 'AssetsPickerViewController', :git => 'https://github.com/DragonCherry/AssetsPickerViewController', :branch => 'swift3'
     pod 'JWTDecode', '~> 2.1'
+    pod 'SwiftKeychainWrapper'
 end

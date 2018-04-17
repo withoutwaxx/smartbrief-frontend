@@ -124,7 +124,7 @@ class StringManager {
         let rcState = project.value(forKeyPath: "received_state") as! Int
         let pId = project.value(forKeyPath: "project_id") as! String
         
-        let url = "pId=\(pId)&rdS=\(rdState)&rcS=\(rcState)&pName=\(pTitle)&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = "pId=\(pId)&rdS=\(rdState)&rcS=\(rcState)&pName=\(pTitle)&pResponse=1&".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         
         return url!
     }

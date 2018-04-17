@@ -21,6 +21,9 @@ class Constants {
     
     static let THREAD_ID = "com.smartfile.upload"
     
+    static let TOKEN = "token"
+    static let USER_ID = "userId"
+    
     static let getVideos = "\(baseURL)/videos"
     static let newVideo = "\(baseURL)/videos/create"
     static let deleteVideo = "\(baseURL)/videos/delete"

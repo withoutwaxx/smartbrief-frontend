@@ -15,7 +15,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailText: UITextField!
     @IBOutlet weak var passwordText: UITextField!
     
-    @IBOutlet weak var logo: UIImageView!
+    @IBOutlet weak var logo: IntroView!
     @IBOutlet weak var infoLabel: UILabel!
     
     
@@ -25,6 +25,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         self.emailText.delegate = self
         self.passwordText.delegate = self
+        logo.addIntroAnimation()
         let viewHomeTouch = UITapGestureRecognizer(target: self, action:  #selector (self.openHome (_:)))
         logo.addGestureRecognizer(viewHomeTouch)
         

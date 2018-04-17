@@ -7,24 +7,29 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 class User {
     
     static var id:String {
         get {
-            return UserDefaults.standard.value(forKey: "userId") as! String
+            return UserDefaults.standard.value(forKey: Constants.USER_ID) as! String
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: "userId")
+            UserDefaults.standard.setValue(newValue, forKey: Constants.USER_ID)
         }
     }
     
     static var token:String {
         get {
-            return UserDefaults.standard.value(forKey: "token") as! String
+            if let retrievedString: String = KeychainWrapper.standard.string(forKey: Constants.TOKEN) {
+                return retrievedString
+            }
+            return ""
+            
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: "token")
+            KeychainWrapper.standard.set(newValue, forKey: Constants.TOKEN)
         }
     }
     

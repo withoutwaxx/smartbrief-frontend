@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var newPassRepeatField: UITextField!
     @IBOutlet weak var oldPassTextField: UITextField!
@@ -95,6 +95,9 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        oldPassTextField.delegate = self
+        newPassTextField.delegate = self
+        newPassRepeatField.delegate = self
         
         oldPassTextField.attributedPlaceholder = NSAttributedString(string: "Current Password", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         newPassTextField.attributedPlaceholder = NSAttributedString(string: "New Password", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
@@ -118,6 +121,12 @@ class SettingsViewController: UIViewController {
         
     }
     
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true;
+        
+    }
     
     
 
